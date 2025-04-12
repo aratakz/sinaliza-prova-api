@@ -1,7 +1,8 @@
 import { DataSource } from "typeorm"
 import 'dotenv/config'
-import { User } from "../models/User";
-import { AuthToken } from "../models/AuthToken";
+import { User } from "../models/entity/User";
+import { AuthToken } from "../models/entity/AuthToken";
+import { Address } from "../models/entity/Address";
 
 let DB_PORT = 3306;
 
@@ -18,7 +19,8 @@ const databaseConfig = new DataSource({
     database: process.env.MYSQL_DATABASE_SCHEMA,
     entities: [
         User, 
-        AuthToken
+        AuthToken,
+        Address
     ],
     synchronize: true
 });
