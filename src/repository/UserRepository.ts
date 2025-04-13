@@ -17,7 +17,7 @@ export class UserRepository implements RepositoryInterface<User>{
     
     async findByUserName(userName: string) {
         const user:User|null = await databaseConfig.getRepository(User).findOneBy({
-            username: userName
+            username: userName,
         });
 
         if (user) {

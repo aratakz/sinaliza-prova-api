@@ -1,6 +1,7 @@
 import { AuthToken } from '../models/entity/AuthToken';
 import { RepositoryInterface } from './RepositoryInterface';
 import databaseConfig from '../server/typeorm.conf';
+import { User } from '../models/entity/User';
 
 
 export class AuthTokenRepository implements RepositoryInterface<AuthToken>{
@@ -13,6 +14,20 @@ export class AuthTokenRepository implements RepositoryInterface<AuthToken>{
     }
     async save(entity: AuthToken): Promise<void> {
       await databaseConfig.getRepository(AuthToken).save(entity);
+    }
+
+    async findLastByUserId(user: User) {
+        const tokens = await databaseConfig.getRepository(AuthToken).find({
+            where: {
+                user: {
+                    id: user.id
+                },
+            },
+            order: {
+                generated: 'DESC'
+            }
+        });
+        return tokens[0];
     }
     
 }
