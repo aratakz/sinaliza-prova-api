@@ -9,6 +9,7 @@ const server = express();
 server.use(routes);
 databaseConfig.initialize().then(() => console.debug('stared database service'));
 mongoConfig.init().then(() => console.debug('mongo connection stared!'));
+
 server.get('/', (req: Request, res: Response): any => res.json({
     message: "Server is started",
     link: `http://localhost:${process.env.SERVER_PORT}`
