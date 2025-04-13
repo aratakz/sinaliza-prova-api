@@ -3,12 +3,14 @@ import 'dotenv/config';
 import { UserRepository } from '../repository/UserRepository';
 import { AuthException } from './exception/AuthExceptoion';
 import * as bcrypt from 'bcrypt';
+import { AuthTokenRepository } from '../repository/AuthToekenRepository';
 
 export class Security {
     private userRepository: UserRepository;
-
+    private authTokenRepository: AuthTokenRepository;
     constructor() {
         this.userRepository = new UserRepository();
+        this.authTokenRepository = new AuthTokenRepository;
     }
 
     async getCredentials(userName: string, password: string) {
@@ -24,10 +26,15 @@ export class Security {
             if (!await bcrypt.compare(password, user.password)) {
                 throw new AuthException();
             }
-            
-            return jwt.sign({ id: '' }, process.env.TOKEN_SECRET, {
+            const token = jwt.sign({ id: '' }, process.env.TOKEN_SECRET, {
                 expiresIn: '2h'
             });
+
+            await this.authTokenRepository.save({
+                token: token,
+                user: user
+            });
+            return token; 
         }
 
         throw 'No secret is configured';

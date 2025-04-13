@@ -4,11 +4,11 @@ import { CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn } from "type
 export abstract class BaseEntity {
     
     @PrimaryGeneratedColumn("uuid")
-    id: string;
+    id?: string;
 
     @CreateDateColumn()
-    generated: Date;
+    generated?: Date;
 
     @UpdateDateColumn()
-    modified: Date;
+    modified?: Date;
 }
