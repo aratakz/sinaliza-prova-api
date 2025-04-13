@@ -10,6 +10,7 @@ Promise.all([
     databaseConfig.initialize(),
 ]).then(() => {
     console.debug('🔗 Database connections realized');
+    server.use(express.json());
     server.use(routes);
     server.get('/', (req: Request, res: Response): any => res.json({
         message: "Server is started",
