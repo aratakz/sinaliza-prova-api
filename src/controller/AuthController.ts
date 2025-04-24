@@ -23,6 +23,15 @@ export class AuthController {
         }
         
     }
+
+
+    async sendVerrificarionEmail() {
+
+    }
+
+    async renewPassword() {
+
+    }
 }
 
 export default new AuthController();

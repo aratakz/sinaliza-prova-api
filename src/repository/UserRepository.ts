@@ -15,7 +15,7 @@ export class UserRepository implements RepositoryInterface<User>{
         throw new Error("Method not implemented.");
     }
     
-    async findByUserName(userName: string) {
+    async findByUserName(userName: string): Promise<User|null> {
         const user:User|null = await databaseConfig.getRepository(User).findOneBy({
             username: userName,
         });
