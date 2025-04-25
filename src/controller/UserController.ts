@@ -1,3 +1,4 @@
+import { EmailService } from './../services/EmailService';
 import {Request, Response} from 'express';
 
 class UsersController {
