@@ -1,9 +1,10 @@
-import { Column, Entity, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Column,Entity,OneToMany, TableInheritance } from "typeorm";
 import { AuthToken } from "./AuthToken";
 import { BaseEntity } from "./BaseEntity";
 
 @Entity()
-export class User extends BaseEntity {
+@TableInheritance({column: {type: 'varchar', name: 'type'}})
+export abstract class User extends BaseEntity {
     @Column({type: "varchar", length: 255})
     username: string;
 
