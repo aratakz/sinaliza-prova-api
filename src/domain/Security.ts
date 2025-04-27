@@ -10,6 +10,11 @@ export class Security {
     private userRepository: UserRepository;
     private authTokenRepository: AuthTokenRepository;
     constructor() {
+
+        if (!process.env.TOKEN_SECRET) {
+            throw 'No secret is configured';
+        }
+
         this.userRepository = new UserRepository();
         this.authTokenRepository = new AuthTokenRepository;
     }
@@ -42,6 +47,17 @@ export class Security {
         throw 'No secret is configured';
     }
 
+    async updateCredentials (user: User, password: string) {
+        user.password = await bcrypt.hash(password, 12);
+        await this.userRepository.save(user);
+    }
+    async isValidToken(token:string) {
+        if (process.env.TOKEN_SECRET) {
+            return jwt.verify(token, process.env.TOKEN_SECRET);
+
+        }
+        return false;
+    }
     private async generateNewToken(user: User, secret: string) {
         const token = jwt.sign({ id: '' }, secret, {
             expiresIn: '2h'
