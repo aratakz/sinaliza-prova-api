@@ -1,7 +1,11 @@
 export class AuthException extends Error {
+    private errorCode = 401
     constructor() {
      super();
      super.message = "Unauthorized!"
-     super.stack = "401";   
+    }
+
+    get error () {
+        return this.errorCode;
     }
 }

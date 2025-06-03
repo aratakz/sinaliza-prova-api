@@ -1,6 +1,7 @@
 import {Request, Response} from 'express';
 import 'dotenv/config'
 import { Security } from '../domain/Security';
+import { AuthException } from '../domain/exception/AuthExceptoion';
 export class AuthController {
 
 
@@ -9,14 +10,20 @@ export class AuthController {
 
     async signin(request: Request, response: Response) {
         try {
+            if (!request.body) {
+                response.status(500).json({message: 'No body provided'})
+
+            }
+            if (!request.body.username || !request.body.password) {
+                response.status(401).json({message: 'Login or password do not match!'})
+            }
             const securityDomain: Security = new Security;
             const token = await securityDomain.getCredentials(request.body.username, request.body.password);
             response.json({token: token, register: new Date()});
         } catch (exception) {
-            const errorCode = (<Error>exception).stack;
+            const errorCode = (<AuthException>exception).error;
             if (errorCode) {
-                if (Number.parseInt(errorCode)) {
-                    response.status(Number.parseInt(errorCode)).json({message: (<Error>exception).message})
+                    response.status(errorCode).json({message: (<AuthException>exception).message})
                 }
                 return;
             }
@@ -24,7 +31,5 @@ export class AuthController {
         }
 
     }
-
-}
 
 export default new AuthController();

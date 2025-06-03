@@ -41,6 +41,7 @@ export class Security {
                     return this.generateNewToken(user, process.env.TOKEN_SECRET); 
                 }
             }
+            console.log("teste");
             return this.generateNewToken(user, process.env.TOKEN_SECRET);
         }
         
