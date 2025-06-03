@@ -4,7 +4,6 @@ import databaseConfig from "../server/typeorm.conf";
 
 export class UserRepository implements RepositoryInterface<User>{
     async save(entity: User): Promise<void> {
-        console.debug(entity);
         await databaseConfig.getRepository(User).save(entity);
     }
     

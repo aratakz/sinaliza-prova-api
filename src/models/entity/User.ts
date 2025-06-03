@@ -15,6 +15,14 @@ export abstract class User extends BaseEntity {
     @OneToMany(() => AuthToken, (authToken) => authToken.user)
     tokens:AuthToken[];
 
+    @Column({type: "varchar", length: 500})
+    name: string;
+
+    @Column({type: "varchar", length: 500})
+    email: string;
+
+
+    confirmPassword?:string;
 
     async setPassword(password:string) {
         this.password = (await bcrypt.hash(password, 12)).toString();
