@@ -2,6 +2,8 @@ import {Request, Response} from 'express';
 import 'dotenv/config'
 import { Security } from '../domain/Security';
 import { AuthException } from '../domain/exception/AuthExceptoion';
+import { Student } from '../models/entity/Studant';
+import { UserDomain } from '../domain/User';
 export class AuthController {
 
 
@@ -30,6 +32,40 @@ export class AuthController {
             response.status(500).json({message: 'Unexpected error!'})
         }
 
+        async register (request: Request, response: Response ) {
+            if (!request.body) {
+                response.status(500).json({message: 'No body provided'})          
+            }
+
+            if (!request.body.username) {
+                response.status(500).json({message: 'username field is required!'})          
+            }
+            if (!request.body.password) {
+                response.status(500).json({message: 'password field is required!'})          
+            }
+            if (!request.body.confirmPassword) {
+                response.status(500).json({message: 'confirmPassowrd field is required!'})          
+            }
+            if (!request.body.name) {
+                response.status(500).json({message: 'name field is required!'})          
+            }
+            if (!request.body.birthday) {
+                response.status(500).json({message: 'birthday field is required!'})          
+            }
+            if (!request.body.birthday) {
+                response.status(500).json({message: 'birthday field is required!'})          
+            }
+            if (!request.body.email) {
+                response.status(500).json({message: 'email field is required!'})          
+            }
+            if (!request.body.institute) {
+                response.status(500).json({message: 'institute field is required!'})          
+            }
+           
+            await new UserDomain().createSudant(request.body);
+        }
+
     }
+
 
 export default new AuthController();

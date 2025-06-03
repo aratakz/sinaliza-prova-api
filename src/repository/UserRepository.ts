@@ -3,8 +3,9 @@ import { RepositoryInterface } from "./RepositoryInterface";
 import databaseConfig from "../server/typeorm.conf";
 
 export class UserRepository implements RepositoryInterface<User>{
-    save(entity: User): Promise<void> {
-        throw new Error("Method not implemented.");
+    async save(entity: User): Promise<void> {
+        console.debug(entity);
+        await databaseConfig.getRepository(User).save(entity);
     }
     
     async findById(id: string): Promise<User> {

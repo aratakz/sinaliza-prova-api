@@ -3,4 +3,6 @@ import { User } from "./User";
 
 
 @ChildEntity()
-export class Student extends  User {}
+export class Student extends  User {
+
+}

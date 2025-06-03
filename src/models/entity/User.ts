@@ -1,6 +1,7 @@
 import { Column,Entity,OneToMany, TableInheritance } from "typeorm";
 import { AuthToken } from "./AuthToken";
 import { BaseEntity } from "./BaseEntity";
+import * as bcrypt from 'bcrypt';
 
 @Entity()
 @TableInheritance({column: {type: 'varchar', name: 'type'}})
@@ -13,4 +14,9 @@ export abstract class User extends BaseEntity {
 
     @OneToMany(() => AuthToken, (authToken) => authToken.user)
     tokens:AuthToken[];
+
+
+    async setPassword(password:string) {
+        this.password = (await bcrypt.hash(password, 12)).toString();
+    }
 }
