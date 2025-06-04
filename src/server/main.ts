@@ -4,6 +4,7 @@ import 'dotenv/config'
 import routes from '../routes';
 import databaseConfig from './typeorm.conf';
 import mongoConfig from './mogoose.conf';
+import cors from 'cors';
 
 const server = express();
 Promise.all([
@@ -11,6 +12,7 @@ Promise.all([
 ]).then(() => {
     console.debug('🔗 Database connections realized');
     server.use(express.json());
+    server.use(cors());
     server.use(routes);
     server.get('/', (req: Request, res: Response): any => res.json({
         message: "Server is started",

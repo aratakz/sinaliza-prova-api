@@ -13,6 +13,7 @@ export class AuthController {
 
     async signin(request: Request, response: Response) {
         try {
+            console.debug(request);
             if (!request.body) {
                 response.status(500).json({ message: 'No body provided' })
 
