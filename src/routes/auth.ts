@@ -8,5 +8,7 @@ const authRoutes = Router();
 
 authRoutes.post('/signin',AuthController.signin);
 authRoutes.post('/register', AuthController.register);
+authRoutes.delete('/logout', AuthController.logout);
+
 
 export default authRoutes;

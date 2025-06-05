@@ -59,6 +59,15 @@ export class Security {
         }
         return false;
     }
+
+    async finishSection (token: string) {
+        const storedToken = await this.authTokenRepository.findToken(token);
+        
+        if (storedToken) {
+            await this.authTokenRepository.removeToken(storedToken);
+        }
+    }
+
     private async generateNewToken(user: User, secret: string) {
         const token = jwt.sign({ id: '' }, secret, {
             expiresIn: '2h'
@@ -70,4 +79,5 @@ export class Security {
         });
         return token;
     }
+    
 }

@@ -29,5 +29,18 @@ export class AuthTokenRepository implements RepositoryInterface<AuthToken>{
         });
         return tokens[0];
     }
+
+    async findToken(token: string) {
+        const tokens = await databaseConfig.getRepository(AuthToken).find({
+            where: {
+                token: token,
+            }
+        });
+        return tokens[0];
+    }
+
+    async removeToken(token: AuthToken) {
+        const tokens = await databaseConfig.getRepository(AuthToken).remove(token);
+    }
     
 }

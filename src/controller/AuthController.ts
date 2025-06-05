@@ -13,7 +13,6 @@ export class AuthController {
 
     async signin(request: Request, response: Response) {
         try {
-            console.debug(request);
             if (!request.body) {
                 response.status(500).json({ message: 'No body provided' })
 
@@ -77,8 +76,23 @@ export class AuthController {
         }
         response.status(500).json({ message: 'Unexpected error!' })
     }
+    
+    async logout (request: Request, response: Response) {
+        
+        if (!request.body) {
+            response.status(422).json({ message: 'No body provided'})
+        }
+
+        if (!request.body.token) {
+            response.status(422).json({ message: 'No token provided' })
+        }
+        const securityDomain = new Security();
+        await securityDomain.finishSection(request.body.token);
+        response.json({message: "logout success!"});
+        
+    }
+
     private static validateDateFormat(dateString: string) {
-        console.debug('sas')
         const regex = /^\d{4}-\d{2}-\d{2}$/;
         return regex.test(dateString);
     }
