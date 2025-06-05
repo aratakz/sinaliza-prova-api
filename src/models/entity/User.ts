@@ -21,6 +21,8 @@ export abstract class User extends BaseEntity {
     @Column({type: "varchar", length: 500})
     email: string;
 
+    @Column({type: "boolean"})
+    active: boolean = false;
 
     confirmPassword?:string;
 

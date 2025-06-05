@@ -29,6 +29,9 @@ export class Security {
                 throw new AuthException();
 
             }
+            if (!user.active) {
+                throw new AuthException();
+            }
             if (!await bcrypt.compare(password, user.password)) {
                 throw new AuthException();
             }
