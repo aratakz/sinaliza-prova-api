@@ -72,7 +72,10 @@ export class Security {
     }
 
     private async generateNewToken(user: User, secret: string) {
-        const token = jwt.sign({ id: '' }, secret, {
+        const token = jwt.sign({ userData: {
+            name: user.name,
+            login: user.username
+        }}, secret, {
             expiresIn: '2h'
         });
     
