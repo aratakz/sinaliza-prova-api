@@ -1,8 +1,17 @@
 import { Student } from "../models/entity/Studant";
 import { UserRepository } from "../repository/UserRepository";
+import { EmailService } from "../services/EmailService";
 import { ExitentRecordException } from "./exception/ExistentRecordException";
 import { MetadataExecption } from "./exception/MetadataException";
 
+type Email = {
+    title: string,
+    from: string,
+    to: string,
+    subject: string,
+    text?: string,
+    html?: string
+}
 
 export class UserDomain {
 
@@ -28,6 +37,15 @@ export class UserDomain {
         studant.name = studentMetadata.name
         studant.username = studentMetadata.username;
         await this.usersRepository.save(studant);
+        const email: Email = {
+            from: "server@email.com",
+            to: studant.email,
+            subject: "Seu cadastro no Sinaliza Prova foi criado!",
+            title: "Acesso a plataforma Sinaliza",
+            text: "Olá, voce acaba de se cadastrar no Sinaliza prova. Para concluir o seu cadastro, basta acessar o link abaixo!"
+        }
+        const emailService = new EmailService(email);
+        await emailService.sendEmail();
     }
 
 }
