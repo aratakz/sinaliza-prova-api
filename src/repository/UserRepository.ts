@@ -25,4 +25,14 @@ export class UserRepository implements RepositoryInterface<User>{
         }
         return null;
     }
+    async findByEmail(email: string): Promise<User|null> {
+        const user:User|null = await databaseConfig.getRepository(User).findOneBy({
+            email: email,
+        });
+
+        if (user) {
+            return user;
+        }
+        return null;
+    }
 }

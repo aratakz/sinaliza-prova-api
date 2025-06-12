@@ -5,6 +5,7 @@ import { AuthException } from '../domain/exception/AuthExceptoion';
 import { Student } from '../models/entity/Studant';
 import { UserDomain } from '../domain/User';
 import { ExitentRecordException } from '../domain/exception/ExistentRecordException';
+import { UserRepository } from '../repository/UserRepository';
 export class AuthController {
 
 
@@ -84,11 +85,33 @@ export class AuthController {
         }
 
         if (!request.body.token) {
-            response.status(422).json({ message: 'No token provided' })
+            response.status(422).json({ message: 'No token provided' });
         }
         const securityDomain = new Security();
         await securityDomain.finishSection(request.body.token);
         response.json({message: "logout success!"});
+        
+    }
+
+    async requestPassChange(request: Request, response: Response) {
+        if (!request.body) {
+            response.status(422).json({ message: 'No body provided'});
+        }
+
+        if (!request.body.email) {
+            response.status(422).json({ message: 'email field is requred!'});
+
+        }
+
+        const user = await new UserRepository().findByEmail(request.body.email);
+        if (!user) {
+            response.status(404).json({ message: 'Email not found!'});
+        }
+        if (user?.email) {
+            await new Security().sendPassChangeEmail(user?.email);
+        }
+
+        response.json({message: "recuperation email sended!"});
         
     }
 

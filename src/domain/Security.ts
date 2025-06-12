@@ -5,6 +5,16 @@ import { AuthException } from './exception/AuthExceptoion';
 import * as bcrypt from 'bcrypt';
 import { AuthTokenRepository } from '../repository/AuthToekenRepository';
 import { User } from '../models/entity/User';
+import { EmailService } from '../services/EmailService';
+
+type Email = {
+    title: string,
+    from: string,
+    to: string,
+    subject: string,
+    text?: string,
+    html?: string
+}
 
 export class Security {
     private userRepository: UserRepository;
@@ -55,6 +65,19 @@ export class Security {
         user.password = await bcrypt.hash(password, 12);
         await this.userRepository.save(user);
     }
+
+    async sendPassChangeEmail (emailFrom: string) {
+        const email: Email = {
+        from: "server@email.com",
+        to: emailFrom,
+            subject: "Recuperação de senha",
+            title: "Recuperação de senha",
+            text: "Olá, para prosseguir com a alteração da senha, clique no link abaixo"
+        }
+        const emailService = new EmailService(email);
+        await emailService.sendEmail();
+    }
+
     async isValidToken(token:string) {
         if (process.env.TOKEN_SECRET) {
             return jwt.verify(token, process.env.TOKEN_SECRET);
