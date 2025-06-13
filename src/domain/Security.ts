@@ -54,7 +54,6 @@ export class Security {
                     return this.generateNewToken(user, process.env.TOKEN_SECRET); 
                 }
             }
-            console.log("teste");
             return this.generateNewToken(user, process.env.TOKEN_SECRET);
         }
         
@@ -97,7 +96,8 @@ export class Security {
     private async generateNewToken(user: User, secret: string) {
         const token = jwt.sign({ userData: {
             name: user.name,
-            login: user.username
+            id: user.id,
+            avatar: user.avatarLink
         }}, secret, {
             expiresIn: '2h'
         });

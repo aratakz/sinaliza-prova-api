@@ -23,7 +23,7 @@ export class AuthController {
             }
             const securityDomain: Security = new Security;
             const token = await securityDomain.getCredentials(request.body.username, request.body.password);
-            response.json({ token: token, register: new Date() });
+            response.json({ token: token, register: new Date()});
         } catch (exception) {
             const errorCode = (<AuthException>exception).error;
             if (errorCode) {

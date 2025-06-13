@@ -24,6 +24,9 @@ export abstract class User extends BaseEntity {
     @Column({type: "boolean"})
     active: boolean = false;
 
+    @Column({type:"text"})
+    avatarLink?: string;
+
     confirmPassword?:string;
 
     async setPassword(password:string) {

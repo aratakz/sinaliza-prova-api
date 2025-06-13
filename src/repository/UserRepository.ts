@@ -1,14 +1,22 @@
 import { User } from "../models/entity/User";
 import { RepositoryInterface } from "./RepositoryInterface";
 import databaseConfig from "../server/typeorm.conf";
+import { Student } from "../models/entity/Studant";
 
-export class UserRepository implements RepositoryInterface<User>{
+export class UserRepository implements RepositoryInterface<User|null|Student>{
     async save(entity: User): Promise<void> {
         await databaseConfig.getRepository(User).save(entity);
     }
     
-    async findById(id: string): Promise<User> {
-        throw new Error("Method not implemented.");
+    async findById(id: string): Promise<User|Student|null> {
+        const user:User|null = await databaseConfig.getRepository(User).findOneBy({
+            id: id,
+        });
+        if (user) {
+            return user;
+        }
+        return null;
+    
     }
     
     async findAll(): Promise<User[]> {
