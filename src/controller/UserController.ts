@@ -1,3 +1,4 @@
+import { UserDomain } from '../domain/User';
 import { Student } from '../models/entity/Studant';
 import { UserRepository } from '../repository/UserRepository';
 import { EmailService } from './../services/EmailService';
@@ -13,6 +14,9 @@ class UsersController {
     }
 
     async getUserInfo(request: Request, response: Response) {
+        if (!request.params || !request.params.userId) {
+            response.status(422).json({ message: 'No user id is provided!' })
+        }
         const user = await new UserRepository().findById(request.params.userId);
 
         if (!user) {
@@ -48,6 +52,25 @@ class UsersController {
             });
         }
 
+    }
+
+    async update (request: Request, response: Response) {
+        if (!request.params || !request.params.userId) {
+            response.status(422).json({ message: 'No user id is provided!' });
+        }
+        if (!request.body) {
+            response.status(422).json({ message: 'No user id is provided!' });
+        }
+
+        const user = await new UserRepository().findById(request.params.userId);
+
+        if (user != null) {
+            new UserDomain().update(user, request.body)
+
+        } else {
+            response.status(404).json({ message: 'User not found!'})
+        }
+        
     }
 }
 export default new UsersController();

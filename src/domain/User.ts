@@ -1,4 +1,5 @@
 import { Student } from "../models/entity/Studant";
+import { User } from "../models/entity/User";
 import { UserRepository } from "../repository/UserRepository";
 import { EmailService } from "../services/EmailService";
 import { ExitentRecordException } from "./exception/ExistentRecordException";
@@ -46,6 +47,18 @@ export class UserDomain {
         }
         const emailService = new EmailService(email);
         await emailService.sendEmail();
+    }
+
+    async update(user: User, userData: any) {
+        user.username = userData.username;
+        user.email = userData.email;
+        if (userData.password) {
+            user.setPassword(userData.password);
+        }
+        if (user instanceof Student) {
+            user.birthday = userData.birthday
+        }
+        this.usersRepository.save(user);
     }
 
 }
