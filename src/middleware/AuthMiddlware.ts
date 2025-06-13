@@ -12,7 +12,6 @@ const authMiddleware = async (req:Request, res:Response, next:any) => {
     if (!token || !token[1]) {
         res.status(httpLang.UNAUTHORIZED).send({message:'Authentication failed'});
     }
-
     // @ts-ignore
     if (!await  security.isValidToken(token[1])) {
         res.status(httpLang.UNAUTHORIZED).send({message:'Authentication failed 3'});
