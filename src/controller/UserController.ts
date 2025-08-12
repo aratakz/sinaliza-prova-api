@@ -70,7 +70,6 @@ class UsersController {
         } else {
             response.status(404).json({ message: 'User not found!'})
         }
-        
     }
 }
 export default new UsersController();
