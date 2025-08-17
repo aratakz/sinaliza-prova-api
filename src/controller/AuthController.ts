@@ -16,7 +16,6 @@ export class AuthController {
         try {
             if (!request.body) {
                 response.status(500).json({ message: 'No body provided' })
-
             }
             if (!request.body.username || !request.body.password) {
                 response.status(401).json({ message: 'Login or password do not match!' })
@@ -29,9 +28,7 @@ export class AuthController {
             if (errorCode) {
                 response.status(errorCode).json({ message: (<AuthException>exception).message })
             }
-            return;
         }
-        response.status(500).json({ message: 'Unexpected error!' })
     }
 
     async register(request: Request, response: Response) {
