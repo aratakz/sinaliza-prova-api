@@ -72,7 +72,6 @@ export class AuthController {
             }
             return;
         }
-        response.status(500).json({ message: 'Unexpected error!' })
     }
     
     async logout (request: Request, response: Response) {

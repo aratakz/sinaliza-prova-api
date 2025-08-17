@@ -72,8 +72,8 @@ export class Security {
             title: "Recuperação de senha",
             text: "Olá, para prosseguir com a alteração da senha, clique no link abaixo"
         }
-        const emailService = new EmailService(email);
-        await emailService.sendEmail();
+        // const emailService = new EmailService(email);
+        // await emailService.sendEmail();
     }
 
     async isValidToken(token:string) {

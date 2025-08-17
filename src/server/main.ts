@@ -22,7 +22,7 @@ Promise.all([
 
     if (process.env.SERVER_PORT) {
         server.listen(Number.parseInt(process.env.SERVER_PORT));
-        console.debug(`📡 Server stared at https://localhost:${process.env.SERVER_PORT}`)
+        console.debug(`📡 Server stared at http://localhost:${process.env.SERVER_PORT}`)
     }
     
 

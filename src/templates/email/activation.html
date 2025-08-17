@@ -1,0 +1,28 @@
+<style>
+    .button-content {
+        display: flex;
+        width: 100%;
+        justify-content: center;
+        margin-top: 40%;
+    }
+    .button-content a {
+        height: 60px;
+        background: #FFFFFF;
+        color: #000000;
+        padding: 10px;
+        border-radius: 10px;
+        text-decoration: none;
+        display: flex;
+        width: 30%;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
+<div class="text">
+    Olá, {{studentName}}.<br/>
+    Seja muito bem vindo a plataforma Sinaliza Prova. <br/>
+    Para prosseguir com a ativação da sua conta em nosso sistema, basta clicar no botão abaixo:<br/>
+</div>
+<div class="button-content">
+    <a href="{{activationLink}}" target="_blank">Validar e-mail</a>
+</div>
