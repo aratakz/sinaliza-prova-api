@@ -7,6 +7,7 @@ class NodeMailler {
     private transporter: Transporter;
     
     constructor () {
+        console.debug(process.env.SMTP_PORT )
         if (process.env.SMTP_PORT && process.env.SMTP_SECURE) {
             this.transporter = nodemailer.createTransport({
                 host: process.env.SMTP_HOST,

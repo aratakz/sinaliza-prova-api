@@ -37,7 +37,9 @@ export class UserDomain {
         studant.email = studentMetadata.email;
         studant.name = studentMetadata.name
         studant.username = studentMetadata.username;
-        await this.usersRepository.save(studant);
+        studant.avatarLink = '';
+
+        // await this.usersRepository.save(studant);
         const email: Email = {
             from: "server@email.com",
             to: studant.email,

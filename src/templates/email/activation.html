@@ -1,0 +1,32 @@
+<!doctype html>
+<style>
+    * {
+        box-sizing: border-box;
+    }
+    .wrapper {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        padding: 10%;
+        justify-content: center;
+    }
+    .email-body {
+        display: flex;
+        width: 500px;
+        height: 700px;
+        border-radius: 50px;
+        background: #000080;
+        padding: 5%;
+        color: #FFFFFF;
+        font-weight: bolder;
+        font-family: sans-serif;
+        flex-direction: column;
+    }
+</style>
+<div class="wrapper">
+    <div class="email-body">
+        <div class="email-header">
+            <img src="data:image/png;base64, {{logo}}" alt="logo" height="100">
+        </div>
+    </div>
+</div>
