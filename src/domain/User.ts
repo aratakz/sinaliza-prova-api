@@ -47,7 +47,10 @@ export class UserDomain {
             title: "Acesso a plataforma Sinaliza",
             text: "Olá, voce acaba de se cadastrar no Sinaliza prova. Para concluir o seu cadastro, basta acessar o link abaixo!"
         }
-        const emailService = new EmailService(email);
+        const emailService = new EmailService(email, 'activation', [{
+            studentName: studant.name,
+            activationLink: 'https://github.com',
+        }]);
         await emailService.sendEmail();
     }
 
@@ -55,7 +58,7 @@ export class UserDomain {
         user.username = userData.username;
         user.email = userData.email;
         if (userData.password) {
-            user.setPassword(userData.password);
+           await user.setPassword(userData.password);
         }
         if (user instanceof Student) {
             user.birthday = userData.birthday

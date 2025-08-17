@@ -1,32 +1,28 @@
-<!doctype html>
 <style>
-    * {
-        box-sizing: border-box;
-    }
-    .wrapper {
+    .button-content {
         display: flex;
         width: 100%;
-        height: 100%;
-        padding: 10%;
         justify-content: center;
+        margin-top: 40%;
     }
-    .email-body {
+    .button-content a {
+        height: 60px;
+        background: #FFFFFF;
+        color: #000000;
+        padding: 10px;
+        border-radius: 10px;
+        text-decoration: none;
         display: flex;
-        width: 500px;
-        height: 700px;
-        border-radius: 50px;
-        background: #000080;
-        padding: 5%;
-        color: #FFFFFF;
-        font-weight: bolder;
-        font-family: sans-serif;
-        flex-direction: column;
+        width: 30%;
+        justify-content: center;
+        align-items: center;
     }
 </style>
-<div class="wrapper">
-    <div class="email-body">
-        <div class="email-header">
-            <img src="data:image/png;base64, {{logo}}" alt="logo" height="100">
-        </div>
-    </div>
+<div class="text">
+    Olá, {{studentName}}.<br/>
+    Seja muito bem vindo a plataforma Sinaliza Prova. <br/>
+    Para prosseguir com a ativação da sua conta em nosso sistema, basta clicar no botão abaixo:<br/>
+</div>
+<div class="button-content">
+    <a href="{{activationLink}}" target="_blank">Validar e-mail</a>
 </div>
