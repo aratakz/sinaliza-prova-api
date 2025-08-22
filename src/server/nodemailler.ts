@@ -8,7 +8,6 @@ class NodeMailler {
     
     constructor () {
         if (process.env.SMTP_PORT && process.env.SMTP_SECURE) {
-            console.debug(process.env.SMTP_HOST);
             this.transporter = nodemailer.createTransport({
                 host: process.env.SMTP_HOST,
                 port: Number.parseInt(process.env.SMTP_PORT),
@@ -22,7 +21,7 @@ class NodeMailler {
             throw Error('Cannot init email settings');        }
     }
 
-    getSMTPConnetion(): Transporter {
+    getSMTPConnection(): Transporter {
         return this.transporter;
     }
 }

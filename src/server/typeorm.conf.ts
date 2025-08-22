@@ -1,18 +1,6 @@
-import { Admin, DataSource } from "typeorm"
+import { DataSource } from "typeorm"
 import 'dotenv/config'
-import { User } from "../models/entity/User";
-import { AuthToken } from "../models/entity/AuthToken";
-import { Address } from "../models/entity/Address";
-import { Student } from "../models/entity/Studant";
-import { RegistrationData } from "../models/entity/RegistrationData";
-import { Professional } from "../models/entity/Professional";
-import { Exam } from "../models/entity/Exam";
-import { CourseDetail } from "../models/entity/CourseDetail";
-import { Question } from "../models/entity/Question";
-import { QuestionOption } from "../models/entity/QuestionOption";
-import { Answer } from "../models/entity/Answer";
-import { State } from "../models/entity/State";
-import { City } from "../models/entity/City";
+import * as Entities  from "../models/entity";
 
 let DB_PORT = 3306;
 
@@ -27,22 +15,7 @@ const databaseConfig = new DataSource({
     username: process.env.MYSQL_DATABASE_USER,
     password: process.env.MYSQL_DATABASE_PASS,
     database: process.env.MYSQL_DATABASE_SCHEMA,
-    entities: [
-        User, 
-        AuthToken,
-        Address,
-        Admin,
-        Student,
-        RegistrationData,
-        Professional,
-        Exam,
-        CourseDetail,
-        Question,
-        QuestionOption,
-        Answer,
-        State,
-        City
-    ],
+    entities: Object.values(Entities),
     synchronize: true
 });
 

@@ -21,7 +21,7 @@ export class EmailService {
    }
    
     async sendEmail() {
-        const connection = nodemailler.getSMTPConnetion();
+        const connection = nodemailler.getSMTPConnection();
         fs.readFile(`${__dirname}/../templates/email/basic_email.html`,'utf-8', async (err, pageContent) => {
             let emailHtml: string= await this.build(pageContent);
             emailHtml = emailHtml.replace("{{content}}", await this.buildContent());
