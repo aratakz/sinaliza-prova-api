@@ -13,7 +13,7 @@ export  class InstituteRepository implements RepositoryInterface<Institute> {
     }
 
      async save(entity: Institute): Promise<void> {
-        return Promise.resolve(undefined);
+        await databaseConfig.getRepository(Institute).save(entity);
     }
 
 }
