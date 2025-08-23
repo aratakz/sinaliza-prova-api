@@ -6,6 +6,7 @@ import * as bcrypt from 'bcrypt';
 import { AuthTokenRepository } from '../repository/AuthToekenRepository';
 import { User } from '../models/entity/User';
 import { EmailService } from '../services/EmailService';
+import {response} from "express";
 
 type Email = {
     title: string,
@@ -41,6 +42,7 @@ export class Security {
             if (!user.active) {
                 throw new AuthException();
             }
+
             if (!await bcrypt.compare(password, user.password)) {
                 throw new AuthException();
             }
@@ -50,7 +52,7 @@ export class Security {
                 if (jwt.verify(authToken.token, process.env.TOKEN_SECRET)) {
                     return authToken.token;
                 } else {
-                    return this.generateNewToken(user, process.env.TOKEN_SECRET); 
+                    return this.generateNewToken(user, process.env.TOKEN_SECRET);
                 }
             }
             return this.generateNewToken(user, process.env.TOKEN_SECRET);
@@ -78,7 +80,11 @@ export class Security {
 
     async isValidToken(token:string) {
         if (process.env.TOKEN_SECRET) {
-            return jwt.verify(token, process.env.TOKEN_SECRET);
+            try {
+                return jwt.verify(token, process.env.TOKEN_SECRET);
+            } catch (e) {
+                throw new AuthException();
+            }
 
         }
         return false;

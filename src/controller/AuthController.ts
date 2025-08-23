@@ -26,6 +26,8 @@ export class AuthController {
             const errorCode = (<AuthException>exception).error;
             if (errorCode) {
                 response.status(errorCode).json({ message: (<AuthException>exception).message })
+            } else {
+                response.status(400).json({ message: 'invalid credentials'});
             }
         }
     }
