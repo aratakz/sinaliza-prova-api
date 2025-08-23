@@ -11,15 +11,17 @@ export class InstituteController {
     async register(request: Request, response: Response) {
 
         if (!request.body) {
-            response.status(500).json({ message: 'No body provided' })
+           return response.status(500).json({ message: 'No body provided' })
         }
 
         if (!request.body.name) {
-            response.status(500).json({ message: 'name field is required' })
+          return  response.status(500).json({ message: 'name field is required' })
         }
         await  new InstituteRepository().save(request.body);
         response.json('Instituição cadastrada com sucesso!');
     }
+
+    async find() {}
 }
 
 export default new InstituteController();

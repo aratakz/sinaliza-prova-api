@@ -7,5 +7,6 @@ const  instituteRoutes = Router();
 
 instituteRoutes.get('/', InstituteController.index);
 instituteRoutes.post('/create', [authMiddleware], InstituteController.register);
+instituteRoutes.get('/find/:id', [authMiddleware], InstituteController.register);
 
 export default instituteRoutes;
