@@ -34,36 +34,36 @@ export class AuthController {
 
     async register(request: Request, response: Response) {
 
-        if (!request.body) {
-            response.status(500).json({ message: 'No body provided' })
-        }
-
-        if (!request.body.username) {
-            response.status(422).json({ message: 'username field is required!' })
-        }
-        if (!request.body.password) {
-            response.status(422).json({ message: 'password field is required!' })
-        }
-        if (!request.body.confirmPassword) {
-            response.status(422).json({ message: 'confirmPassowrd field is required!' })
-        }
-        if (!request.body.name) {
-            response.status(422).json({ message: 'name field is required!' })
-        }
-        if (!request.body.birthday) {
-            response.status(422).json({ message: 'birthday field is required!' })
-        }
-        if (!request.body.email) {
-            response.status(422).json({ message: 'email field is required!' })
-        }
-        if (!request.body.institute) {
-            response.status(422).json({ message: 'institute field is required!' })
-        }
-        if (!AuthController.validateDateFormat(request.body.birthday)) {
-            response.status(422).json({ message: 'Wrong date format' })
-        }
-
         try {
+            if (!request.body) {
+                response.status(500).json({ message: 'No body provided' })
+            }
+
+            if (!request.body.username) {
+                response.status(422).json({ message: 'username field is required!' })
+            }
+            if (!request.body.password) {
+                response.status(422).json({ message: 'password field is required!' })
+            }
+            if (!request.body.confirmPassword) {
+                response.status(422).json({ message: 'confirmPassowrd field is required!' })
+            }
+            if (!request.body.name) {
+                response.status(422).json({ message: 'name field is required!' })
+            }
+            if (!request.body.birthday) {
+                response.status(422).json({ message: 'birthday field is required!' })
+            }
+            if (!request.body.email) {
+                response.status(422).json({ message: 'email field is required!' })
+            }
+            if (!request.body.institute) {
+                response.status(422).json({ message: 'institute field is required!' })
+            }
+            if (!AuthController.validateDateFormat(request.body.birthday)) {
+                response.status(422).json({ message: 'Wrong date format' })
+            }
+
             await new UserDomain().createSudant(request.body);
             response.status(201).json({ status: "created" });
         } catch (exception) {

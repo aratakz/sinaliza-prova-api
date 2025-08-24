@@ -9,16 +9,20 @@ export class InstituteController {
     }
 
     async register(request: Request, response: Response) {
+        try {
+            if (!request.body) {
+                response.status(500).json({ message: 'No body provided' })
+            }
 
-        if (!request.body) {
-            response.status(500).json({ message: 'No body provided' })
+            if (!request.body.name) {
+                throw new Error('name field is required');
+            }
+            await  new InstituteRepository().save(request.body);
+            response.json('Instituição cadastrada com sucesso!');
+        } catch (e) {
+            response.status(500).json({ message: e})
         }
 
-        if (!request.body.name) {
-            response.status(500).json({ message: 'name field is required' })
-        }
-        await  new InstituteRepository().save(request.body);
-        response.json('Instituição cadastrada com sucesso!');
     }
 
     async find() {}
