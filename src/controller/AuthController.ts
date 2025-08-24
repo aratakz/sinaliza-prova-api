@@ -36,32 +36,41 @@ export class AuthController {
 
         try {
             if (!request.body) {
-                response.status(500).json({ message: 'No body provided' })
+                response.status(500).json({ message: 'No body provided' });
+                throw Error('No body provided');
             }
 
             if (!request.body.username) {
-                response.status(422).json({ message: 'username field is required!' })
+                response.status(422).json({ message: 'Username field is required!' });
+                throw Error('Username field is required!');
             }
             if (!request.body.password) {
-                response.status(422).json({ message: 'password field is required!' })
+                response.status(422).json({ message: 'Password field is required!' });
+                throw Error('Password field is required!');
             }
             if (!request.body.confirmPassword) {
-                response.status(422).json({ message: 'confirmPassowrd field is required!' })
+                response.status(422).json({ message: 'confirmPassowrd field is required!' });
+                throw Error('ConfirmPassword field is required!');
             }
             if (!request.body.name) {
-                response.status(422).json({ message: 'name field is required!' })
+                response.status(422).json({ message: 'name field is required!' });
+                throw Error('Name field is required!');
             }
             if (!request.body.birthday) {
-                response.status(422).json({ message: 'birthday field is required!' })
+                response.status(422).json({ message: 'birthday field is required!' });
+                throw Error('Birthday field is required!');
             }
             if (!request.body.email) {
-                response.status(422).json({ message: 'email field is required!' })
+                response.status(422).json({ message: 'email field is required!' });
+                throw Error('Email field is required!');
             }
             if (!request.body.institute) {
-                response.status(422).json({ message: 'institute field is required!' })
+                response.status(422).json({ message: 'institute field is required!' });
+                throw Error('Institute field is required!');
             }
             if (!AuthController.validateDateFormat(request.body.birthday)) {
-                response.status(422).json({ message: 'Wrong date format' })
+                response.status(422).json({ message: 'Wrong date format' });
+                throw Error('Wrong date format!');
             }
 
             await new UserDomain().createSudant(request.body);
