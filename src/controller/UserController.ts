@@ -12,7 +12,6 @@ class UsersController {
     async updatePassword() {
 
     }
-
     async getUserInfo(request: Request, response: Response) {
         if (!request.params || !request.params.userId) {
             response.status(422).json({ message: 'No user id is provided!' })
@@ -53,7 +52,6 @@ class UsersController {
         }
 
     }
-
     async update (request: Request, response: Response) {
         if (!request.params || !request.params.userId) {
             response.status(422).json({ message: 'No user id is provided!' });
@@ -70,6 +68,19 @@ class UsersController {
         } else {
             response.status(404).json({ message: 'User not found!'})
         }
+    }
+    async checkUsername(request: Request, response: Response) {
+        const username: string = request.params.username;
+        const users = await new UserRepository().findByUsername(username);
+         if (users && users.length > 0) {
+             response.json({
+                 available: false,
+             });
+         } else {
+             response.json({
+                 available: true,
+             });
+         }
     }
 }
 export default new UsersController();

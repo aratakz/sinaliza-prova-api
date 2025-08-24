@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import {InstituteRepository} from "../repository/InstituteRepository";
+import {Institute} from "../models/entity";
 
 
 export class InstituteController {
@@ -22,10 +23,22 @@ export class InstituteController {
         } catch (e) {
             response.status(500).json({ message: e})
         }
-
     }
 
     async find() {}
+
+    async findOneByText(request: Request, response: Response) {
+        const repository = new InstituteRepository();
+        const institutes: Institute[] =  await repository.findByText(request.params.text);
+        let responseArray:Object[] = [];
+        for (const institute of institutes) {
+            responseArray.push({
+                value: institute.id,
+                label: institute.name,
+            });
+        }
+        response.json(responseArray);
+    }
 }
 
 export default new InstituteController();

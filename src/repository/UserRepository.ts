@@ -7,7 +7,6 @@ export class UserRepository implements RepositoryInterface<User|null|Student>{
     async save(entity: User): Promise<void> {
         await databaseConfig.getRepository(User).save(entity);
     }
-    
     async findById(id: string): Promise<User|Student|null> {
         const user:User|null = await databaseConfig.getRepository(User).findOneBy({
             id: id,
@@ -18,11 +17,9 @@ export class UserRepository implements RepositoryInterface<User|null|Student>{
         return null;
     
     }
-    
     async findAll(): Promise<User[]> {
         throw new Error("Method not implemented.");
     }
-    
     async findByUserName(userName: string): Promise<User|null> {
         const user:User|null = await databaseConfig.getRepository(User).findOneBy({
             username: userName,
@@ -42,5 +39,10 @@ export class UserRepository implements RepositoryInterface<User|null|Student>{
             return user;
         }
         return null;
+    }
+    async findByUsername(userName: string) {
+        return await databaseConfig.getRepository(User).findBy({
+            username: userName,
+        });
     }
 }
