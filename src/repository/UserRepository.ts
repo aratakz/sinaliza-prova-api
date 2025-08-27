@@ -2,12 +2,20 @@ import { User } from "../models/entity/User";
 import { RepositoryInterface } from "./RepositoryInterface";
 import databaseConfig from "../server/typeorm.conf";
 import { Student } from "../models/entity/Studant";
+import { Professional } from "../models/entity";
 
 export class UserRepository implements RepositoryInterface<User|null|Student>{
+    
     async save(entity: User): Promise<void> {
-        await databaseConfig.getRepository(User).save(entity);
+        try {
+            await databaseConfig.getRepository(User).save(entity);
+        } catch(error) {
+            console.log("ERRO" + error)
+        }
+        
     }
-    async findById(id: string): Promise<User|Student|null> {
+    
+    async findById(id: string): Promise<User|Student|Professional|null> {
         const user:User|null = await databaseConfig.getRepository(User).findOneBy({
             id: id,
         });
@@ -17,9 +25,11 @@ export class UserRepository implements RepositoryInterface<User|null|Student>{
         return null;
     
     }
+    
     async findAll(): Promise<User[]> {
-        throw new Error("Method not implemented.");
+        return await databaseConfig.getRepository(User).find();
     }
+
     async findByUserName(userName: string): Promise<User|null> {
         const user:User|null = await databaseConfig.getRepository(User).findOneBy({
             username: userName,
@@ -30,6 +40,7 @@ export class UserRepository implements RepositoryInterface<User|null|Student>{
         }
         return null;
     }
+
     async findByEmail(email: string): Promise<User|null> {
         const user:User|null = await databaseConfig.getRepository(User).findOneBy({
             email: email,
@@ -40,9 +51,5 @@ export class UserRepository implements RepositoryInterface<User|null|Student>{
         }
         return null;
     }
-    async findByUsername(userName: string) {
-        return await databaseConfig.getRepository(User).findBy({
-            username: userName,
-        });
-    }
+
 }

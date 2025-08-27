@@ -27,9 +27,9 @@ export abstract class User extends BaseEntity {
     @Column({type:"text"})
     avatarLink?: string;
 
-    confirmPassword?:string;
+    confirmPassword?: string;
 
-    async setPassword(password:string) {
+    async setPassword(password: string) {
         this.password = (await bcrypt.hash(password, 12)).toString();
     }
 }

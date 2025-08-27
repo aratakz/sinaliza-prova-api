@@ -1,5 +1,7 @@
 import { UserDomain } from '../domain/User';
+import { Professional } from '../models/entity';
 import { Student } from '../models/entity/Studant';
+import { AccessProfile } from '../models/enums/AccessProfile';
 import { UserRepository } from '../repository/UserRepository';
 import { EmailService } from './../services/EmailService';
 import { Request, Response } from 'express';
@@ -12,6 +14,12 @@ class UsersController {
     async updatePassword() {
 
     }
+
+    async getUsers (request: Request, response: Response) {
+        const users = await new UserRepository().findAll();
+        response.json(users);
+    }
+
     async getUserInfo(request: Request, response: Response) {
         if (!request.params || !request.params.userId) {
             response.status(422).json({ message: 'No user id is provided!' })
@@ -49,9 +57,22 @@ class UsersController {
                     birthday: bDay
                 }, register: new Date()
             });
+
+            if(user instanceof Professional){
+                response.json({
+                    user: {
+                        id: user?.id,
+                        avatar: user?.avatarLink,
+                        email: user?.email,
+                        name: user?.name,
+                        AccessProfile: user?.accessProfile
+                    }, register: new Date()
+                })
+            }
         }
 
     }
+
     async update (request: Request, response: Response) {
         if (!request.params || !request.params.userId) {
             response.status(422).json({ message: 'No user id is provided!' });
@@ -69,10 +90,15 @@ class UsersController {
             response.status(404).json({ message: 'User not found!'})
         }
     }
+
+    async deleteUser() {
+        
+    }
+
     async checkUsername(request: Request, response: Response) {
         const username: string = request.params.username;
-        const users = await new UserRepository().findByUsername(username);
-         if (users && users.length > 0) {
+        const users = await new UserRepository().findByUserName(username);
+         if (users) {
              response.json({
                  available: false,
              });

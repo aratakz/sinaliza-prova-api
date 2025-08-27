@@ -21,7 +21,8 @@ export class AuthTokenRepository implements RepositoryInterface<AuthToken>{
     }
 
     async findLastByUserId(user: User) {
-        const tokens = await databaseConfig.getRepository(AuthToken).find({
+        try{
+            const tokens = await databaseConfig.getRepository(AuthToken).find({
             where: {
                 user: {
                     id: user.id
@@ -32,6 +33,11 @@ export class AuthTokenRepository implements RepositoryInterface<AuthToken>{
             }
         });
         return tokens[0];
+
+        } catch (error) {
+            console.log("ERRO: " + error);
+            return;
+        }
     }
 
     async findToken(token: string) {
