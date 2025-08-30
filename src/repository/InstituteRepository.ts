@@ -3,14 +3,16 @@ import {Institute} from "../models/entity";
 import databaseConfig from "../server/typeorm.conf";
 import {Like} from "typeorm";
 
-export  class InstituteRepository implements RepositoryInterface<Institute> {
+export  class InstituteRepository implements RepositoryInterface<Institute|null> {
 
     async findAll(): Promise<Array<Institute>> {
         return databaseConfig.getRepository(Institute).find();
     }
 
-     async findById(id: string): Promise<Institute> {
-         throw new Error("Method not implemented.");
+     async findById(id: string): Promise<Institute|null> {
+        return databaseConfig.getRepository(Institute).findOneBy({
+            id: id
+        });
     }
 
      async save(entity: Institute): Promise<void> {
