@@ -7,6 +7,9 @@ import { MetadataExecption } from "./exception/MetadataException";
 import {TwoFactorTokenRepository} from "../repository/TwoFactorTokenRepository";
 import { ulid } from "ulid";
 import moment from "moment";
+import {InstituteRepository} from "../repository/InstituteRepository";
+import {StudentDTO} from "../dto/StudentDTO";
+import {Error} from "mongoose";
 
 
 type Email = {
@@ -20,20 +23,29 @@ type Email = {
 
 export class UserDomain {
 
-    private usersRepository;
+    private usersRepository: UserRepository;
+    private instituteRepository: InstituteRepository;
 
     constructor() {
         this.usersRepository = new UserRepository();
+        this.instituteRepository = new InstituteRepository();
     }
 
 
-    async createStudent(studentMetadata: Student) {
+    async createStudent(studentMetadata: StudentDTO) {
         if (await this.usersRepository.findByUserName(studentMetadata.username)) {
             throw new ExitentRecordException();
         }
         if (studentMetadata.confirmPassword != studentMetadata.password) {
             throw new MetadataExecption("Password not metch");
         }
+
+        const institute = await this.instituteRepository.findById(studentMetadata.institute);
+
+        if (!institute) {
+            throw new MetadataExecption('Institute not found!');
+        }
+
 
         const student = new Student();
         await student.setPassword(studentMetadata.password);
@@ -42,6 +54,8 @@ export class UserDomain {
         student.name = studentMetadata.name
         student.username = studentMetadata.username;
         student.avatarLink = '';
+        student.institute = institute;
+
         const authTokenRepository = new TwoFactorTokenRepository();
         const tempUlid = ulid();
         await this.usersRepository.save(student);
@@ -74,6 +88,6 @@ export class UserDomain {
         if (user instanceof Student) {
             user.birthday = userData.birthday
         }
-        this.usersRepository.save(user);
+        await this.usersRepository.save(user);
     }
 }

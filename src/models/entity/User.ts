@@ -1,7 +1,8 @@
-import { Column,Entity,OneToMany, TableInheritance } from "typeorm";
+import {Column, Entity, ManyToOne, OneToMany, TableInheritance} from "typeorm";
 import { AuthToken } from "./AuthToken";
 import { BaseEntity } from "./BaseEntity";
 import * as bcrypt from 'bcrypt';
+import {Institute} from "./Institute";
 
 @Entity()
 @TableInheritance({column: {type: 'varchar', name: 'type'}})
@@ -26,6 +27,9 @@ export abstract class User extends BaseEntity {
 
     @Column({type:"text"})
     avatarLink?: string;
+
+    @ManyToOne(() => Institute, (institute) => institute.id)
+    institute: Institute;
 
     confirmPassword?:string;
 

@@ -38,6 +38,11 @@ export class AuthTokenRepository implements RepositoryInterface<AuthToken>{
         const tokens = await databaseConfig.getRepository(AuthToken).find({
             where: {
                 token: token,
+            },
+            relations: {
+                user: {
+                    institute: true
+                }
             }
         });
         return tokens[0];
