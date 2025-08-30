@@ -1,5 +1,6 @@
-import {Column, Entity} from "typeorm";
+import {Column, Entity, ManyToOne, OneToMany} from "typeorm";
 import {BaseEntity} from "./BaseEntity";
+import {Subscription} from "./Subscription";
 
 @Entity()
 export class Institute extends BaseEntity {
@@ -8,4 +9,7 @@ export class Institute extends BaseEntity {
         nullable: false,
     })
     name: string
+
+    @ManyToOne(() => Subscription, (subscription) => subscription.institute)
+    subscriptions: Subscription[];
 }

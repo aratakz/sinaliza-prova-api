@@ -10,9 +10,18 @@ export  class InstituteRepository implements RepositoryInterface<Institute|null>
     }
 
      async findById(id: string): Promise<Institute|null> {
-        return databaseConfig.getRepository(Institute).findOneBy({
-            id: id
+        const result = await databaseConfig.getRepository(Institute).find({
+           where: {
+               id: id
+           },
+            relations: {
+               subscriptions: true
+            }
         });
+        if (!result) {
+            return null;
+        }
+        return result[0];
     }
 
      async save(entity: Institute): Promise<void> {

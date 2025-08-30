@@ -15,3 +15,4 @@ export  * from './Studant';
 export  * from './TwoFactorToken';
 export  * from './User';
 export  * from './Institute';
+export  * from './Subscription';
