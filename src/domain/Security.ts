@@ -99,9 +99,6 @@ export class Security {
     }
 
     private async generateNewToken(user: User, secret: string) {
-        //teste
-        console.log(user.name)
-        console.log(secret)
         const token = jwt.sign({ userData: {
             name: user.name,
             id: user.id,
@@ -109,15 +106,11 @@ export class Security {
         }}, secret, {
             expiresIn: '2h'
         });
-        //teste
-        console.log(token)
-    
+
         await this.authTokenRepository.save({
             token: token,
             user: user
         });
-        //teste
-        console.log("O token foi salvo!")
         return token;
     }
     
