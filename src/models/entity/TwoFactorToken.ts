@@ -1,6 +1,6 @@
 import {BaseEntity} from "./BaseEntity";
 import {User} from "./User";
-import {Column, Entity, OneToOne} from "typeorm";
+import {Column, Entity, ManyToOne, OneToOne} from "typeorm";
 
 @Entity({name: 'two_factor_token'})
 export class TwoFactorToken  extends BaseEntity {
@@ -8,6 +8,6 @@ export class TwoFactorToken  extends BaseEntity {
     token: string;
     @Column({type: 'datetime'})
     expiration: Date;
-    @OneToOne(() => User)
+    @ManyToOne(() => User)
     user: User;
 }

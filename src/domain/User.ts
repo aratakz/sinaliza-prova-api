@@ -4,6 +4,10 @@ import { UserRepository } from "../repository/UserRepository";
 import { EmailService } from "../services/EmailService";
 import { ExitentRecordException } from "./exception/ExistentRecordException";
 import { MetadataExecption } from "./exception/MetadataException";
+import {TwoFactorTokenRepository} from "../repository/TwoFactorTokenRepository";
+import { ulid } from "ulid";
+import moment from "moment";
+
 
 type Email = {
     title: string,
@@ -23,33 +27,40 @@ export class UserDomain {
     }
 
 
-    async createSudant (studentMetadata: Student) {
+    async createStudent(studentMetadata: Student) {
         if (await this.usersRepository.findByUserName(studentMetadata.username)) {
             throw new ExitentRecordException();
         }
         if (studentMetadata.confirmPassword != studentMetadata.password) {
             throw new MetadataExecption("Password not metch");
         }
-        
-        const studant = new Student();
-        await studant.setPassword(studentMetadata.password); 
-        studant.birthday = new Date(studentMetadata.birthday)
-        studant.email = studentMetadata.email;
-        studant.name = studentMetadata.name
-        studant.username = studentMetadata.username;
-        studant.avatarLink = '';
 
-        await this.usersRepository.save(studant);
+        const student = new Student();
+        await student.setPassword(studentMetadata.password);
+        student.birthday = new Date(studentMetadata.birthday)
+        student.email = studentMetadata.email;
+        student.name = studentMetadata.name
+        student.username = studentMetadata.username;
+        student.avatarLink = '';
+        const authTokenRepository = new TwoFactorTokenRepository();
+        const tempUlid = ulid();
+        await this.usersRepository.save(student);
+
+        await authTokenRepository.save({
+            user: student,
+            token: tempUlid,
+            expiration: new Date(moment().add(5, 'minutes').toDate())
+        });
         const email: Email = {
             from: "server@email.com",
-            to: studant.email,
+            to: student.email,
             subject: "Seu cadastro no Sinaliza Prova foi criado!",
-            title: "Acesso a plataforma Sinaliza",
+            title: "Acesso a plataforma Sinaliza prova",
             text: "Olá, voce acaba de se cadastrar no Sinaliza prova. Para concluir o seu cadastro, basta acessar o link abaixo!"
         }
         const emailService = new EmailService(email, 'activation', [{
-            studentName: studant.name,
-            activationLink: 'https://github.com',
+            studentName: student.name,
+            activationLink: `http://localhost:4200/auth/activate/${tempUlid}`,
         }]);
         await emailService.sendEmail();
     }
@@ -58,12 +69,11 @@ export class UserDomain {
         user.username = userData.username;
         user.email = userData.email;
         if (userData.password) {
-           await user.setPassword(userData.password);
+            await user.setPassword(userData.password);
         }
         if (user instanceof Student) {
             user.birthday = userData.birthday
         }
         this.usersRepository.save(user);
     }
-
 }
