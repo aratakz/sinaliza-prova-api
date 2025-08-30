@@ -25,4 +25,7 @@ export  class InstituteRepository implements RepositoryInterface<Institute|null>
         });
     }
 
+    async remove(entity: Institute): Promise<void> {
+        await databaseConfig.getRepository(Institute).remove(entity);
+    }
 }

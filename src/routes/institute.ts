@@ -13,5 +13,7 @@ instituteRoutes.post('/create', [authMiddleware], InstituteController.register);
 
 instituteRoutes.put('/update/:id', [authMiddleware], InstituteController.update);
 
+instituteRoutes.delete('/remove/:id', [authMiddleware], InstituteController.remove);
+
 
 export default instituteRoutes;

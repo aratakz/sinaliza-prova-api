@@ -81,6 +81,25 @@ export class InstituteController {
             }
         }
     }
+    async remove(request: Request, response: Response) {
+        try {
+            const id = request.params.id;
+            if (!id) {
+                throw new Error('institute id not informed!');
+            }
+            const repository = new InstituteRepository();
+            const institute: Institute|null = await repository.findById(id);
+            if (!institute) {
+                throw new Error('institute not found');
+            }
+            await repository.remove(institute);
+            response.json({message : 'deleted register'});
+        } catch (error) {
+            if (error instanceof Error) {
+                response.status(500).json({ message: error.message });
+            }
+        }
+    }
 }
 
 export default new InstituteController();
