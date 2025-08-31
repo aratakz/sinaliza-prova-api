@@ -7,5 +7,6 @@ const disciplineRoutes = Router();
 
 disciplineRoutes.get('', [AuthMiddlware], DisciplineController.getAll);
 disciplineRoutes.post('/create', [AuthMiddlware], DisciplineController.register);
+disciplineRoutes.delete('/remove/:id', [AuthMiddlware], DisciplineController.remove);
 
 export default disciplineRoutes;

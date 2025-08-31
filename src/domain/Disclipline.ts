@@ -32,4 +32,17 @@ export class DisciplineDomain {
         discipline.institute = authToken.user.institute;
         await this.disciplineRepository.save(discipline);
     }
+
+    async list () {
+        return await this.disciplineRepository.findAll();
+    }
+
+    async remove (disciplineId: string) {
+        const discipline = await this.disciplineRepository.findById(disciplineId);
+        if (!discipline) {
+            throw Error('Discipline not found!');
+        }
+        console.debug(discipline);
+        await this.disciplineRepository.remove(discipline);
+    }
 }
