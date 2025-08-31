@@ -55,6 +55,39 @@ export class  DisciplineController {
             }
         }
     }
+
+    async findOne(request: Request, response: Response) {
+       try {
+           if (!request.params.id) {
+               throw Error('no id is provided.');
+           }
+
+           const domain: DisciplineDomain = new DisciplineDomain();
+           response.json(await domain.findOne(request.params.id));
+       } catch (error) {
+           if (error instanceof Error) {
+               response.status(500).send({message: error.message});
+           }
+       }
+    }
+
+    async update (request: Request, response: Response) {
+        try {
+            if (!request.params.id) {
+                throw Error('no id is provided.');
+            }
+            if (!request.body) {
+                throw Error('no body provided');
+            }
+            const domain: DisciplineDomain = new DisciplineDomain();
+            await domain.update(request.params.id, request.body);
+            response.json({message: "updated"});
+        } catch (error) {
+            if (error instanceof Error) {
+                response.status(500).send({message: error.message});
+            }
+        }
+    }
 }
 
 export default new DisciplineController();
