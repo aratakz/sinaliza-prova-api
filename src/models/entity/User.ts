@@ -1,8 +1,9 @@
-import {Column, Entity, ManyToOne, OneToMany, TableInheritance} from "typeorm";
+import {Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, TableInheritance} from "typeorm";
 import { AuthToken } from "./AuthToken";
 import { BaseEntity } from "./BaseEntity";
 import * as bcrypt from 'bcrypt';
 import {Institute} from "./Institute";
+import {Discipline} from "./Discipline";
 
 @Entity()
 @TableInheritance({column: {type: 'varchar', name: 'type'}})
@@ -39,4 +40,8 @@ export abstract class User extends BaseEntity {
     async setPassword(password:string) {
         this.password = (await bcrypt.hash(password, 12)).toString();
     }
+
+    @ManyToMany(() => Discipline)
+    @JoinTable()
+    disciplines: Discipline[];
 }

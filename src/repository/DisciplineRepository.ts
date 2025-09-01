@@ -9,7 +9,7 @@ export class DisciplineRepository implements RepositoryInterface<Discipline> {
 
     async findById(id: string): Promise<Discipline> {
        const results = await databaseConfig.getRepository(Discipline).find({
-           where: {id: id}
+           where: {id: id},
        });
        return results[0];
     }

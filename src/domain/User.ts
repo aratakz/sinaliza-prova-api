@@ -1,10 +1,11 @@
-import { Student } from "../models/entity";
+import {Discipline, Student} from "../models/entity";
 import { User } from "../models/entity";
 import { UserRepository } from "../repository/UserRepository";
 import { MetadataExecption } from "./exception/MetadataException";
 import {InstituteRepository} from "../repository/InstituteRepository";
 import {StudentDTO} from "../dto/StudentDTO";
 import {InstituteDomain} from "./InstituteDomain";
+import {DisciplineDomain} from "./Disclipline";
 
 
 type Email = {
@@ -40,6 +41,22 @@ export class UserDomain {
         student.email = studentMetadata.email;
         student.name = studentMetadata.name
         student.institute = institute;
+
+        if (studentMetadata.disciplines) {
+            const disciplineDomain: DisciplineDomain = new DisciplineDomain();
+            let disciplieList: Discipline[] = [];
+            for (const disciplineMetadata of studentMetadata.disciplines) {
+                if (!disciplineMetadata.value) {
+                    throw new MetadataExecption('Discipline if not provided!');
+                }
+                const discipline = await disciplineDomain.findOne(disciplineMetadata.value);
+                if (!discipline) {
+                    throw new MetadataExecption('Discipline not found!');
+                }
+               disciplieList.push(discipline);
+            }
+            student.disciplines = disciplieList;
+        }
         await this.usersRepository.save(student);
 
         // const authTokenRepository = new TwoFactorTokenRepository();

@@ -8,11 +8,16 @@ export class UserRepository implements RepositoryInterface<User|null|Student>{
         await databaseConfig.getRepository(User).save(entity);
     }
     async findById(id: string): Promise<User|Student|null> {
-        const user:User|null = await databaseConfig.getRepository(User).findOneBy({
-            id: id,
+        const user = await databaseConfig.getRepository(User).find({
+            where: {
+                id: id
+            },
+            relations: {
+                disciplines: true
+            },
         });
         if (user) {
-            return user;
+            return user[0];
         }
         return null;
     

@@ -1,3 +1,5 @@
+import {DisciplineDTO} from "./DisciplineDTO";
+
 export type StudentDTO = {
     cpf: string;
     username: string;
@@ -7,4 +9,5 @@ export type StudentDTO = {
     birthday: string;
     email: string;
     institute: string;
+    disciplines: DisciplineDTO[]
 }
