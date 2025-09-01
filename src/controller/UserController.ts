@@ -12,23 +12,24 @@ class UsersController {
     async updatePassword() {
 
     }
+
     async getUserInfo(request: Request, response: Response) {
         if (!request.params || !request.params.userId) {
-            response.status(422).json({ message: 'No user id is provided!' })
+            response.status(422).json({message: 'No user id is provided!'})
         }
         const user = await new UserRepository().findById(request.params.userId);
 
         if (!user) {
-            response.status(404).json({ message: 'User not found!' });
+            response.status(404).json({message: 'User not found!'});
         }
         if (user) {
 
             let bDay = ''
             if (user instanceof Student) {
                 const bDayObject = new Date(user.birthday);
-                let day: string|number = '';
-                let mount: string|number = '';
-                
+                let day: string | number = '';
+                let mount: string | number = '';
+
                 if (bDayObject.getDay() < 10) {
                     day = `0${bDayObject.getDay()}`;
                 }
@@ -52,12 +53,13 @@ class UsersController {
         }
 
     }
-    async update (request: Request, response: Response) {
+
+    async update(request: Request, response: Response) {
         if (!request.params || !request.params.userId) {
-            response.status(422).json({ message: 'No user id is provided!' });
+            response.status(422).json({message: 'No user id is provided!'});
         }
         if (!request.body) {
-            response.status(422).json({ message: 'No user id is provided!' });
+            response.status(422).json({message: 'No user id is provided!'});
         }
 
         const user = await new UserRepository().findById(request.params.userId);
@@ -66,23 +68,25 @@ class UsersController {
             new UserDomain().update(user, request.body)
 
         } else {
-            response.status(404).json({ message: 'User not found!'})
+            response.status(404).json({message: 'User not found!'})
         }
     }
+
     async checkUsername(request: Request, response: Response) {
         const username: string = request.params.username;
         const users = await new UserRepository().findByUsername(username);
-         if (users && users.length > 0) {
-             response.json({
-                 available: false,
-             });
-         } else {
-             response.json({
-                 available: true,
-             });
-         }
+        if (users && users.length > 0) {
+            response.json({
+                available: false,
+            });
+        } else {
+            response.json({
+                available: true,
+            });
+        }
     }
-    async register (request: Request, response: Response) {
+
+    async register(request: Request, response: Response) {
         try {
             if (!request.body) {
                 throw new Error('No body is provided!');
@@ -97,15 +101,16 @@ class UsersController {
 
             const domain = new UserDomain();
             await domain.createStudent(request.headers.authorization
-                    .replace('Bearer ', ''), request.body);
+                .replace('Bearer ', ''), request.body);
             response.json({message: 'created'})
         } catch (error) {
             if (error instanceof Error) {
-                 response.status(500).json({message: error.message});
+                response.status(500).json({message: error.message});
             }
         }
     }
-    async getAllStudents (request: Request, response: Response) {
+
+    async getAllStudents(request: Request, response: Response) {
         try {
             const domain = new UserDomain();
             response.json(await domain.getStudents());
@@ -115,7 +120,8 @@ class UsersController {
             }
         }
     }
-    async remove (request: Request, response: Response) {
+
+    async remove(request: Request, response: Response) {
         try {
             if (!request.params || !request.params.id) {
                 throw new Error('No id is provided!');
@@ -129,5 +135,20 @@ class UsersController {
             }
         }
     }
+
+    async findById(request: Request, response: Response) {
+        try {
+            if (!request.params || !request.params.id) {
+                throw new Error('No id is provided!');
+            }
+            const domain = new UserDomain();
+            response.json(await domain.getStudent(request.params.id));
+        } catch (error) {
+            if (error instanceof Error) {
+                response.status(500).json({message: error.message});
+            }
+        }
+    }
 }
+
 export default new UsersController();

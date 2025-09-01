@@ -74,6 +74,7 @@ export class UserDomain {
     async getStudents(): Promise<Student[]> {
         return await this.usersRepository.findStudents();
     }
+
     async remove (userId: string): Promise<void> {
         const student = await this.usersRepository.findById(userId);
         if (!student) {
@@ -84,5 +85,13 @@ export class UserDomain {
         } else {
             throw new Error('User not found!');
         }
+    }
+
+    async getStudent(userId: string): Promise<User|Student> {
+        const student = await this.usersRepository.findById(userId);
+        if (!student) {
+            throw new Error('User not found!');
+        }
+        return student;
     }
 }
