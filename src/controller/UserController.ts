@@ -55,20 +55,20 @@ class UsersController {
     }
 
     async update(request: Request, response: Response) {
-        if (!request.params || !request.params.userId) {
-            response.status(422).json({message: 'No user id is provided!'});
-        }
-        if (!request.body) {
-            response.status(422).json({message: 'No user id is provided!'});
-        }
+        try {
+            if (!request.params || !request.params.id) {
+                response.status(422).json({message: 'No id is provided!'});
+            }
+            if (!request.body) {
+                response.status(422).json({message: 'No body is provided!'});
+            }
 
-        const user = await new UserRepository().findById(request.params.userId);
-
-        if (user != null) {
-            new UserDomain().update(user, request.body)
-
-        } else {
-            response.status(404).json({message: 'User not found!'})
+            const domain: UserDomain = new UserDomain();
+            response.json(await domain.updateStudent(request.params.id, request.body));
+        } catch (error) {
+            if (error instanceof Error) {
+                response.status(500).json({message: error.message});
+            }
         }
     }
 

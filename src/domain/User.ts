@@ -59,16 +59,21 @@ export class UserDomain {
         // await emailService.sendEmail();
     }
 
-    async update(user: User, userData: any) {
-        user.username = userData.username;
-        user.email = userData.email;
-        if (userData.password) {
-            await user.setPassword(userData.password);
+    async updateStudent(studentId: string, studentMetadata: StudentDTO) {
+        const student = await this.usersRepository.findById(studentId);
+        if (!student) {
+            throw new Error('Student not found!');
         }
-        if (user instanceof Student) {
-            user.birthday = userData.birthday
+
+        if (student instanceof Student) {
+            student.name = studentMetadata.name;
+            student.cpf = studentMetadata.cpf;
+            student.birthday = new Date(studentMetadata.birthday);
+            student.email = studentMetadata.email;
+           await this.usersRepository.save(student);
+        } else {
+            throw new Error('Student not found!');
         }
-        await this.usersRepository.save(user);
     }
 
     async getStudents(): Promise<Student[]> {
