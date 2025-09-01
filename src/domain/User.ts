@@ -70,4 +70,19 @@ export class UserDomain {
         }
         await this.usersRepository.save(user);
     }
+
+    async getStudents(): Promise<Student[]> {
+        return await this.usersRepository.findStudents();
+    }
+    async remove (userId: string): Promise<void> {
+        const student = await this.usersRepository.findById(userId);
+        if (!student) {
+            throw new Error('User not found!');
+        }
+        if (student instanceof Student) {
+            await this.usersRepository.removeStudant(student);
+        } else {
+            throw new Error('User not found!');
+        }
+    }
 }

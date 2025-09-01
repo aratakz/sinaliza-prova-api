@@ -45,4 +45,10 @@ export class UserRepository implements RepositoryInterface<User|null|Student>{
             username: userName,
         });
     }
+    async findStudents() {
+        return await databaseConfig.getRepository(Student).find();
+    }
+    async removeStudant(student: Student): Promise<void> {
+        await databaseConfig.getRepository(Student).remove(student);
+    }
 }

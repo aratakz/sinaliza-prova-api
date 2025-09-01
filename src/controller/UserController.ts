@@ -105,5 +105,29 @@ class UsersController {
             }
         }
     }
+    async getAllStudents (request: Request, response: Response) {
+        try {
+            const domain = new UserDomain();
+            response.json(await domain.getStudents());
+        } catch (error) {
+            if (error instanceof Error) {
+                response.status(500).json({message: error.message});
+            }
+        }
+    }
+    async remove (request: Request, response: Response) {
+        try {
+            if (!request.params || !request.params.id) {
+                throw new Error('No id is provided!');
+            }
+            const domain = new UserDomain();
+            await domain.remove(request.params.id);
+            response.json({message: 'deleted'})
+        } catch (error) {
+            if (error instanceof Error) {
+                response.status(500).json({message: error.message});
+            }
+        }
+    }
 }
 export default new UsersController();
