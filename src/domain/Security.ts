@@ -27,7 +27,7 @@ export class Security {
         }
 
         this.userRepository = new UserRepository();
-        this.authTokenRepository = new AuthTokenRepository;
+        this.authTokenRepository = new AuthTokenRepository();
     }
 
     async getCredentials(userName: string, password: string) {
@@ -49,10 +49,16 @@ export class Security {
 
             const authToken = await this.authTokenRepository.findLastByUserId(user);
             if (authToken) {
-                if (jwt.verify(authToken.token, process.env.TOKEN_SECRET)) {
+                try {
+                    const verified = jwt.verify(authToken.token, process.env.TOKEN_SECRET)
                     return authToken.token;
-                } else {
-                    return this.generateNewToken(user, process.env.TOKEN_SECRET);
+                } catch (error) {
+                    if (typeof error == "string"){
+                        const errorTitle = error.substring(0,17)
+                        if(errorTitle === "TokenExpiredError") {
+                            return this.generateNewToken(user, process.env.TOKEN_SECRET);
+                        }
+                    }
                 }
             }
             return this.generateNewToken(user, process.env.TOKEN_SECRET);
@@ -99,9 +105,6 @@ export class Security {
     }
 
     private async generateNewToken(user: User, secret: string) {
-        //teste
-        console.log(user.name)
-        console.log(secret)
         const token = jwt.sign({ userData: {
             name: user.name,
             id: user.id,
@@ -109,15 +112,11 @@ export class Security {
         }}, secret, {
             expiresIn: '2h'
         });
-        //teste
-        console.log(token)
     
         await this.authTokenRepository.save({
             token: token,
             user: user
         });
-        //teste
-        console.log("O token foi salvo!")
         return token;
     }
     

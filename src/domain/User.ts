@@ -1,3 +1,4 @@
+import { Professional } from "../models/entity";
 import { Student } from "../models/entity/Studant";
 import { User } from "../models/entity/User";
 import { UserRepository } from "../repository/UserRepository";
@@ -52,6 +53,26 @@ export class UserDomain {
             activationLink: 'https://github.com',
         }]);
         await emailService.sendEmail();
+    }
+
+    async createProfessional (professionalMetadata: Professional) {
+        if (await this.usersRepository.findByUserName(professionalMetadata.username)) {
+            throw new ExitentRecordException();
+        }
+        if (professionalMetadata.confirmPassword != professionalMetadata.password) {
+            throw new MetadataExecption("Password not metch");
+        }
+
+        const professional = new Professional();
+        await professional.setPassword(professionalMetadata.password);
+        professional.email = professionalMetadata.email;
+        professional.name = professionalMetadata.name;
+        professional.username = professionalMetadata.username;
+        professional.cpf = professionalMetadata.cpf;
+        professional.accessProfile = professionalMetadata.accessProfile;
+        professional.avatarLink = '';
+
+        await this.usersRepository.save(professional);
     }
 
     async update(user: User, userData: any) {

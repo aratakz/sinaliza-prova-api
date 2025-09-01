@@ -12,7 +12,7 @@ class UsersController {
     }
 
     async updatePassword() {
-
+        
     }
 
     async getUsers (request: Request, response: Response) {
@@ -58,7 +58,7 @@ class UsersController {
                 }, register: new Date()
             });
 
-            if(user instanceof Professional){
+            if (user instanceof Professional){
                 response.json({
                     user: {
                         id: user?.id,
@@ -91,8 +91,17 @@ class UsersController {
         }
     }
 
-    async deleteUser() {
-        
+    async deleteUser (request: Request, response: Response) {
+        if (!request.params || !request.params.userId) {
+            response.status(422).json({ message: 'No user id is provided!' });
+        }
+        const user = await new UserRepository().findById(request.params.userId);
+        if (user) {
+            await new UserRepository().remove(user);
+            response.status(204);
+        } else {
+            response.status(404).json({ message: 'User not found!'})
+        }
     }
 
     async checkUsername(request: Request, response: Response) {

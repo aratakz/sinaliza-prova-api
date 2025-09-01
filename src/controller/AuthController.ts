@@ -20,8 +20,13 @@ export class AuthController {
                 response.status(401).json({ message: 'Login or password do not match!' })
             }
             const securityDomain: Security = new Security;
-            const token = await securityDomain.getCredentials(request.body.username, request.body.password);
-            response.json({ token: token, register: new Date()});
+            try{
+                const token = await securityDomain.getCredentials(request.body.username, request.body.password);
+                response.json({ token: token, register: new Date()});
+            } catch(error){
+                throw new AuthException();
+            }
+            
         } catch (exception) {
             const errorCode = (<AuthException>exception).error;
             if (errorCode) {

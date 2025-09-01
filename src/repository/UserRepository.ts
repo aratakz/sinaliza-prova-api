@@ -12,7 +12,6 @@ export class UserRepository implements RepositoryInterface<User|null|Student>{
         } catch(error) {
             console.log("ERRO" + error)
         }
-        
     }
     
     async findById(id: string): Promise<User|Student|Professional|null> {
@@ -23,7 +22,6 @@ export class UserRepository implements RepositoryInterface<User|null|Student>{
             return user;
         }
         return null;
-    
     }
     
     async findAll(): Promise<User[]> {
@@ -50,6 +48,15 @@ export class UserRepository implements RepositoryInterface<User|null|Student>{
             return user;
         }
         return null;
+    }
+
+    async remove(entity: User): Promise<void> {
+        try {
+            let user = await this.findById(entity.id!);
+            user!.active = false;
+        } catch (error) {
+            console.log("ERRO" + error)
+        }
     }
 
 }
