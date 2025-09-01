@@ -43,19 +43,7 @@ export class UserDomain {
         student.institute = institute;
 
         if (studentMetadata.disciplines) {
-            const disciplineDomain: DisciplineDomain = new DisciplineDomain();
-            let disciplieList: Discipline[] = [];
-            for (const disciplineMetadata of studentMetadata.disciplines) {
-                if (!disciplineMetadata.value) {
-                    throw new MetadataExecption('Discipline if not provided!');
-                }
-                const discipline = await disciplineDomain.findOne(disciplineMetadata.value);
-                if (!discipline) {
-                    throw new MetadataExecption('Discipline not found!');
-                }
-               disciplieList.push(discipline);
-            }
-            student.disciplines = disciplieList;
+            student.disciplines = await this.addDisciplines(studentMetadata);
         }
         await this.usersRepository.save(student);
 
@@ -87,7 +75,13 @@ export class UserDomain {
             student.cpf = studentMetadata.cpf;
             student.birthday = new Date(studentMetadata.birthday);
             student.email = studentMetadata.email;
-           await this.usersRepository.save(student);
+
+            if (studentMetadata.disciplines) {
+                student.disciplines = await this.addDisciplines(studentMetadata);
+            }
+
+            await this.usersRepository.save(student);
+
         } else {
             throw new Error('Student not found!');
         }
@@ -115,5 +109,22 @@ export class UserDomain {
             throw new Error('User not found!');
         }
         return student;
+    }
+
+
+    private async addDisciplines(studentMetadata: StudentDTO): Promise<Discipline[]> {
+        const disciplineDomain: DisciplineDomain = new DisciplineDomain();
+        let disciplineList: Discipline[] = [];
+        for (const disciplineMetadata of studentMetadata.disciplines) {
+            if (!disciplineMetadata.value) {
+                throw new MetadataExecption('Discipline if not provided!');
+            }
+            const discipline = await disciplineDomain.findOne(disciplineMetadata.value);
+            if (!discipline) {
+                throw new MetadataExecption('Discipline not found!');
+            }
+            disciplineList.push(discipline);
+        }
+        return disciplineList;
     }
 }
