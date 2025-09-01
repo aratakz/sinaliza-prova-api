@@ -1,4 +1,5 @@
 export type StudentDTO = {
+    cpf: string;
     username: string;
     name: string;
     password: string;

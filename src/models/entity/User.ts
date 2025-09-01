@@ -7,10 +7,10 @@ import {Institute} from "./Institute";
 @Entity()
 @TableInheritance({column: {type: 'varchar', name: 'type'}})
 export abstract class User extends BaseEntity {
-    @Column({type: "varchar", length: 255})
+    @Column({type: "varchar", length: 255, default: null})
     username: string;
 
-    @Column({type: "varchar", length: 500})
+    @Column({type: "varchar", length: 500, default: null    })
     password: string;
 
     @OneToMany(() => AuthToken, (authToken) => authToken.user)
@@ -25,8 +25,11 @@ export abstract class User extends BaseEntity {
     @Column({type: "boolean"})
     active: boolean = false;
 
-    @Column({type:"text"})
+    @Column({type:"text",default: null})
     avatarLink?: string;
+
+    @Column({type: "varchar", length: 500})
+    cpf: string;
 
     @ManyToOne(() => Institute, (institute) => institute.id)
     institute: Institute;

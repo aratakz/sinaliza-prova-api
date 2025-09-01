@@ -82,5 +82,28 @@ class UsersController {
              });
          }
     }
+    async register (request: Request, response: Response) {
+        try {
+            if (!request.body) {
+                throw new Error('No body is provided!');
+            }
+            if (!request.headers) {
+                throw new Error('Headers not present!');
+            }
+
+            if (!request.headers.authorization) {
+                throw new Error('Authorization header not present!');
+            }
+
+            const domain = new UserDomain();
+            await domain.createStudent(request.headers.authorization
+                    .replace('Bearer ', ''), request.body);
+            response.json({message: 'created'})
+        } catch (error) {
+            if (error instanceof Error) {
+                 response.status(500).json({message: error.message});
+            }
+        }
+    }
 }
 export default new UsersController();

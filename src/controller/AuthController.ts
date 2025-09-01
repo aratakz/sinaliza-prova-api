@@ -34,58 +34,6 @@ export class AuthController {
         }
     }
 
-    async register(request: Request, response: Response) {
-
-        try {
-            if (!request.body) {
-                response.status(500).json({ message: 'No body provided' });
-                throw Error('No body provided');
-            }
-
-            if (!request.body.username) {
-                response.status(422).json({ message: 'Username field is required!' });
-                throw Error('Username field is required!');
-            }
-            if (!request.body.password) {
-                response.status(422).json({ message: 'Password field is required!' });
-                throw Error('Password field is required!');
-            }
-            if (!request.body.confirmPassword) {
-                response.status(422).json({ message: 'confirmPassowrd field is required!' });
-                throw Error('ConfirmPassword field is required!');
-            }
-            if (!request.body.name) {
-                response.status(422).json({ message: 'name field is required!' });
-                throw Error('Name field is required!');
-            }
-            if (!request.body.birthday) {
-                response.status(422).json({ message: 'birthday field is required!' });
-                throw Error('Birthday field is required!');
-            }
-            if (!request.body.email) {
-                response.status(422).json({ message: 'email field is required!' });
-                throw Error('Email field is required!');
-            }
-            if (!request.body.institute) {
-                response.status(422).json({ message: 'institute field is required!' });
-                throw Error('Institute field is required!');
-            }
-            if (!AuthController.validateDateFormat(request.body.birthday)) {
-                response.status(422).json({ message: 'Wrong date format' });
-                throw Error('Wrong date format!');
-            }
-
-            await new UserDomain().createStudent(request.body);
-            response.status(201).json({ status: "created" });
-        } catch (exception) {
-            const errorCode = (<ExitentRecordException>exception).error;
-            if (errorCode) {
-                response.status(errorCode).json({ message: (<ExitentRecordException>exception).message })
-            }
-            return;
-        }
-    }
-    
     async logout (request: Request, response: Response) {
         
         if (!request.body) {
@@ -122,11 +70,6 @@ export class AuthController {
 
         response.json({message: "recuperation email sended!"});
         
-    }
-
-    private static validateDateFormat(dateString: string) {
-        const regex = /^\d{4}-\d{2}-\d{2}$/;
-        return regex.test(dateString);
     }
 
     async checkTwoFactorToken(request: Request, response: Response) {
@@ -187,6 +130,10 @@ export class AuthController {
         }
     }
 
+    private static validateDateFormat(dateString: string) {
+        const regex = /^\d{4}-\d{2}-\d{2}$/;
+        return regex.test(dateString);
+    }
 }
 
 export default new AuthController();
