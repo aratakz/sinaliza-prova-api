@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import {DisciplineDomain} from "../domain/Disclipline";
-import databaseConfig from "../server/typeorm.conf";
 
 
 export class  DisciplineController {

@@ -1,5 +1,5 @@
 import {BaseEntity} from "./BaseEntity";
-import {Column, Entity, ManyToOne, OneToMany} from "typeorm";
+import {Column, Entity, JoinColumn, ManyToOne, OneToMany} from "typeorm";
 import {Discipline} from "./Discipline";
 
 @Entity({name: 'curriculum'})
@@ -11,7 +11,8 @@ export class Curriculum extends BaseEntity{
     @Column({type: 'double'})
     weight: number;
 
-    @ManyToOne(() => Discipline, (discipline) => discipline.id)
+    @ManyToOne(() => Discipline, (discipline) => discipline.curriculums)
+    @JoinColumn({name: 'discipline_id'})
     discipline: Discipline
 
 }

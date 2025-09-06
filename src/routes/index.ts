@@ -4,6 +4,7 @@ import authRoutes from "./auth";
 import instituteRoutes from "./institute";
 import courseRoutes from "./course";
 import disciplineRoutes from "./discipline";
+import curriculumRoutes from "./curriculum";
 
 const routes = Router();
 
@@ -12,5 +13,6 @@ routes.use('/auth', authRoutes);
 routes.use('/course', courseRoutes);
 routes.use('/institutes', instituteRoutes);
 routes.use('/disciplines', disciplineRoutes);
+routes.use('/curriculum', curriculumRoutes);
 
 export default routes;
