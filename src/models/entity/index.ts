@@ -18,3 +18,4 @@ export  * from './Institute';
 export  * from './Subscription';
 export * from './Discipline';
 export  * from './Curriculum';
+export  * from './Room';
