@@ -8,6 +8,9 @@ export class RoomRepository implements RepositoryInterface<Room> {
         const results = await databaseConfig.getRepository(Room).find({
             where: {
                 id: id
+            },
+            relations: {
+                students: true
             }
         });
         return results[0];
