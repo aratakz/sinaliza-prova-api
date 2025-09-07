@@ -1,4 +1,4 @@
-import {Discipline, Student} from "../models/entity";
+import {Discipline, Room, Student} from "../models/entity";
 import { User } from "../models/entity";
 import { UserRepository } from "../repository/UserRepository";
 import { MetadataExecption } from "./exception/MetadataException";
@@ -6,6 +6,8 @@ import {InstituteRepository} from "../repository/InstituteRepository";
 import {StudentDTO} from "../dto/StudentDTO";
 import {InstituteDomain} from "./InstituteDomain";
 import {DisciplineDomain} from "./Disclipline";
+import {RoomDomain} from "./Room";
+import moment from "moment";
 
 
 type Email = {
@@ -64,27 +66,39 @@ export class UserDomain {
         // await emailService.sendEmail();
     }
 
-    async updateStudent(studentId: string, studentMetadata: StudentDTO) {
-        const student = await this.usersRepository.findById(studentId);
+    async updateStudent(studentId: string, studentDTO: StudentDTO) {
+        const student = await this.usersRepository.findStudentById(studentId);
         if (!student) {
             throw new Error('Student not found!');
         }
 
-        if (student instanceof Student) {
-            student.name = studentMetadata.name;
-            student.cpf = studentMetadata.cpf;
-            student.birthday = new Date(studentMetadata.birthday);
-            student.email = studentMetadata.email;
 
-            if (studentMetadata.disciplines) {
-                student.disciplines = await this.addDisciplines(studentMetadata);
+        student.name = studentDTO.name;
+        student.cpf = studentDTO.cpf;
+        student.birthday = moment(studentDTO.birthday).toDate();
+        student.email = studentDTO.email;
+
+        if (studentDTO.disciplines) {
+            student.disciplines = await this.addDisciplines(studentDTO);
+        }
+
+        if (studentDTO.selectedRoom) {
+            const roomDomain = new RoomDomain();
+            const room: Room = await roomDomain.findById(studentDTO.selectedRoom);
+
+            if (!room) {
+                throw new Error("Room not found!");
             }
 
-            await this.usersRepository.save(student);
-
+            student.room = room;
         } else {
-            throw new Error('Student not found!');
+            if (student.room) {
+                student.room = null
+            }
         }
+
+        await this.usersRepository.save(student);
+
     }
 
     async getStudents(): Promise<Student[]> {
@@ -104,7 +118,7 @@ export class UserDomain {
     }
 
     async getStudent(userId: string): Promise<User|Student> {
-        const student = await this.usersRepository.findById(userId);
+        const student = await this.usersRepository.findStudentById(userId);
         if (!student) {
             throw new Error('User not found!');
         }

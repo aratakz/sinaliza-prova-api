@@ -13,7 +13,7 @@ export class UserRepository implements RepositoryInterface<User|null|Student>{
                 id: id
             },
             relations: {
-                disciplines: true
+                disciplines: true,
             },
         });
         if (user) {
@@ -21,6 +21,18 @@ export class UserRepository implements RepositoryInterface<User|null|Student>{
         }
         return null;
     
+    }
+    async findStudentById(id: string): Promise<Student> {
+        const result = await databaseConfig.getRepository(Student).find({
+            where: {
+                id: id
+            },
+            relations: {
+                disciplines: true,
+                room: true
+            },
+        });
+        return result[0];
     }
     async findAll(): Promise<User[]> {
         throw new Error("Method not implemented.");
@@ -51,7 +63,12 @@ export class UserRepository implements RepositoryInterface<User|null|Student>{
         });
     }
     async findStudents() {
-        return await databaseConfig.getRepository(Student).find();
+        return await databaseConfig.getRepository(Student).find({
+            relations:{
+                disciplines: true,
+                room: true
+            }
+        });
     }
     async removeStudant(student: Student): Promise<void> {
         await databaseConfig.getRepository(Student).remove(student);
