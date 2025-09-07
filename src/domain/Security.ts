@@ -32,7 +32,7 @@ export class Security {
 
     async getCredentials(userName: string, password: string) {
         if (process.env.TOKEN_SECRET) {
-            const user: User|null = await this.userRepository.findByUserName(userName);
+            const user: User|null = await this.userRepository.findByUsername(userName);
             if (!user) {
                 throw new AuthException();
             }
@@ -112,7 +112,7 @@ export class Security {
         }}, secret, {
             expiresIn: '2h'
         });
-    
+
         await this.authTokenRepository.save({
             token: token,
             user: user

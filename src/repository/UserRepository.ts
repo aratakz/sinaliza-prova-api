@@ -14,12 +14,17 @@ export class UserRepository implements RepositoryInterface<User|null|Student>{
         }
     }
     
-    async findById(id: string): Promise<User|Student|Professional|null> {
-        const user:User|null = await databaseConfig.getRepository(User).findOneBy({
-            id: id,
+    async findById(id: string): Promise<User|Student|null> {
+        const user = await databaseConfig.getRepository(User).find({
+            where: {
+                id: id
+            },
+            relations: {
+                disciplines: true
+            },
         });
         if (user) {
-            return user;
+            return user[0];
         }
         return null;
     }
@@ -28,7 +33,7 @@ export class UserRepository implements RepositoryInterface<User|null|Student>{
         return await databaseConfig.getRepository(User).find();
     }
 
-    async findByUserName(userName: string): Promise<User|null> {
+    async findByUsername(userName: string): Promise<User|null> {
         const user:User|null = await databaseConfig.getRepository(User).findOneBy({
             username: userName,
         });
@@ -59,4 +64,11 @@ export class UserRepository implements RepositoryInterface<User|null|Student>{
         }
     }
 
+    async findStudents() {
+        return await databaseConfig.getRepository(Student).find();
+    }
+
+    async removeStudant(student: Student): Promise<void> {
+        await databaseConfig.getRepository(Student).remove(student);
+    }
 }

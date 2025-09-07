@@ -3,14 +3,25 @@ import {Institute} from "../models/entity";
 import databaseConfig from "../server/typeorm.conf";
 import {Like} from "typeorm";
 
-export  class InstituteRepository implements RepositoryInterface<Institute> {
+export  class InstituteRepository implements RepositoryInterface<Institute|null> {
 
     async findAll(): Promise<Array<Institute>> {
         return databaseConfig.getRepository(Institute).find();
     }
 
-     async findById(id: string): Promise<Institute> {
-         throw new Error("Method not implemented.");
+     async findById(id: string): Promise<Institute|null> {
+        const result = await databaseConfig.getRepository(Institute).find({
+           where: {
+               id: id
+           },
+            relations: {
+               subscriptions: true
+            }
+        });
+        if (!result) {
+            return null;
+        }
+        return result[0];
     }
 
      async save(entity: Institute): Promise<void> {
@@ -23,4 +34,7 @@ export  class InstituteRepository implements RepositoryInterface<Institute> {
         });
     }
 
+    async remove(entity: Institute): Promise<void> {
+        await databaseConfig.getRepository(Institute).remove(entity);
+    }
 }

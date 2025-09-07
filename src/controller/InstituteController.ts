@@ -39,6 +39,67 @@ export class InstituteController {
         }
         response.json(responseArray);
     }
+
+    async findById(request: Request, response: Response) {
+        try {
+            const repository = new InstituteRepository();
+            const id = request.params.id;
+            const institute: Institute|null = await repository.findById(id);
+            if (!institute) {
+                throw new Error('institute not found');
+            }
+            response.json(institute);
+        } catch (error) {
+            if (error instanceof Error) {
+                response.status(500).json({ message: error.message })
+            }
+        }
+    }
+
+    async update(request: Request, response: Response) {
+        try {
+            const id = request.params.id;
+            const repository = new InstituteRepository();
+            const body = request.body;
+            if (!body) {
+                throw new Error('institute not found');
+            }
+            if (!body.name) {
+                throw new Error('name field is required');
+            }
+
+            const institute: Institute|null = await repository.findById(id);
+            if (!institute) {
+                throw new Error('institute not found');
+            }
+            institute.name = body.name;
+            await repository.save(institute);
+            response.json({message : 'updated register'});
+        } catch (error) {
+            if (error instanceof Error) {
+                response.status(500).json({ message: error.message })
+            }
+        }
+    }
+    async remove(request: Request, response: Response) {
+        try {
+            const id = request.params.id;
+            if (!id) {
+                throw new Error('institute id not informed!');
+            }
+            const repository = new InstituteRepository();
+            const institute: Institute|null = await repository.findById(id);
+            if (!institute) {
+                throw new Error('institute not found');
+            }
+            await repository.remove(institute);
+            response.json({message : 'deleted register'});
+        } catch (error) {
+            if (error instanceof Error) {
+                response.status(500).json({ message: error.message });
+            }
+        }
+    }
 }
 
 export default new InstituteController();

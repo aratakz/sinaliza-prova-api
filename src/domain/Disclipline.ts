@@ -1,0 +1,70 @@
+import {AuthTokenRepository} from "../repository/AuthToekenRepository";
+import {DisciplineRepository} from "../repository/DisciplineRepository";
+import {DisciplineDTO} from "../dto/DisciplineDTO";
+import {Discipline} from "../models/entity";
+import {DisciplineController} from "../controller/DisciplineCotroller";
+
+export class DisciplineDomain {
+
+    private readonly authTokenRepository: AuthTokenRepository;
+    private readonly disciplineRepository: DisciplineRepository;
+    constructor() {
+        this.disciplineRepository = new DisciplineRepository();
+        this.authTokenRepository = new AuthTokenRepository();
+    }
+
+    async create (disciplineMetadata: DisciplineDTO) {
+        if (!disciplineMetadata.requestToken) {
+            throw new Error('Authorization header is no present!');
+        }
+
+
+        const authToken = await this.authTokenRepository.findToken(disciplineMetadata.requestToken);
+
+        if (!authToken) {
+            throw Error('Authorization token is no present!');
+        }
+        if (!authToken.user || !authToken.user.institute) {
+            throw Error('Authorization token is invalid');
+        }
+
+        let discipline: Discipline = new Discipline();
+        discipline.name = disciplineMetadata.name;
+        discipline.institute = authToken.user.institute;
+        await this.disciplineRepository.save(discipline);
+    }
+
+    async list () {
+        return await this.disciplineRepository.findAll();
+    }
+
+    async remove (disciplineId: string) {
+        const discipline = await this.disciplineRepository.findById(disciplineId);
+        if (!discipline) {
+            throw Error('Discipline not found!');
+        }
+        console.debug(discipline);
+        await this.disciplineRepository.remove(discipline);
+    }
+
+    async findOne(disciplineId: string) {
+        const result = await this.disciplineRepository.findById(disciplineId);
+        if (!result) {
+            throw Error('Discipline not found!');
+        }
+        return result;
+    }
+
+    async update (disciplineId: string, disciplineMetadata: DisciplineDTO) {
+        if (!disciplineId) {
+            throw Error('Discipline id note provided!');
+        }
+        const discipline: Discipline = await this.disciplineRepository.findById(disciplineId);
+
+        if (!discipline) {
+            throw Error('Discipline not found!');
+        }
+        discipline.name = disciplineMetadata.name;
+        await this.disciplineRepository.save(discipline);
+    }
+}

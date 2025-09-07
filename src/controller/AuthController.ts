@@ -5,6 +5,8 @@ import { AuthException } from '../domain/exception/AuthExceptoion';
 import { UserDomain } from '../domain/User';
 import { ExitentRecordException } from '../domain/exception/ExistentRecordException';
 import { UserRepository } from '../repository/UserRepository';
+import {TwoFactorTokenRepository} from "../repository/TwoFactorTokenRepository";
+import moment from "moment";
 export class AuthController {
 
 
@@ -37,58 +39,6 @@ export class AuthController {
         }
     }
 
-    async register(request: Request, response: Response) {
-
-        try {
-            if (!request.body) {
-                response.status(500).json({ message: 'No body provided' });
-                throw Error('No body provided');
-            }
-
-            if (!request.body.username) {
-                response.status(422).json({ message: 'Username field is required!' });
-                throw Error('Username field is required!');
-            }
-            if (!request.body.password) {
-                response.status(422).json({ message: 'Password field is required!' });
-                throw Error('Password field is required!');
-            }
-            if (!request.body.confirmPassword) {
-                response.status(422).json({ message: 'confirmPassowrd field is required!' });
-                throw Error('ConfirmPassword field is required!');
-            }
-            if (!request.body.name) {
-                response.status(422).json({ message: 'name field is required!' });
-                throw Error('Name field is required!');
-            }
-            if (!request.body.birthday) {
-                response.status(422).json({ message: 'birthday field is required!' });
-                throw Error('Birthday field is required!');
-            }
-            if (!request.body.email) {
-                response.status(422).json({ message: 'email field is required!' });
-                throw Error('Email field is required!');
-            }
-            if (!request.body.institute) {
-                response.status(422).json({ message: 'institute field is required!' });
-                throw Error('Institute field is required!');
-            }
-            if (!AuthController.validateDateFormat(request.body.birthday)) {
-                response.status(422).json({ message: 'Wrong date format' });
-                throw Error('Wrong date format!');
-            }
-
-            await new UserDomain().createSudant(request.body);
-            response.status(201).json({ status: "created" });
-        } catch (exception) {
-            const errorCode = (<ExitentRecordException>exception).error;
-            if (errorCode) {
-                response.status(errorCode).json({ message: (<ExitentRecordException>exception).message })
-            }
-            return;
-        }
-    }
-    
     async logout (request: Request, response: Response) {
         
         if (!request.body) {
@@ -117,6 +67,7 @@ export class AuthController {
         const user = await new UserRepository().findByEmail(request.body.email);
         if (!user) {
             response.status(404).json({ message: 'Email not found!'});
+            throw Error('Email field is required!');
         }
         if (user?.email) {
             await new Security().sendPassChangeEmail(user?.email);
@@ -126,11 +77,68 @@ export class AuthController {
         
     }
 
+    async checkTwoFactorToken(request: Request, response: Response) {
+        try {
+            const repository = new TwoFactorTokenRepository()
+            const tokens = await repository.findByToken(request.params.token);
+            if (!tokens) {
+               response.status(404).json({ message: 'No token provided' });
+            }
+            const now = moment();
+            const expires = moment(tokens[0].expiration);
+            if (now.toDate() > expires.toDate()) {
+                response.status(422).json({ valid: false});
+            } else {
+                response.json({valid: true})
+            }
+        } catch (error) {
+            if (error instanceof Error) {
+                response.status(404).json({message: error.message});
+            }
+        }
+
+    }
+
+    async activateUser(request: Request, response: Response) {
+        try {
+            const twoFactorTokenRepository = new TwoFactorTokenRepository();
+            const tokens = await twoFactorTokenRepository.findByToken(request.params.token);
+
+            if (!tokens) {
+                throw new Error('No token provided');
+            }
+
+            const usersRepository = new UserRepository();
+            if (!tokens[0].user || !tokens[0].user.id) {
+                throw new Error('No user found');
+            }
+            const user = await usersRepository.findById(tokens[0].user.id);
+            if (!user) {
+                throw new Error('No user found');
+            }
+            if (user.active) {
+                await twoFactorTokenRepository.remove(tokens[0]);
+                throw new Error('User already activated');
+            }
+
+            user.active = true;
+            await usersRepository.save(user);
+            await twoFactorTokenRepository.remove(tokens[0]);
+
+            response.json({
+                status: "activated",
+            })
+        } catch (error) {
+            if (error instanceof Error) {
+                response.status(500).json({ message: 'Unexpected error' });
+            }
+        }
+    }
+
     private static validateDateFormat(dateString: string) {
         const regex = /^\d{4}-\d{2}-\d{2}$/;
         return regex.test(dateString);
     }
-
 }
 
 export default new AuthController();

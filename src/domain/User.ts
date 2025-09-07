@@ -1,10 +1,12 @@
-import { Professional } from "../models/entity";
-import { Student } from "../models/entity/Studant";
-import { User } from "../models/entity/User";
+import { User, Discipline, Student, Professional} from "../models/entity";
 import { UserRepository } from "../repository/UserRepository";
-import { EmailService } from "../services/EmailService";
-import { ExitentRecordException } from "./exception/ExistentRecordException";
 import { MetadataExecption } from "./exception/MetadataException";
+import {InstituteRepository} from "../repository/InstituteRepository";
+import {StudentDTO} from "../dto/StudentDTO";
+import {InstituteDomain} from "./InstituteDomain";
+import {DisciplineDomain} from "./Disclipline";
+import { ExitentRecordException } from "./exception/ExistentRecordException";
+
 
 type Email = {
     title: string,
@@ -17,46 +19,53 @@ type Email = {
 
 export class UserDomain {
 
-    private usersRepository;
+    private usersRepository: UserRepository;
+    private instituteRepository: InstituteRepository;
 
     constructor() {
         this.usersRepository = new UserRepository();
+        this.instituteRepository = new InstituteRepository();
     }
 
 
-    async createSudant (studentMetadata: Student) {
-        if (await this.usersRepository.findByUserName(studentMetadata.username)) {
-            throw new ExitentRecordException();
+    async createStudent(token: string, studentMetadata: StudentDTO) {
+        const instituteDomain: InstituteDomain = new InstituteDomain();
+        const institute= await instituteDomain.getByToken(token);
+        if (!institute) {
+            throw new MetadataExecption('Institute not found!');
         }
-        if (studentMetadata.confirmPassword != studentMetadata.password) {
-            throw new MetadataExecption("Password not metch");
-        }
-        
-        const studant = new Student();
-        await studant.setPassword(studentMetadata.password); 
-        studant.birthday = new Date(studentMetadata.birthday)
-        studant.email = studentMetadata.email;
-        studant.name = studentMetadata.name
-        studant.username = studentMetadata.username;
-        studant.avatarLink = '';
 
-        await this.usersRepository.save(studant);
-        const email: Email = {
-            from: "server@email.com",
-            to: studant.email,
-            subject: "Seu cadastro no Sinaliza Prova foi criado!",
-            title: "Acesso a plataforma Sinaliza",
-            text: "Olá, voce acaba de se cadastrar no Sinaliza prova. Para concluir o seu cadastro, basta acessar o link abaixo!"
+        const student = new Student();
+        student.cpf = studentMetadata.cpf;
+        student.birthday = new Date(studentMetadata.birthday)
+        student.email = studentMetadata.email;
+        student.name = studentMetadata.name
+        student.institute = institute;
+
+        if (studentMetadata.disciplines) {
+            student.disciplines = await this.addDisciplines(studentMetadata);
         }
-        const emailService = new EmailService(email, 'activation', [{
-            studentName: studant.name,
-            activationLink: 'https://github.com',
-        }]);
-        await emailService.sendEmail();
+        await this.usersRepository.save(student);
+
+        // const authTokenRepository = new TwoFactorTokenRepository();
+        // const tempUlid = ulid();
+
+        // const email: Email = {
+        //     from: "server@email.com",
+        //     to: student.email,
+        //     subject: "Seu cadastro no Sinaliza Prova foi criado!",
+        //     title: "Acesso a plataforma Sinaliza prova",
+        //     text: "Olá, voce acaba de se cadastrar no Sinaliza prova. Para concluir o seu cadastro, basta acessar o link abaixo!"
+        // }
+        // const emailService = new EmailService(email, 'activation', [{
+        //     studentName: student.name,
+        //     activationLink: `http://localhost:4200/auth/activate/${tempUlid}`,
+        // }]);
+        // await emailService.sendEmail();
     }
 
     async createProfessional (professionalMetadata: Professional) {
-        if (await this.usersRepository.findByUserName(professionalMetadata.username)) {
+        if (await this.usersRepository.findByUsername(professionalMetadata.username)) {
             throw new ExitentRecordException();
         }
         if (professionalMetadata.confirmPassword != professionalMetadata.password) {
@@ -75,16 +84,67 @@ export class UserDomain {
         await this.usersRepository.save(professional);
     }
 
-    async update(user: User, userData: any) {
-        user.username = userData.username;
-        user.email = userData.email;
-        if (userData.password) {
-           await user.setPassword(userData.password);
+    async updateStudent(studentId: string, studentMetadata: StudentDTO) {
+        const student = await this.usersRepository.findById(studentId);
+        if (!student) {
+            throw new Error('Student not found!');
         }
-        if (user instanceof Student) {
-            user.birthday = userData.birthday
+
+        if (student instanceof Student) {
+            student.name = studentMetadata.name;
+            student.cpf = studentMetadata.cpf;
+            student.birthday = new Date(studentMetadata.birthday);
+            student.email = studentMetadata.email;
+
+            if (studentMetadata.disciplines) {
+                student.disciplines = await this.addDisciplines(studentMetadata);
+            }
+
+            await this.usersRepository.save(student);
+
+        } else {
+            throw new Error('Student not found!');
         }
-        this.usersRepository.save(user);
     }
 
+    async getStudents(): Promise<Student[]> {
+        return await this.usersRepository.findStudents();
+    }
+
+    async remove (userId: string): Promise<void> {
+        const student = await this.usersRepository.findById(userId);
+        if (!student) {
+            throw new Error('User not found!');
+        }
+        if (student instanceof Student) {
+            await this.usersRepository.removeStudant(student);
+        } else {
+            throw new Error('User not found!');
+        }
+    }
+
+    async getStudent(userId: string): Promise<User|Student> {
+        const student = await this.usersRepository.findById(userId);
+        if (!student) {
+            throw new Error('User not found!');
+        }
+        return student;
+    }
+
+
+    private async addDisciplines(studentMetadata: StudentDTO): Promise<Discipline[]> {
+        const disciplineDomain: DisciplineDomain = new DisciplineDomain();
+        let disciplineList: Discipline[] = [];
+        for (const disciplineMetadata of studentMetadata.disciplines) {
+            if (!disciplineMetadata.value) {
+                throw new MetadataExecption('Discipline if not provided!');
+            }
+            const discipline = await disciplineDomain.findOne(disciplineMetadata.value);
+            if (!discipline) {
+                throw new MetadataExecption('Discipline not found!');
+            }
+            disciplineList.push(discipline);
+        }
+        return disciplineList;
+    }
 }
