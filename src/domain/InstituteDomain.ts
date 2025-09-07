@@ -28,4 +28,8 @@ export class InstituteDomain  {
         }
         return authToken.user.institute;
     }
+
+    async findById(id: string) {
+        return await this.instituteRepository.findById(id);
+    }
 }

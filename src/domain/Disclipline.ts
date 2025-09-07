@@ -1,8 +1,7 @@
 import {AuthTokenRepository} from "../repository/AuthToekenRepository";
 import {DisciplineRepository} from "../repository/DisciplineRepository";
 import {DisciplineDTO} from "../dto/DisciplineDTO";
-import {Discipline} from "../models/entity";
-import {DisciplineController} from "../controller/DisciplineCotroller";
+import {Curriculum, Discipline} from "../models/entity";
 
 export class DisciplineDomain {
 
@@ -13,13 +12,13 @@ export class DisciplineDomain {
         this.authTokenRepository = new AuthTokenRepository();
     }
 
-    async create (disciplineMetadata: DisciplineDTO) {
-        if (!disciplineMetadata.requestToken) {
+    async create (disciplineDTO: DisciplineDTO) {
+        if (!disciplineDTO.requestToken) {
             throw new Error('Authorization header is no present!');
         }
 
 
-        const authToken = await this.authTokenRepository.findToken(disciplineMetadata.requestToken);
+        const authToken = await this.authTokenRepository.findToken(disciplineDTO.requestToken);
 
         if (!authToken) {
             throw Error('Authorization token is no present!');
@@ -29,8 +28,9 @@ export class DisciplineDomain {
         }
 
         let discipline: Discipline = new Discipline();
-        discipline.name = disciplineMetadata.name;
+        discipline.name = disciplineDTO.name;
         discipline.institute = authToken.user.institute;
+        discipline.curriculums = this.addCurriculum(disciplineDTO, discipline);
         await this.disciplineRepository.save(discipline);
     }
 
@@ -55,7 +55,7 @@ export class DisciplineDomain {
         return result;
     }
 
-    async update (disciplineId: string, disciplineMetadata: DisciplineDTO) {
+    async update (disciplineId: string, disciplineDTO: DisciplineDTO) {
         if (!disciplineId) {
             throw Error('Discipline id note provided!');
         }
@@ -64,7 +64,23 @@ export class DisciplineDomain {
         if (!discipline) {
             throw Error('Discipline not found!');
         }
-        discipline.name = disciplineMetadata.name;
+        discipline.name = disciplineDTO.name;
+        discipline.curriculums = this.addCurriculum(disciplineDTO, discipline);
         await this.disciplineRepository.save(discipline);
+    }
+
+    private addCurriculum(disciplineDTO: DisciplineDTO, discipline: Discipline) {
+        const curriculumList: Curriculum[] = []
+        if (disciplineDTO.curriculum) {
+            for (const curriculum  of disciplineDTO.curriculum) {
+                curriculumList.push({
+                    name: curriculum.name,
+                    discipline: discipline,
+                    weight: curriculum.weight,
+                });
+            }
+        }
+
+        return curriculumList;
     }
 }

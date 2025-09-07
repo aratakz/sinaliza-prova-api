@@ -22,18 +22,21 @@ export class AuthController {
                 response.status(401).json({ message: 'Login or password do not match!' })
             }
             const securityDomain: Security = new Security;
+
             try{
                 const token = await securityDomain.getCredentials(request.body.username, request.body.password);
+                console.debug('hehs');
                 response.json({ token: token, register: new Date()});
             } catch(error){
                 throw new AuthException();
             }
-            
+                
         } catch (exception) {
             const errorCode = (<AuthException>exception).error;
             if (errorCode) {
                 response.status(errorCode).json({ message: (<AuthException>exception).message })
             } else {
+                console.debug(exception);
                 response.status(400).json({ message: 'invalid credentials'});
             }
         }
@@ -131,6 +134,21 @@ export class AuthController {
         } catch (error) {
             if (error instanceof Error) {
                 response.status(500).json({ message: 'Unexpected error' });
+            }
+        }
+    }
+
+    async studentFirstLogin(request: Request, response: Response) {
+        try {
+            if (!request.body)  {
+                throw new Error('No body is provided');
+            }
+            const domain = new Security();
+            await domain.sendFirstLoginStudentEmail(request.body);
+            response.json({message: "success"})
+        } catch (error) {
+            if (error instanceof Error) {
+                response.status(500).json({ message: error.message});
             }
         }
     }

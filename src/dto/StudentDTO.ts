@@ -9,5 +9,6 @@ export type StudentDTO = {
     birthday: string;
     email: string;
     institute: string;
-    disciplines: DisciplineDTO[]
+    disciplines: DisciplineDTO[],
+    selectedRoom?: string,
 }

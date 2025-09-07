@@ -20,13 +20,26 @@ export class UserRepository implements RepositoryInterface<User|null|Student>{
                 id: id
             },
             relations: {
-                disciplines: true
+                disciplines: true,
             },
         });
         if (user) {
             return user[0];
         }
         return null;
+    }
+
+    async findStudentById(id: string): Promise<Student> {
+        const result = await databaseConfig.getRepository(Student).find({
+            where: {
+                id: id
+            },
+            relations: {
+                disciplines: true,
+                room: true
+            },
+        });
+        return result[0];
     }
     
     async findAll(): Promise<User[]> {
@@ -65,10 +78,27 @@ export class UserRepository implements RepositoryInterface<User|null|Student>{
     }
 
     async findStudents() {
-        return await databaseConfig.getRepository(Student).find();
+        return await databaseConfig.getRepository(Student).find({
+            relations:{
+                disciplines: true,
+                room: true
+            }
+        });
     }
 
-    async removeStudant(student: Student): Promise<void> {
+    async removeStudent(student: Student): Promise<void> {
         await databaseConfig.getRepository(Student).remove(student);
+    }
+    
+    async findStudentByCPF(cpf: string) {
+        const result = await databaseConfig.getRepository(Student).find({
+            where: {
+                cpf: cpf
+            },
+            relations: {
+                institute: true,
+            }
+        });
+        return result[0];
     }
 }

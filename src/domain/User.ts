@@ -1,4 +1,4 @@
-import { User, Discipline, Student, Professional} from "../models/entity";
+import { User, Discipline, Room, Student, Professional} from "../models/entity";
 import { UserRepository } from "../repository/UserRepository";
 import { MetadataExecption } from "./exception/MetadataException";
 import {InstituteRepository} from "../repository/InstituteRepository";
@@ -6,7 +6,8 @@ import {StudentDTO} from "../dto/StudentDTO";
 import {InstituteDomain} from "./InstituteDomain";
 import {DisciplineDomain} from "./Disclipline";
 import { ExitentRecordException } from "./exception/ExistentRecordException";
-
+import { RoomDomain } from "./Room";
+import moment from "moment";
 
 type Email = {
     title: string,
@@ -46,23 +47,8 @@ export class UserDomain {
             student.disciplines = await this.addDisciplines(studentMetadata);
         }
         await this.usersRepository.save(student);
-
-        // const authTokenRepository = new TwoFactorTokenRepository();
-        // const tempUlid = ulid();
-
-        // const email: Email = {
-        //     from: "server@email.com",
-        //     to: student.email,
-        //     subject: "Seu cadastro no Sinaliza Prova foi criado!",
-        //     title: "Acesso a plataforma Sinaliza prova",
-        //     text: "Olá, voce acaba de se cadastrar no Sinaliza prova. Para concluir o seu cadastro, basta acessar o link abaixo!"
-        // }
-        // const emailService = new EmailService(email, 'activation', [{
-        //     studentName: student.name,
-        //     activationLink: `http://localhost:4200/auth/activate/${tempUlid}`,
-        // }]);
-        // await emailService.sendEmail();
     }
+
 
     async createProfessional (professionalMetadata: Professional) {
         if (await this.usersRepository.findByUsername(professionalMetadata.username)) {
@@ -84,27 +70,40 @@ export class UserDomain {
         await this.usersRepository.save(professional);
     }
 
-    async updateStudent(studentId: string, studentMetadata: StudentDTO) {
-        const student = await this.usersRepository.findById(studentId);
+    async updateStudent(studentId: string, studentDTO: StudentDTO) {
+        const student = await this.usersRepository.findStudentById(studentId);
+
         if (!student) {
             throw new Error('Student not found!');
         }
 
-        if (student instanceof Student) {
-            student.name = studentMetadata.name;
-            student.cpf = studentMetadata.cpf;
-            student.birthday = new Date(studentMetadata.birthday);
-            student.email = studentMetadata.email;
 
-            if (studentMetadata.disciplines) {
-                student.disciplines = await this.addDisciplines(studentMetadata);
+        student.name = studentDTO.name;
+        student.cpf = studentDTO.cpf;
+        student.birthday = moment(studentDTO.birthday).toDate();
+        student.email = studentDTO.email;
+
+        if (studentDTO.disciplines) {
+            student.disciplines = await this.addDisciplines(studentDTO);
+        }
+
+        if (studentDTO.selectedRoom) {
+            const roomDomain = new RoomDomain();
+            const room: Room = await roomDomain.findById(studentDTO.selectedRoom);
+
+            if (!room) {
+                throw new Error("Room not found!");
             }
 
-            await this.usersRepository.save(student);
-
+            student.room = room;
         } else {
-            throw new Error('Student not found!');
+            if (student.room) {
+                student.room = null
+            }
         }
+
+        await this.usersRepository.save(student);
+
     }
 
     async getStudents(): Promise<Student[]> {
@@ -117,21 +116,24 @@ export class UserDomain {
             throw new Error('User not found!');
         }
         if (student instanceof Student) {
-            await this.usersRepository.removeStudant(student);
+            await this.usersRepository.removeStudent(student);
         } else {
             throw new Error('User not found!');
         }
     }
 
     async getStudent(userId: string): Promise<User|Student> {
-        const student = await this.usersRepository.findById(userId);
+        const student = await this.usersRepository.findStudentById(userId);
         if (!student) {
             throw new Error('User not found!');
         }
         return student;
     }
 
-
+    async getStudentByCPF(cpf:string) {
+        return await this.usersRepository.findStudentByCPF(cpf);
+    }
+    
     private async addDisciplines(studentMetadata: StudentDTO): Promise<Discipline[]> {
         const disciplineDomain: DisciplineDomain = new DisciplineDomain();
         let disciplineList: Discipline[] = [];
