@@ -84,4 +84,15 @@ export class UserRepository implements RepositoryInterface<User|null|Student>{
         });
         return result[0];
     }
+    async findUserByCPF(cpf: string) {
+        const result = await databaseConfig.getRepository(User).find({
+            where: {
+                cpf: cpf
+            },
+            relations: {
+                institute: true,
+            }
+        });
+        return result[0];
+    }
 }

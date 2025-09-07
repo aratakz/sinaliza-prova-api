@@ -52,26 +52,25 @@ export class AuthController {
     }
 
     async requestPassChange(request: Request, response: Response) {
-        if (!request.body) {
-            response.status(422).json({ message: 'No body provided'});
-        }
 
-        if (!request.body.email) {
-            response.status(422).json({ message: 'email field is requred!'});
+        try {
+            if (!request.body) {
+                throw new Error('No body provided');
+            }
 
-        }
+            if (!request.body.cpf) {
+                throw Error('CPF field is required!');
 
-        const user = await new UserRepository().findByEmail(request.body.email);
-        if (!user) {
-            response.status(404).json({ message: 'Email not found!'});
-            throw Error('Email field is required!');
-        }
-        if (user?.email) {
-            await new Security().sendPassChangeEmail(user?.email);
-        }
+            }
 
-        response.json({message: "recuperation email sended!"});
-        
+            const domain = new Security();
+            await domain.sendRecoverPassEmail(request.body);
+            response.json({message: "recuperation email sent!"});
+        } catch (error) {
+            if (error instanceof Error) {
+                response.status(400).json({ error: error.message });
+            }
+        }
     }
 
     async checkTwoFactorToken(request: Request, response: Response) {

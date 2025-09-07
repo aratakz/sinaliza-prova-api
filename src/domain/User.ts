@@ -112,6 +112,11 @@ export class UserDomain {
     async getStudentByCPF(cpf:string) {
         return await this.usersRepository.findStudentByCPF(cpf);
     }
+
+    async getUserByCPF(cpf:string) {
+        return await this.usersRepository.findStudentByCPF(cpf);
+    }
+
     private async addDisciplines(studentMetadata: StudentDTO): Promise<Discipline[]> {
         const disciplineDomain: DisciplineDomain = new DisciplineDomain();
         let disciplineList: Discipline[] = [];

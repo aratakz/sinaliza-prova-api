@@ -13,6 +13,8 @@ import {TwoFactorTokenRepository} from "../repository/TwoFactorTokenRepository";
 import {ulid} from "ulid";
 import {TwoFactorToken} from "../models/entity/TwoFactorToken";
 import moment from "moment";
+import {RecoverEmailDTO} from "../dto/RecoverEmailDTO";
+import {readdirSync} from "node:fs";
 
 type Email = {
     title: string,
@@ -74,16 +76,29 @@ export class Security {
         await this.userRepository.save(user);
     }
 
-    async sendPassChangeEmail (emailFrom: string) {
+    async sendRecoverPassEmail(recoverEmailDTO: RecoverEmailDTO) {
+        const userDomain = new UserDomain();
+        const user = await userDomain.getUserByCPF(recoverEmailDTO.cpf);
+        const tempUlid = ulid();
+
+        const twoFactorToken: TwoFactorToken = new TwoFactorToken();
+        twoFactorToken.user = user;
+        twoFactorToken.expiration = moment().add(20, 'minutes').toDate();
+        twoFactorToken.token = tempUlid;
+        await this.twoFactorTokenRepository.save(twoFactorToken);
+
         const email: Email = {
-        from: "server@email.com",
-        to: emailFrom,
-            subject: "Recuperação de senha",
-            title: "Recuperação de senha",
-            text: "Olá, para prosseguir com a alteração da senha, clique no link abaixo"
+            from: "server@email.com",
+            to: user.email,
+            subject: "Solicitacao de recuperação de senha",
+            title: "Recuperação de acesso",
+            text: "Olá, voce acaba de se cadastrar no Sinaliza prova. Para concluir o seu cadastro, basta acessar o link abaixo!"
         }
-        // const emailService = new EmailService(email);
-        // await emailService.sendEmail();
+        const emailService = new EmailService(email, 'recover', [{
+            studentName: user.name,
+            activationLink: `http://localhost:4200/auth/recover/${tempUlid}`,
+        }]);
+        await emailService.sendEmail();
     }
 
     async isValidToken(token:string) {
