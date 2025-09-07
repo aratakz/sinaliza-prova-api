@@ -11,7 +11,9 @@ export class Curriculum extends BaseEntity{
     @Column({type: 'double'})
     weight: number;
 
-    @ManyToOne(() => Discipline, (discipline) => discipline.curriculums)
+    @ManyToOne(() => Discipline, (discipline) => discipline.curriculums, {
+        onDelete: 'CASCADE',
+    })
     @JoinColumn({name: 'discipline_id'})
     discipline: Discipline
 

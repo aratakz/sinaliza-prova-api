@@ -11,6 +11,6 @@ export class Discipline extends BaseEntity {
     @ManyToOne(() => Institute, (institute) => institute.id)
     institute: Institute
 
-    @OneToMany(() => Curriculum, (curriculum) => curriculum.discipline, { cascade: true})
+    @OneToMany(() => Curriculum, (curriculum) => curriculum.discipline)
     curriculums: Curriculum[];
 }
