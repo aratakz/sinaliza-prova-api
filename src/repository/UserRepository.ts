@@ -70,7 +70,18 @@ export class UserRepository implements RepositoryInterface<User|null|Student>{
             }
         });
     }
-    async removeStudant(student: Student): Promise<void> {
+    async removeStudent(student: Student): Promise<void> {
         await databaseConfig.getRepository(Student).remove(student);
+    }
+    async findStudentByCPF(cpf: string) {
+        const result = await databaseConfig.getRepository(Student).find({
+            where: {
+                cpf: cpf
+            },
+            relations: {
+                institute: true,
+            }
+        });
+        return result[0];
     }
 }

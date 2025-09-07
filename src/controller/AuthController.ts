@@ -23,12 +23,14 @@ export class AuthController {
             }
             const securityDomain: Security = new Security;
             const token = await securityDomain.getCredentials(request.body.username, request.body.password);
+            console.debug('hehs');
             response.json({ token: token, register: new Date()});
         } catch (exception) {
             const errorCode = (<AuthException>exception).error;
             if (errorCode) {
                 response.status(errorCode).json({ message: (<AuthException>exception).message })
             } else {
+                console.debug(exception);
                 response.status(400).json({ message: 'invalid credentials'});
             }
         }
@@ -126,6 +128,21 @@ export class AuthController {
         } catch (error) {
             if (error instanceof Error) {
                 response.status(500).json({ message: 'Unexpected error' });
+            }
+        }
+    }
+
+    async studentFirstLogin(request: Request, response: Response) {
+        try {
+            if (!request.body)  {
+                throw new Error('No body is provided');
+            }
+            const domain = new Security();
+            await domain.sendFirstLoginStudentEmail(request.body);
+            response.json({message: "success"})
+        } catch (error) {
+            if (error instanceof Error) {
+                response.status(500).json({ message: error.message});
             }
         }
     }

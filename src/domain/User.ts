@@ -48,22 +48,6 @@ export class UserDomain {
             student.disciplines = await this.addDisciplines(studentMetadata);
         }
         await this.usersRepository.save(student);
-
-        // const authTokenRepository = new TwoFactorTokenRepository();
-        // const tempUlid = ulid();
-
-        // const email: Email = {
-        //     from: "server@email.com",
-        //     to: student.email,
-        //     subject: "Seu cadastro no Sinaliza Prova foi criado!",
-        //     title: "Acesso a plataforma Sinaliza prova",
-        //     text: "Olá, voce acaba de se cadastrar no Sinaliza prova. Para concluir o seu cadastro, basta acessar o link abaixo!"
-        // }
-        // const emailService = new EmailService(email, 'activation', [{
-        //     studentName: student.name,
-        //     activationLink: `http://localhost:4200/auth/activate/${tempUlid}`,
-        // }]);
-        // await emailService.sendEmail();
     }
 
     async updateStudent(studentId: string, studentDTO: StudentDTO) {
@@ -111,7 +95,7 @@ export class UserDomain {
             throw new Error('User not found!');
         }
         if (student instanceof Student) {
-            await this.usersRepository.removeStudant(student);
+            await this.usersRepository.removeStudent(student);
         } else {
             throw new Error('User not found!');
         }
@@ -125,7 +109,9 @@ export class UserDomain {
         return student;
     }
 
-
+    async getStudentByCPF(cpf:string) {
+        return await this.usersRepository.findStudentByCPF(cpf);
+    }
     private async addDisciplines(studentMetadata: StudentDTO): Promise<Discipline[]> {
         const disciplineDomain: DisciplineDomain = new DisciplineDomain();
         let disciplineList: Discipline[] = [];
