@@ -15,6 +15,7 @@ import {TwoFactorToken} from "../models/entity/TwoFactorToken";
 import moment from "moment";
 import {RecoverEmailDTO} from "../dto/RecoverEmailDTO";
 import {readdirSync} from "node:fs";
+import {UpdatePassDto} from "../dto/UpadatePassDTO";
 
 type Email = {
     title: string,
@@ -71,9 +72,19 @@ export class Security {
         throw 'No secret is configured';
     }
 
-    async updateCredentials (user: User, password: string) {
-        user.password = await bcrypt.hash(password, 12);
-        await this.userRepository.save(user);
+    async updateCredentials (token: string, updatePassDTO: UpdatePassDto) {
+        const  twoFactorTokens  = await this.twoFactorTokenRepository.findByToken(token);
+
+        if (!twoFactorTokens || !twoFactorTokens[0]) {
+            throw new Error('No token found.');
+        }
+        if (moment().toDate() > moment(twoFactorTokens[0].expiration).toDate()) {
+            throw new Error('Expired token');
+        }
+
+
+
+
     }
 
     async sendRecoverPassEmail(recoverEmailDTO: RecoverEmailDTO) {

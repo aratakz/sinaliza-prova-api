@@ -146,6 +146,25 @@ export class AuthController {
         }
     }
 
+    async updatePass(request: Request, response: Response) {
+        try {
+            if (!request.body) {
+                throw new Error('No body is provided');
+            }
+            if (!request.params.token) {
+                throw new Error('No token provided');
+            }
+
+            const domain = new Security();
+            await domain.updateCredentials(request.params.token, request.body);
+
+            response.json({message: 'updated'});
+        } catch (error) {
+            if (error instanceof Error) {
+                response.status(400).json({ error: error.message });
+            }
+        }
+    }
     private static validateDateFormat(dateString: string) {
         const regex = /^\d{4}-\d{2}-\d{2}$/;
         return regex.test(dateString);
