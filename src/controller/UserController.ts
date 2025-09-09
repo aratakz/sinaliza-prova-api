@@ -1,7 +1,6 @@
 import { UserDomain } from '../domain/User';
 import { Professional } from '../models/entity';
 import { Student } from '../models/entity/Studant';
-import { AccessProfile } from '../models/enums/AccessProfile';
 import { UserRepository } from '../repository/UserRepository';
 import { EmailService } from './../services/EmailService';
 import { Request, Response } from 'express';
@@ -65,7 +64,7 @@ class UsersController {
                         avatar: user?.avatarLink,
                         email: user?.email,
                         name: user?.name,
-                        AccessProfile: user?.accessProfile
+                        UserRole: user?.role
                     }, register: new Date()
                 })
             }

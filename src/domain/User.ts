@@ -64,9 +64,8 @@ export class UserDomain {
         professional.name = professionalMetadata.name;
         professional.username = professionalMetadata.username;
         professional.cpf = professionalMetadata.cpf;
-        professional.accessProfile = professionalMetadata.accessProfile;
+        professional.role = professionalMetadata.role;
         professional.avatarLink = '';
-
         await this.usersRepository.save(professional);
     }
 

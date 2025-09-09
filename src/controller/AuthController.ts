@@ -2,11 +2,10 @@ import { Request, Response } from 'express';
 import 'dotenv/config'
 import { Security } from '../domain/Security';
 import { AuthException } from '../domain/exception/AuthExceptoion';
-import { UserDomain } from '../domain/User';
-import { ExitentRecordException } from '../domain/exception/ExistentRecordException';
 import { UserRepository } from '../repository/UserRepository';
 import {TwoFactorTokenRepository} from "../repository/TwoFactorTokenRepository";
 import moment from "moment";
+
 export class AuthController {
 
 
@@ -30,7 +29,7 @@ export class AuthController {
             } catch(error){
                 throw new AuthException();
             }
-                
+
         } catch (exception) {
             const errorCode = (<AuthException>exception).error;
             if (errorCode) {

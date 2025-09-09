@@ -4,6 +4,7 @@ import { BaseEntity } from "./BaseEntity";
 import * as bcrypt from 'bcrypt';
 import {Institute} from "./Institute";
 import {Discipline} from "./Discipline";
+import { UserRole } from "../enums/UserRole";
 
 @Entity()
 @TableInheritance({column: {type: 'varchar', name: 'type'}})
@@ -11,7 +12,7 @@ export abstract class User extends BaseEntity {
     @Column({type: "varchar", length: 255, default: null})
     username: string;
 
-    @Column({type: "varchar", length: 500, default: null    })
+    @Column({type: "varchar", length: 500, default: null})
     password: string;
 
     @OneToMany(() => AuthToken, (authToken) => authToken.user)
@@ -44,4 +45,7 @@ export abstract class User extends BaseEntity {
     @ManyToMany(() => Discipline, {cascade: true})
     @JoinTable()
     disciplines: Discipline[];
+
+    @Column({type: 'enum', enum: UserRole, default: UserRole.Student})
+    role: UserRole;
 }

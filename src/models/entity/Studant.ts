@@ -11,6 +11,7 @@ export class Student extends  User {
     @ManyToOne(() => Room, (room) => room.students, {
         onDelete: 'CASCADE',
     })
+    
     @JoinColumn({name: 'room_id'})
     room: Room|null
 }
