@@ -82,9 +82,21 @@ export class Security {
             throw new Error('Expired token');
         }
 
+        if (!updatePassDTO.password) {
+            throw new Error('Update pass not provided');
+        }
+
+        if (!updatePassDTO.confirmPassword) {
+            throw new Error('Update pass confirm not provided');
+        }
+
+        if (updatePassDTO.password != updatePassDTO.password) {
+            throw new Error('Update pass do not match');
+        }
 
 
-
+        await twoFactorTokens[0].user.setPassword(updatePassDTO.password);
+        await this.userRepository.save(twoFactorTokens[0].user);
     }
 
     async sendRecoverPassEmail(recoverEmailDTO: RecoverEmailDTO) {
