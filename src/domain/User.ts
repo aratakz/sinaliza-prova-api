@@ -36,6 +36,11 @@ export class UserDomain {
         if (!institute) {
             throw new MetadataExecption('Institute not found!');
         }
+        const cpfOwner = await this.getUserByCPF(studentMetadata.cpf);
+
+        if (cpfOwner) {
+            throw new Error('CPF unavailable');
+        }
 
         const student = new Student();
         student.cpf = studentMetadata.cpf;
@@ -56,6 +61,10 @@ export class UserDomain {
             throw new Error('Student not found!');
         }
 
+        const cpfOwner = await this.getUserByCPF(studentDTO.cpf);
+        if (cpfOwner) {
+            throw new Error('CPF unavailable');
+        }
 
         student.name = studentDTO.name;
         student.cpf = studentDTO.cpf;
