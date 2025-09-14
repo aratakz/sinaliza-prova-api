@@ -19,3 +19,5 @@ export  * from './Subscription';
 export * from './Discipline';
 export  * from './Curriculum';
 export  * from './Room';
+export  * from './QuestionField';
+export  * from './QuestionImage';

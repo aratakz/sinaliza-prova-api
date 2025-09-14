@@ -16,6 +16,7 @@ import moment from "moment";
 import {RecoverEmailDTO} from "../dto/RecoverEmailDTO";
 import {readdirSync} from "node:fs";
 import {UpdatePassDto} from "../dto/UpadatePassDTO";
+import question from "../models/schemas/Question";
 
 type Email = {
     title: string,
@@ -56,16 +57,12 @@ export class Security {
                 throw new AuthException();
             }
 
-            const authToken = await this.authTokenRepository.findLastByUserId(user);
-            if (authToken) {
-                console.debug('aklio')
+            const token = await this.authTokenRepository.findLastByUserId(user);
 
-                if (jwt.verify(authToken.token, process.env.TOKEN_SECRET)) {
-                    return authToken.token;
-                } else {
-                    return this.generateNewToken(user, process.env.TOKEN_SECRET);
-                }
+            if (token) {
+                await this.authTokenRepository.removeToken(token);
             }
+
             return this.generateNewToken(user, process.env.TOKEN_SECRET);
         }
         
