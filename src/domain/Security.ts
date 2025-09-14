@@ -130,6 +130,7 @@ export class Security {
                 return jwt.verify(token, process.env.TOKEN_SECRET);
             } catch (e) {
                 throw new AuthException();
+                return false;
             }
 
         }

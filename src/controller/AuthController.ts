@@ -7,6 +7,8 @@ import { ExitentRecordException } from '../domain/exception/ExistentRecordExcept
 import { UserRepository } from '../repository/UserRepository';
 import {TwoFactorTokenRepository} from "../repository/TwoFactorTokenRepository";
 import moment from "moment";
+import {AuthTokenRepository} from "../repository/AuthToekenRepository";
+import auth from "../routes/auth";
 export class AuthController {
 
 
@@ -95,6 +97,26 @@ export class AuthController {
 
     }
 
+    async checkAuthToken(request: Request, response: Response) {
+        try {
+            const repository = new AuthTokenRepository()
+            const authToken = await repository.findToken(request.params.token);
+            if (!authToken) {
+                response.status(404).json({ message: 'No token provided' });
+            }
+            const domain = new Security();
+            console.debug(await domain.isValidToken(authToken.token).catch((error) => {
+                throw new Error('Invalid token');
+            }));
+        } catch (error) {
+            console.debug('eta')
+            if (error instanceof Error) {
+                console.debug()
+                response.status(404).json({message: error.message});
+            }
+        }
+
+    }
     async activateUser(request: Request, response: Response) {
         try {
             const twoFactorTokenRepository = new TwoFactorTokenRepository();
