@@ -1,0 +1,10 @@
+import {Router} from 'express';
+import AuthMiddlware from "../middleware/AuthMiddlware";
+import QuestionController from "../controller/QuestionController";
+
+
+const questionRoutes = Router();
+
+questionRoutes.post('/register', [AuthMiddlware], QuestionController.register);
+
+export default questionRoutes;
