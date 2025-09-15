@@ -11,9 +11,11 @@ export class QuestionDomain {
 
     async register(questionDTO: QuestionRegisterDTO) {
         const question = new Question();
-
         question.name = questionDTO.name;
+        await this.questionRepository.save(question);
+    }
 
-        // await this.questionRepository.save(question);
+    async getAll(): Promise<Question[]> {
+        return this.questionRepository.findAll();
     }
 }

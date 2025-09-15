@@ -20,6 +20,17 @@ class QuestionController {
             }
         }
     }
+
+    async list(request: Request, response: Response) {
+        try {
+            const domain = new QuestionDomain();
+            response.json(await domain.getAll());
+        } catch (error) {
+            if (error instanceof Error) {
+                response.status(400).json({error: error.message});
+            }
+        }
+    }
 }
 
 export default new QuestionController();

@@ -4,7 +4,7 @@ import databaseConfig from "../server/typeorm.conf";
 
 export class QuestionRepository implements RepositoryInterface<Question>{
     async findAll(): Promise<Array<Question>> {
-        return [];
+        return await databaseConfig.getRepository(Question).find();
     }
 
     async findById(id: string): Promise<Question> {
@@ -13,7 +13,6 @@ export class QuestionRepository implements RepositoryInterface<Question>{
 
     async save(entity: Question): Promise<void> {
         await databaseConfig.getRepository(Question).save(entity);
-
     }
 
 }
