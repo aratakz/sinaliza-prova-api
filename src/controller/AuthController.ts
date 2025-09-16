@@ -31,7 +31,6 @@ export class AuthController {
             if (errorCode) {
                 response.status(errorCode).json({ message: (<AuthException>exception).message })
             } else {
-                console.debug(exception);
                 response.status(400).json({ message: 'invalid credentials'});
             }
         }
@@ -104,13 +103,11 @@ export class AuthController {
                 response.status(404).json({ message: 'No token provided' });
             }
             const domain = new Security();
-            console.debug(await domain.isValidToken(authToken.token).catch((error) => {
+            await domain.isValidToken(authToken.token).catch((error) => {
                 throw new Error('Invalid token');
-            }));
+            });
         } catch (error) {
-            console.debug('eta')
             if (error instanceof Error) {
-                console.debug()
                 response.status(404).json({message: error.message});
             }
         }

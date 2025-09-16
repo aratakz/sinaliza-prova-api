@@ -22,7 +22,6 @@ export class  RoomDomain {
         if (!room) {
             throw new Error("Room not found");
         }
-        console.debug(roomDTO);
         room.name = roomDTO.name;
 
         await this.roomRepository.save(room);
