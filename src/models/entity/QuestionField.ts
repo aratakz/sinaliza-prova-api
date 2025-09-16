@@ -14,13 +14,13 @@ export class QuestionField extends BaseEntity{
     })
     fieldType: string;
 
-    @Column({type: "varchar", length: 1000})
+    @Column({type: "varchar", length: 10000})
     fieldValue: string;
 
     @ManyToOne(() => Question, (question: Question) => question.fields)
     question: Question;
 
-    @Column({type: "varchar", length: 1000})
-    fieldVideo: string;
+    @Column({type: "varchar", length: 1000, default: null})
+    fieldVideo: string|null;
 
 }
