@@ -2,6 +2,7 @@ import {Column, Entity, OneToMany} from "typeorm";
 import { BaseEntity } from "./BaseEntity";
 import {QuestionField} from "./QuestionField";
 import {QuestionImage} from "./QuestionImage";
+import {QuestionOption} from "./QuestionOption";
 
 @Entity()
 export class Question extends BaseEntity {
@@ -14,4 +15,7 @@ export class Question extends BaseEntity {
 
     @OneToMany(() => QuestionImage, (questionImage) => questionImage.question,  {onDelete: "CASCADE"})
     images: QuestionImage[]
+
+    @OneToMany(() => QuestionOption, (option) => option.question, {onDelete: "CASCADE"})
+    options: QuestionOption[]
 }

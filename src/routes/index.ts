@@ -7,6 +7,7 @@ import disciplineRoutes from "./discipline";
 import curriculumRoutes from "./curriculum";
 import roomRoutes from "./room";
 import questionRoutes from "./question";
+import questionOptionRoutes from "./questionOption";
 
 const routes = Router();
 
@@ -18,5 +19,6 @@ routes.use('/disciplines', disciplineRoutes);
 routes.use('/curriculum', curriculumRoutes);
 routes.use('/room', roomRoutes);
 routes.use('/questions', questionRoutes);
+routes.use('/questionOption', questionOptionRoutes);
 
 export default routes;
