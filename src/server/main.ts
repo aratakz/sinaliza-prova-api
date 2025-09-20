@@ -11,7 +11,7 @@ Promise.all([
     databaseConfig.initialize(),
 ]).then(() => {
     console.debug('🔗 Database connections realized');
-    server.use(express.json());
+    server.use(express.json({limit: '50mb'}));
     server.use(cors());
     server.use(routes);
     server.get('/', (req: Request, res: Response): any => res.json({

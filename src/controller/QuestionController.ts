@@ -8,10 +8,10 @@ class QuestionController {
             if (!request.body) {
                 throw new Error("Body is not provided");
             }
-
             const domain = new QuestionDomain();
             await domain.register(request.body);
-            if (request.body.files) {
+            if (request.body.file) {
+                for (const file of request.body.file) {}
             }
             response.json({message: 'created!'});
         } catch (error) {
