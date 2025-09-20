@@ -31,6 +31,21 @@ class QuestionController {
             }
         }
     }
+
+    async remove(request: Request, response: Response) {
+        try {
+            if (!request.params.id) {
+                throw new Error("Id is not provided");
+            }
+            const domain = new QuestionDomain();
+            await domain.remove(request.params.id);
+            response.json({message: 'deleted!'});
+        } catch (error) {
+            if (error instanceof Error) {
+                response.status(500).json({error: error.message});
+            }
+        }
+    }
 }
 
 export default new QuestionController();

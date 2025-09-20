@@ -67,4 +67,10 @@ export class QuestionDomain {
     async getAll(): Promise<Question[]> {
         return this.questionRepository.findAll();
     }
+
+    async remove(questionId: string): Promise<void> {
+        return this.questionRepository.remove(
+            await this.questionRepository.findById(questionId)
+        );
+    }
 }

@@ -17,7 +17,7 @@ export class QuestionField extends BaseEntity{
     @Column({type: "varchar", length: 10000})
     fieldValue: string;
 
-    @ManyToOne(() => Question, (question: Question) => question.fields)
+    @ManyToOne(() => Question, (question: Question) => question.fields, {onDelete: "CASCADE"})
     question: Question;
 
     @Column({type: "varchar", length: 1000, default: null})

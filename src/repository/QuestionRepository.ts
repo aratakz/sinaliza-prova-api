@@ -12,11 +12,19 @@ export class QuestionRepository implements RepositoryInterface<Question>{
     }
 
     async findById(id: string): Promise<Question> {
-        return new Question();
+        const result =  await databaseConfig.getRepository(Question).find({
+            where: {
+                id: id
+            }
+        });
+        return result[0];
     }
 
     async save(entity: Question): Promise<void> {
         await databaseConfig.getRepository(Question).save(entity);
+    }
+    async remove(entity: Question): Promise<void> {
+        await databaseConfig.getRepository(Question).remove(entity);
     }
 
 }
