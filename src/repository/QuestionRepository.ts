@@ -4,7 +4,11 @@ import databaseConfig from "../server/typeorm.conf";
 
 export class QuestionRepository implements RepositoryInterface<Question>{
     async findAll(): Promise<Array<Question>> {
-        return await databaseConfig.getRepository(Question).find();
+        return await databaseConfig.getRepository(Question).find({
+            relations: {
+                fields: true
+            },
+        });
     }
 
     async findById(id: string): Promise<Question> {
