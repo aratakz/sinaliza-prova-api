@@ -106,6 +106,7 @@ export class AuthController {
             await domain.isValidToken(authToken.token).catch((error) => {
                 throw new Error('Invalid token');
             });
+            response.json({valid: true})
         } catch (error) {
             if (error instanceof Error) {
                 response.status(404).json({message: error.message});

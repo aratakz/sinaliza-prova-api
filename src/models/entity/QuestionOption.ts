@@ -15,6 +15,6 @@ export class QuestionOption extends BaseEntity {
     @Column({nullable: true})
     videoLink?: string;
 
-    @ManyToOne(() => Question, (question:any) => question.options)
+    @ManyToOne(() => Question, (question:any) => question.options, {onDelete: "CASCADE"})
     question?: Question;
 }

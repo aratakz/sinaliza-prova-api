@@ -15,6 +15,10 @@ export class QuestionRepository implements RepositoryInterface<Question>{
         const result =  await databaseConfig.getRepository(Question).find({
             where: {
                 id: id
+            },
+            relations: {
+                fields: true,
+                options: true
             }
         });
         return result[0];

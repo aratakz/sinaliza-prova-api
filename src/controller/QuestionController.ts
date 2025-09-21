@@ -46,6 +46,17 @@ class QuestionController {
             }
         }
     }
+
+    async update(request: Request, response: Response) {}
+
+    async findOne(request: Request, response: Response) {
+        if (!request.params.id) {
+            throw new Error("Id is not provided");
+        }
+
+        const domain = new QuestionDomain();
+        response.json(await domain.findOne(request.params.id));
+    }
 }
 
 export default new QuestionController();

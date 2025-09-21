@@ -73,4 +73,8 @@ export class QuestionDomain {
             await this.questionRepository.findById(questionId)
         );
     }
+
+    async findOne(questionId: string): Promise<Question> {
+        return await this.questionRepository.findById(questionId);
+    }
 }
