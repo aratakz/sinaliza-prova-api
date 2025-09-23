@@ -1,21 +1,26 @@
 import {QuestionRegisterDTO} from "../dto/QuestionRegisterDTO";
 import {QuestionRepository} from "../repository/QuestionRepository";
-import {Question, QuestionField, QuestionOption} from "../models/entity";
+import {Question, QuestionField, QuestionImage, QuestionOption} from "../models/entity";
 import {QuestionFieldRepository} from "../repository/QuestionFieldRepository";
 import {QuestionFieldType} from "../models/enums";
 import {QuestionOptionRepository} from "../repository/QuestionOptionRepository";
-import {AnswerDTO} from "../dto/AnswerDTO";
+import {S3Service} from "../services/S3Sevice";
+import {QuestionImageRepository} from "../repository/QuestionImageRepository";
 
 export class QuestionDomain {
 
     readonly questionRepository: QuestionRepository;
     readonly fieldRepository: QuestionFieldRepository;
+    readonly questionImageRepository: QuestionImageRepository;
     readonly questionOptionRepository: QuestionOptionRepository;
+    readonly s3Service: S3Service;
 
     constructor() {
         this.questionRepository = new QuestionRepository();
         this.fieldRepository = new QuestionFieldRepository();
         this.questionOptionRepository = new QuestionOptionRepository();
+        this.questionImageRepository = new QuestionImageRepository();
+        this.s3Service = new S3Service();
     }
 
     async register(questionDTO: QuestionRegisterDTO) {
@@ -40,7 +45,22 @@ export class QuestionDomain {
             fields.push(support_data);
         }
         question.fields = fields;
+        const questionImages = [];
 
+        if (questionDTO.file) {
+            for (const file of questionDTO.file)    {
+                const imageLink = await this.s3Service.sendImage(file);
+                if (imageLink) {
+                    const questionImage = new QuestionImage();
+                    questionImage.question = question;
+                    questionImage.url = imageLink;
+                    questionImages.push(questionImage);
+                    await this.questionImageRepository.save(questionImage);
+
+                }
+            }
+            question.images = questionImages;
+        }
         if (questionDTO.answers) {
             let answers: Array<QuestionOption> = [];
             for (const option of questionDTO.answers) {
@@ -54,8 +74,6 @@ export class QuestionDomain {
                     newOption.isAnswer = false;
                 }
                 answers.push(newOption);
-                console.debug('newOption');
-                console.debug(option);
                 await this.questionOptionRepository.save(newOption);
             }
             question.options  = answers
@@ -75,6 +93,24 @@ export class QuestionDomain {
     }
 
     async findOne(questionId: string): Promise<Question> {
-        return await this.questionRepository.findById(questionId);
+        const question =  await this.questionRepository.findById(questionId);
+
+        if (question) {
+            let images = [];
+
+            if (question.images) {
+                for (const image of question.images) {
+                    const imageContent = await this.s3Service.getImage(image.url);
+                    images.push({
+                        id: image.id,
+                        url: imageContent,
+                        question: image.question,
+                    });
+                }
+
+                question.images = images;
+            }
+        }
+        return question;
     }
 }

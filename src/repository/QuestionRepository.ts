@@ -18,7 +18,8 @@ export class QuestionRepository implements RepositoryInterface<Question>{
             },
             relations: {
                 fields: true,
-                options: true
+                options: true,
+                images: true
             }
         });
         return result[0];
