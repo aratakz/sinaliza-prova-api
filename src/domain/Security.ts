@@ -13,6 +13,10 @@ import {TwoFactorTokenRepository} from "../repository/TwoFactorTokenRepository";
 import {ulid} from "ulid";
 import {TwoFactorToken} from "../models/entity/TwoFactorToken";
 import moment from "moment";
+import {RecoverEmailDTO} from "../dto/RecoverEmailDTO";
+import {readdirSync} from "node:fs";
+import {UpdatePassDto} from "../dto/UpadatePassDTO";
+import question from "../models/schemas/Question";
 
 type Email = {
     title: string,
@@ -53,44 +57,68 @@ export class Security {
                 throw new AuthException();
             }
 
-            const authToken = await this.authTokenRepository.findLastByUserId(user);
-            if (authToken) {
-                try {
-                    const verified = jwt.verify(authToken.token, process.env.TOKEN_SECRET)
-                    console.debug('aklio')
-                    if (jwt.verify(authToken.token, process.env.TOKEN_SECRET)) {
-                        return authToken.token;
-                    }
-                } catch (error) {
-                    if (typeof error == "string"){
-                        const errorTitle = error.substring(0,17)
-                        if(errorTitle === "TokenExpiredError") {
-                            return this.generateNewToken(user, process.env.TOKEN_SECRET);
-                        }
-                    }
-                }
+            const token = await this.authTokenRepository.findLastByUserId(user);
+
+            if (token) {
+                await this.authTokenRepository.removeToken(token);
             }
+
             return this.generateNewToken(user, process.env.TOKEN_SECRET);
         }
         
         throw 'No secret is configured';
     }
 
-    async updateCredentials (user: User, password: string) {
-        user.password = await bcrypt.hash(password, 12);
-        await this.userRepository.save(user);
+    async updateCredentials (token: string, updatePassDTO: UpdatePassDto) {
+        const  twoFactorTokens  = await this.twoFactorTokenRepository.findByToken(token);
+
+        if (!twoFactorTokens || !twoFactorTokens[0]) {
+            throw new Error('No token found.');
+        }
+        if (moment().toDate() > moment(twoFactorTokens[0].expiration).toDate()) {
+            throw new Error('Expired token');
+        }
+
+        if (!updatePassDTO.password) {
+            throw new Error('Update pass not provided');
+        }
+
+        if (!updatePassDTO.confirmPassword) {
+            throw new Error('Update pass confirm not provided');
+        }
+
+        if (updatePassDTO.password != updatePassDTO.password) {
+            throw new Error('Update pass do not match');
+        }
+
+
+        await twoFactorTokens[0].user.setPassword(updatePassDTO.password);
+        await this.userRepository.save(twoFactorTokens[0].user);
     }
 
-    async sendPassChangeEmail (emailFrom: string) {
+    async sendRecoverPassEmail(recoverEmailDTO: RecoverEmailDTO) {
+        const userDomain = new UserDomain();
+        const user = await userDomain.getUserByCPF(recoverEmailDTO.cpf);
+        const tempUlid = ulid();
+
+        const twoFactorToken: TwoFactorToken = new TwoFactorToken();
+        twoFactorToken.user = user;
+        twoFactorToken.expiration = moment().add(20, 'minutes').toDate();
+        twoFactorToken.token = tempUlid;
+        await this.twoFactorTokenRepository.save(twoFactorToken);
+
         const email: Email = {
-        from: "server@email.com",
-        to: emailFrom,
-            subject: "Recuperação de senha",
-            title: "Recuperação de senha",
-            text: "Olá, para prosseguir com a alteração da senha, clique no link abaixo"
+            from: "server@email.com",
+            to: user.email,
+            subject: "Solicitacao de recuperação de senha",
+            title: "Recuperação de acesso",
+            text: "Olá, voce acaba de se cadastrar no Sinaliza prova. Para concluir o seu cadastro, basta acessar o link abaixo!"
         }
-        // const emailService = new EmailService(email);
-        // await emailService.sendEmail();
+        const emailService = new EmailService(email, 'recover', [{
+            studentName: user.name,
+            activationLink: `http://localhost:4200/auth/recover/${tempUlid}`,
+        }]);
+        await emailService.sendEmail();
     }
 
     async isValidToken(token:string) {
@@ -99,6 +127,7 @@ export class Security {
                 return jwt.verify(token, process.env.TOKEN_SECRET);
             } catch (e) {
                 throw new AuthException();
+                return false;
             }
 
         }

@@ -43,7 +43,6 @@ export class DisciplineDomain {
         if (!discipline) {
             throw Error('Discipline not found!');
         }
-        console.debug(discipline);
         await this.disciplineRepository.remove(discipline);
     }
 

@@ -1,0 +1,116 @@
+import {QuestionRegisterDTO} from "../dto/QuestionRegisterDTO";
+import {QuestionRepository} from "../repository/QuestionRepository";
+import {Question, QuestionField, QuestionImage, QuestionOption} from "../models/entity";
+import {QuestionFieldRepository} from "../repository/QuestionFieldRepository";
+import {QuestionFieldType} from "../models/enums";
+import {QuestionOptionRepository} from "../repository/QuestionOptionRepository";
+import {S3Service} from "../services/S3Sevice";
+import {QuestionImageRepository} from "../repository/QuestionImageRepository";
+
+export class QuestionDomain {
+
+    readonly questionRepository: QuestionRepository;
+    readonly fieldRepository: QuestionFieldRepository;
+    readonly questionImageRepository: QuestionImageRepository;
+    readonly questionOptionRepository: QuestionOptionRepository;
+    readonly s3Service: S3Service;
+
+    constructor() {
+        this.questionRepository = new QuestionRepository();
+        this.fieldRepository = new QuestionFieldRepository();
+        this.questionOptionRepository = new QuestionOptionRepository();
+        this.questionImageRepository = new QuestionImageRepository();
+        this.s3Service = new S3Service();
+    }
+
+    async register(questionDTO: QuestionRegisterDTO) {
+        const question = new Question();
+        question.name = questionDTO.name;
+
+        const title = new QuestionField();
+        const support_data = new QuestionField();
+
+        title.fieldType = QuestionFieldType.title;
+        title. fieldValue = questionDTO.title;
+        title.question = question;
+        if (questionDTO.support_data) {
+            support_data.fieldType = QuestionFieldType.support_data;
+            support_data.fieldValue = questionDTO.support_data;
+            await this.fieldRepository.save(support_data);
+        }
+        await this.fieldRepository.save(title);
+
+        const fields: QuestionField[] = [title];
+        if (questionDTO.support_data) {
+            fields.push(support_data);
+        }
+        question.fields = fields;
+        const questionImages = [];
+
+        if (questionDTO.file) {
+            for (const file of questionDTO.file)    {
+                const imageLink = await this.s3Service.sendImage(file);
+                if (imageLink) {
+                    const questionImage = new QuestionImage();
+                    questionImage.question = question;
+                    questionImage.url = imageLink;
+                    questionImages.push(questionImage);
+                    await this.questionImageRepository.save(questionImage);
+
+                }
+            }
+            question.images = questionImages;
+        }
+        if (questionDTO.answers) {
+            let answers: Array<QuestionOption> = [];
+            for (const option of questionDTO.answers) {
+                const newOption = new QuestionOption();
+                newOption.question = question;
+                newOption.title = option.title;
+                newOption.videoLink = undefined;
+                if (option.isAnswer) {
+                    newOption.isAnswer = option.isAnswer;
+                } else {
+                    newOption.isAnswer = false;
+                }
+                answers.push(newOption);
+                await this.questionOptionRepository.save(newOption);
+            }
+            question.options  = answers
+        }
+
+        await this.questionRepository.save(question);
+    }
+
+    async getAll(): Promise<Question[]> {
+        return this.questionRepository.findAll();
+    }
+
+    async remove(questionId: string): Promise<void> {
+        return this.questionRepository.remove(
+            await this.questionRepository.findById(questionId)
+        );
+    }
+
+    async findOne(questionId: string): Promise<Question> {
+        const question =  await this.questionRepository.findById(questionId);
+
+        if (question) {
+            let images = [];
+
+            if (question.images) {
+                for (const image of question.images) {
+                    const imageContent = await this.s3Service.getImage(image.url);
+                    images.push({
+                        id: image.id,
+                        url: imageContent,
+                        question: image.question,
+                    });
+                }
+
+                question.images = images;
+            }
+        }
+        return question;
+    }
+}

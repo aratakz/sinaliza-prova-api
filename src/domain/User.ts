@@ -35,6 +35,11 @@ export class UserDomain {
         if (!institute) {
             throw new MetadataExecption('Institute not found!');
         }
+        const cpfOwner = await this.getUserByCPF(studentMetadata.cpf);
+
+        if (cpfOwner) {
+            throw new Error('CPF unavailable');
+        }
 
         const student = new Student();
         student.cpf = studentMetadata.cpf;
@@ -76,6 +81,10 @@ export class UserDomain {
             throw new Error('Student not found!');
         }
 
+        const cpfOwner = await this.getUserByCPF(studentDTO.cpf);
+        if (cpfOwner) {
+            throw new Error('CPF unavailable');
+        }
 
         student.name = studentDTO.name;
         student.cpf = studentDTO.cpf;
@@ -132,7 +141,11 @@ export class UserDomain {
     async getStudentByCPF(cpf:string) {
         return await this.usersRepository.findStudentByCPF(cpf);
     }
-    
+
+    async getUserByCPF(cpf:string) {
+        return await this.usersRepository.findStudentByCPF(cpf);
+    }
+
     private async addDisciplines(studentMetadata: StudentDTO): Promise<Discipline[]> {
         const disciplineDomain: DisciplineDomain = new DisciplineDomain();
         let disciplineList: Discipline[] = [];

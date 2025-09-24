@@ -5,6 +5,8 @@ import { AuthException } from '../domain/exception/AuthExceptoion';
 import { UserRepository } from '../repository/UserRepository';
 import {TwoFactorTokenRepository} from "../repository/TwoFactorTokenRepository";
 import moment from "moment";
+import {AuthTokenRepository} from "../repository/AuthToekenRepository";
+import auth from "../routes/auth";
 
 export class AuthController {
 
@@ -21,21 +23,13 @@ export class AuthController {
                 response.status(401).json({ message: 'Login or password do not match!' })
             }
             const securityDomain: Security = new Security;
-
-            try{
-                const token = await securityDomain.getCredentials(request.body.username, request.body.password);
-                console.debug('hehs');
-                response.json({ token: token, register: new Date()});
-            } catch(error){
-                throw new AuthException();
-            }
-
+            const token = await securityDomain.getCredentials(request.body.username, request.body.password);
+            response.json({ token: token, register: new Date()});
         } catch (exception) {
             const errorCode = (<AuthException>exception).error;
             if (errorCode) {
                 response.status(errorCode).json({ message: (<AuthException>exception).message })
             } else {
-                console.debug(exception);
                 response.status(400).json({ message: 'invalid credentials'});
             }
         }
@@ -57,26 +51,25 @@ export class AuthController {
     }
 
     async requestPassChange(request: Request, response: Response) {
-        if (!request.body) {
-            response.status(422).json({ message: 'No body provided'});
-        }
 
-        if (!request.body.email) {
-            response.status(422).json({ message: 'email field is requred!'});
+        try {
+            if (!request.body) {
+                throw new Error('No body provided');
+            }
 
-        }
+            if (!request.body.cpf) {
+                throw Error('CPF field is required!');
 
-        const user = await new UserRepository().findByEmail(request.body.email);
-        if (!user) {
-            response.status(404).json({ message: 'Email not found!'});
-            throw Error('Email field is required!');
-        }
-        if (user?.email) {
-            await new Security().sendPassChangeEmail(user?.email);
-        }
+            }
 
-        response.json({message: "recuperation email sended!"});
-        
+            const domain = new Security();
+            await domain.sendRecoverPassEmail(request.body);
+            response.json({message: "recuperation email sent!"});
+        } catch (error) {
+            if (error instanceof Error) {
+                response.status(400).json({ error: error.message });
+            }
+        }
     }
 
     async checkTwoFactorToken(request: Request, response: Response) {
@@ -101,6 +94,25 @@ export class AuthController {
 
     }
 
+    async checkAuthToken(request: Request, response: Response) {
+        try {
+            const repository = new AuthTokenRepository()
+            const authToken = await repository.findToken(request.params.token);
+            if (!authToken) {
+                response.status(404).json({ message: 'No token provided' });
+            }
+            const domain = new Security();
+            await domain.isValidToken(authToken.token).catch((error) => {
+                throw new Error('Invalid token');
+            });
+            response.json({valid: true})
+        } catch (error) {
+            if (error instanceof Error) {
+                response.status(404).json({message: error.message});
+            }
+        }
+
+    }
     async activateUser(request: Request, response: Response) {
         try {
             const twoFactorTokenRepository = new TwoFactorTokenRepository();
@@ -152,6 +164,25 @@ export class AuthController {
         }
     }
 
+    async updatePass(request: Request, response: Response) {
+        try {
+            if (!request.body) {
+                throw new Error('No body is provided');
+            }
+            if (!request.params.token) {
+                throw new Error('No token provided');
+            }
+
+            const domain = new Security();
+            await domain.updateCredentials(request.params.token, request.body);
+
+            response.json({message: 'updated'});
+        } catch (error) {
+            if (error instanceof Error) {
+                response.status(400).json({ error: error.message });
+            }
+        }
+    }
     private static validateDateFormat(dateString: string) {
         const regex = /^\d{4}-\d{2}-\d{2}$/;
         return regex.test(dateString);
