@@ -1,6 +1,5 @@
 import {RepositoryInterface} from "./RepositoryInterface";
-import {Question, QuestionImage} from "../models/entity";
-import {Promise} from "mongoose";
+import {QuestionImage} from "../models/entity";
 import databaseConfig from "../server/typeorm.conf";
 
 export class QuestionImageRepository implements RepositoryInterface<QuestionImage>{

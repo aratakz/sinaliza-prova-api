@@ -1,6 +1,7 @@
 import {BaseEntity} from "./BaseEntity";
-import {Column, Entity, OneToMany} from "typeorm";
+import {Column, Entity, ManyToOne, OneToMany} from "typeorm";
 import {Student} from "./Studant";
+import {Exam} from "./Exam";
 
 
 @Entity()

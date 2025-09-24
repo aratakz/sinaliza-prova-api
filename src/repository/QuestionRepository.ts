@@ -1,6 +1,8 @@
 import {RepositoryInterface} from "./RepositoryInterface";
 import {Question} from "../models/entity";
 import databaseConfig from "../server/typeorm.conf";
+import {QuestionFieldType} from "../models/enums";
+import {Like} from "typeorm";
 
 export class QuestionRepository implements RepositoryInterface<Question>{
     async findAll(): Promise<Array<Question>> {
@@ -30,6 +32,21 @@ export class QuestionRepository implements RepositoryInterface<Question>{
     }
     async remove(entity: Question): Promise<void> {
         await databaseConfig.getRepository(Question).remove(entity);
+    }
+
+    async findByTitle(search: string) {
+        console.debug(search);
+        return databaseConfig.getRepository(Question).find({
+            where: {
+                fields: {
+                    fieldType: QuestionFieldType.title,
+                    fieldValue: Like(`%${search}%`)
+                }
+            },
+            relations: {
+                fields: true
+            }
+        })
     }
 
 }

@@ -149,6 +149,26 @@ class UsersController {
             }
         }
     }
+
+    async updateUser(request: Request, response: Response) {
+        try {
+            if (!request.params || !request.params.id) {
+                throw new Error('No id is provided!');
+            }
+            if (!request.body) {
+                throw new Error('No body is provided!');
+            }
+
+            const domain = new UserDomain();
+            await domain.updateUser(request.params.id, request.body);
+            response.json({message: 'updated'})
+        } catch (error) {
+            console.debug(error);
+            if (error instanceof Error) {
+                response.status(500).json({message: error.message});
+            }
+        }
+    }
 }
 
 export default new UsersController();

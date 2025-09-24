@@ -2,6 +2,7 @@ import {BaseEntity} from "./BaseEntity";
 import {Column, Entity, JoinColumn, ManyToOne, OneToMany} from "typeorm";
 import {Institute} from "./Institute";
 import {Curriculum} from "./Curriculum";
+import {Exam} from "./Exam";
 
 @Entity()
 export class Discipline extends BaseEntity {
@@ -13,4 +14,8 @@ export class Discipline extends BaseEntity {
 
     @OneToMany(() => Curriculum, (curriculum) => curriculum.discipline)
     curriculums: Curriculum[];
+
+
+    @ManyToOne(() => Exam, exam => exam.discipline)
+    exams: Exam[];
 }

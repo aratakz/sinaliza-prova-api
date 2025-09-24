@@ -197,4 +197,8 @@ export class QuestionDomain {
 
         await this.questionRepository.save(question);
     }
+
+    async findByTitle(title: string) {
+        return await this.questionRepository.findByTitle(title);
+    }
 }

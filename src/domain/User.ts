@@ -1,5 +1,5 @@
 import {Discipline, Room, Student} from "../models/entity";
-import { User } from "../models/entity";
+import { User } from "../models/entity/";
 import { UserRepository } from "../repository/UserRepository";
 import { MetadataExecption } from "./exception/MetadataException";
 import {InstituteRepository} from "../repository/InstituteRepository";
@@ -8,6 +8,8 @@ import {InstituteDomain} from "./InstituteDomain";
 import {DisciplineDomain} from "./Disclipline";
 import {RoomDomain} from "./Room";
 import moment from "moment";
+import {UpdateUserDTO} from "../dto/UpadateUserDTO";
+import {S3Service} from "../services/S3Sevice";
 
 
 type Email = {
@@ -23,10 +25,12 @@ export class UserDomain {
 
     private usersRepository: UserRepository;
     private instituteRepository: InstituteRepository;
+    private S3Service: S3Service;
 
     constructor() {
         this.usersRepository = new UserRepository();
         this.instituteRepository = new InstituteRepository();
+        this.S3Service = new S3Service();
     }
 
 
@@ -53,6 +57,32 @@ export class UserDomain {
             student.disciplines = await this.addDisciplines(studentMetadata);
         }
         await this.usersRepository.save(student);
+    }
+
+    async updateUser(userId: string, updateUserDTO: UpdateUserDTO) {
+        const user = await this.usersRepository.findById(userId);
+
+        if (!user) {
+            throw new MetadataExecption('User not found!');
+        }
+
+
+        user.name = updateUserDTO.name;
+        user.email = updateUserDTO.email;
+        if (user instanceof Student) {
+            user.birthday = updateUserDTO.birthday;
+        }
+        if (updateUserDTO.password && updateUserDTO.passwordConfirm) {
+            if (updateUserDTO.passwordConfirm != updateUserDTO.passwordConfirm) {
+                throw new MetadataExecption('Passwords do not match!');
+            }
+            await user.setPassword(updateUserDTO.password);
+        }
+        if (updateUserDTO.image) {
+            await this.S3Service.sendImage(updateUserDTO.image);
+            user.avatarLink = updateUserDTO.image;
+        }
+        await this.usersRepository.save(user);
     }
 
     async updateStudent(studentId: string, studentDTO: StudentDTO) {

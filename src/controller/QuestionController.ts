@@ -73,6 +73,21 @@ class QuestionController {
         response.json(await domain.findOne(request.params.id));
     }
 
+    async search(request: Request, response: Response) {
+        try {
+            if (request.query.search && typeof request.query.search == 'string') {
+            const domain = new QuestionDomain();
+            response.json(await domain.findByTitle(request.query.search))
+            } else {
+                response.json([]);
+            }
+        } catch (error) {
+            if (error instanceof Error) {
+                response.status(500).json({error: error.message});
+            }
+        }
+    }
+
 }
 
 

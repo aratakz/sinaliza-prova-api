@@ -26,7 +26,7 @@ export abstract class User extends BaseEntity {
     @Column({type: "boolean"})
     active: boolean = false;
 
-    @Column({type:"text",default: null})
+    @Column({type:"longtext",default: null})
     avatarLink?: string;
 
     @Column({type: "varchar", length: 500})
