@@ -1,13 +1,6 @@
-import {
-    S3Client,
-    PutObjectCommand,
-    DeleteObjectCommand,
-    GetObjectCommand,
-} from "@aws-sdk/client-s3";
+import {DeleteObjectCommand, PutObjectCommand, S3Client,} from "@aws-sdk/client-s3";
 import 'dotenv/config';
 import {randomUUID} from "node:crypto";
-import {response} from "express";
-
 
 
 export class S3Service {
@@ -36,6 +29,13 @@ export class S3Service {
                 ACL: 'public-read',
             }));
         return `https://${this.bucket}.s3.us-east-1.amazonaws.com/${filename}`;
+    }
+    async removeObject(objectKey: string) {
+        await this.client.send(
+            new DeleteObjectCommand({
+                Bucket: this.bucket,
+                Key: objectKey,
+            }));
     }
 
     async getImage(url:string): Promise<string> {

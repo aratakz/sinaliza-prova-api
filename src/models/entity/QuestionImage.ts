@@ -8,6 +8,6 @@ export class QuestionImage extends BaseEntity {
     @Column({type: "varchar", length: 1000})
     url: string;
 
-    @ManyToOne(() => Question, (question: Question) => question.images)
+    @ManyToOne(() => Question, (question: Question) => question.images, {onDelete: "CASCADE"})
     question: Question
 }

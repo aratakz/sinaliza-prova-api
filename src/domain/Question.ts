@@ -87,9 +87,20 @@ export class QuestionDomain {
     }
 
     async remove(questionId: string): Promise<void> {
-        return this.questionRepository.remove(
-            await this.questionRepository.findById(questionId)
-        );
+        const question = await this.questionRepository.findById(questionId);
+
+        if (!question) {
+            throw new Error(`Question not found`);
+        }
+
+        if (question.images && question.images.length) {
+            for (const image of question.images) {
+                const splitLink = image.url.split('/');
+                const  imageKey = splitLink[splitLink.length - 1];
+                await this.s3Service.removeObject(imageKey);
+            }
+        }
+        return this.questionRepository.remove(question);
     }
 
     async findOne(questionId: string): Promise<Question> {
@@ -112,5 +123,78 @@ export class QuestionDomain {
             }
         }
         return question;
+    }
+
+    async update(questionId: string, questionDTO: QuestionRegisterDTO) {
+        const question: Question = await this.questionRepository.findById(questionId);
+        if (!question) {
+            throw new Error('Question not found!');
+        }
+        question.name = questionDTO.name;
+
+        const title = new QuestionField();
+        const support_data = new QuestionField();
+
+        title.fieldType = QuestionFieldType.title;
+        title. fieldValue = questionDTO.title;
+        title.question = question;
+        if (questionDTO.support_data) {
+            support_data.fieldType = QuestionFieldType.support_data;
+            support_data.fieldValue = questionDTO.support_data;
+            await this.fieldRepository.save(support_data);
+        }
+        await this.fieldRepository.save(title);
+
+        const fields: QuestionField[] = [title];
+        if (questionDTO.support_data) {
+            fields.push(support_data);
+        }
+        question.fields = fields;
+        let questionImages: Array<QuestionImage> = [];
+
+        if (questionDTO.file) {
+            if (question.images && question.images.length) {
+                if (questionDTO.removedImages && questionDTO.removedImages.length) {
+                    for (const removeImage of questionDTO.removedImages) {
+                        await this.questionImageRepository.removeById(removeImage)
+                    }
+                }
+            }
+            if (questionDTO.file && questionDTO.file.length) {
+                for (const file of questionDTO.file) {
+                    const imageLink = await this.s3Service.sendImage(file);
+                    if (imageLink) {
+                        const questionImage = new QuestionImage();
+                        questionImage.question = question;
+                        questionImage.url = imageLink;
+                        questionImages.push(questionImage);
+                        await this.questionImageRepository.save(questionImage);
+
+                    }
+                }
+            }
+            const preloadedImages:QuestionImage[] = await this.questionImageRepository.findAll();
+            questionImages = [...questionImages, ...preloadedImages];
+            question.images = questionImages;
+        }
+        if (questionDTO.answers && questionDTO.answers.length) {
+            let answers: Array<QuestionOption> = [];
+            for (const option of questionDTO.answers) {
+                const newOption = new QuestionOption();
+                newOption.question = question;
+                newOption.title = option.title;
+                newOption.videoLink = undefined;
+                if (option.isAnswer) {
+                    newOption.isAnswer = option.isAnswer;
+                } else {
+                    newOption.isAnswer = false;
+                }
+                answers.push(newOption);
+                await this.questionOptionRepository.save(newOption);
+            }
+            question.options  = answers
+        }
+
+        await this.questionRepository.save(question);
     }
 }
