@@ -4,7 +4,7 @@ import { BaseEntity } from "./BaseEntity";
 
 @Entity()
 export class AuthToken  extends BaseEntity {
-    @Column({type: "varchar", length: 600})
+    @Column({type: "longtext"})
     token: string;
 
     @ManyToOne(() => User, (user) => user.tokens)

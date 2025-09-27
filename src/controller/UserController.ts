@@ -23,7 +23,6 @@ class UsersController {
             response.status(404).json({message: 'User not found!'});
         }
         if (user) {
-
             let bDay = ''
             if (user instanceof Student) {
                 const bDayObject = new Date(user.birthday);
