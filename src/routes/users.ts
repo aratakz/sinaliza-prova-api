@@ -8,6 +8,7 @@ const usersRoutes = Router();
 usersRoutes.get('/', UsersController.index);
 usersRoutes.get('/students', UsersController.getAllStudents);
 usersRoutes.get('/students/:id', UsersController.findById);
+usersRoutes.post('/avatarLink/', [authMiddleware], UsersController.getAvatar);
 usersRoutes.patch('/students/update/:id', UsersController.update);
 usersRoutes.delete('/students/remove/:id', UsersController.remove);
 usersRoutes.get('/userdata/:userId', [authMiddleware], UsersController.getUserInfo);

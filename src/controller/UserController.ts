@@ -168,6 +168,23 @@ class UsersController {
             }
         }
     }
+
+    async getAvatar(request: Request, response: Response) {
+        try {
+            if (!request.body) {
+                throw new Error('No body is provided!');
+            }
+            if (!request.body.avatarLink) {
+                throw new Error('No resource link is provided!');
+            }
+            const domain = new UserDomain();
+            response.json(await domain.getAvatar(request.body.avatarLink));
+        } catch (error) {
+            if (error instanceof Error) {
+                response.status(500).json({message: error.message});
+            }
+        }
+    }
 }
 
 export default new UsersController();

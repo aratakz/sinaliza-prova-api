@@ -79,10 +79,16 @@ export class UserDomain {
             await user.setPassword(updateUserDTO.password);
         }
         if (updateUserDTO.image) {
-            await this.S3Service.sendImage(updateUserDTO.image);
-            user.avatarLink = updateUserDTO.image;
+            const imageLink = await this.S3Service.sendImage(updateUserDTO.image);
+            if (imageLink) {
+                user.avatarLink = imageLink;
+            }
         }
         await this.usersRepository.save(user);
+    }
+
+    async getAvatar(avatarLink: string) {
+        return this.S3Service.getImage(avatarLink);
     }
 
     async updateStudent(studentId: string, studentDTO: StudentDTO) {
