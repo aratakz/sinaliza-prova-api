@@ -162,7 +162,6 @@ class UsersController {
             await domain.updateUser(request.params.id, request.body);
             response.json({message: 'updated'})
         } catch (error) {
-            console.debug(error);
             if (error instanceof Error) {
                 response.status(500).json({message: error.message});
             }

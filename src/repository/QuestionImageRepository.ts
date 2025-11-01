@@ -31,7 +31,6 @@ export class QuestionImageRepository implements RepositoryInterface<QuestionImag
 
     async removeById(id:string): Promise<void> {
         const image = await this.findById(id);
-        console.debug(image);
         if (image) {
             await databaseConfig.getRepository(QuestionImage).remove(image);
         }

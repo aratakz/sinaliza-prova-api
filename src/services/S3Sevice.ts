@@ -16,6 +16,7 @@ export class S3Service {
                     secretAccessKey: process.env.AWS_PRIVATE_KEY
                 }
             });
+
         }
     }
 

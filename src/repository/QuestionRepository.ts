@@ -35,7 +35,6 @@ export class QuestionRepository implements RepositoryInterface<Question>{
     }
 
     async findByTitle(search: string) {
-        console.debug(search);
         return databaseConfig.getRepository(Question).find({
             where: {
                 fields: {
