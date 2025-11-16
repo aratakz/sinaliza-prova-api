@@ -12,12 +12,8 @@ export class AuthTokenRepository implements RepositoryInterface<AuthToken>{
     findAll(): Promise<AuthToken[]> {
         throw new Error('Method not implemented.');
     }
-    async save(entity: AuthToken): Promise<void> {
-        try{
-        await databaseConfig.getRepository(AuthToken).save(entity);
-        } catch (error){
-            console.log("ERRO: " + error);
-        }
+    async save(entity: AuthToken): Promise<AuthToken> {
+        return await databaseConfig.getRepository(AuthToken).save(entity);
     }
 
     async findLastByUserId(user: User) {

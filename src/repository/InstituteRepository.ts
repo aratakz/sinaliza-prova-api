@@ -24,8 +24,8 @@ export  class InstituteRepository implements RepositoryInterface<Institute|null>
         return result[0];
     }
 
-     async save(entity: Institute): Promise<void> {
-        await databaseConfig.getRepository(Institute).save(entity);
+     async save(entity: Institute): Promise<Institute> {
+        return await databaseConfig.getRepository(Institute).save(entity);
     }
 
     async findByText(text: string) {

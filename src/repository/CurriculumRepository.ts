@@ -11,8 +11,8 @@ export class CurriculumRepository implements RepositoryInterface<Curriculum> {
         return new Curriculum();
     }
 
-    async save(entity: Curriculum): Promise<void> {
-        return Promise.resolve(undefined);
+    async save(entity: Curriculum): Promise<Curriculum> {
+        return databaseConfig.getRepository(Curriculum).save(entity);
     }
 
     async findByDiscipline(disciplineId: string): Promise<Array<Curriculum>> {

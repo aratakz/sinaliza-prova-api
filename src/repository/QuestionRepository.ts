@@ -27,8 +27,8 @@ export class QuestionRepository implements RepositoryInterface<Question>{
         return result[0];
     }
 
-    async save(entity: Question): Promise<void> {
-        await databaseConfig.getRepository(Question).save(entity);
+    async save(entity: Question): Promise<Question> {
+        return await databaseConfig.getRepository(Question).save(entity);
     }
     async remove(entity: Question): Promise<void> {
         await databaseConfig.getRepository(Question).remove(entity);

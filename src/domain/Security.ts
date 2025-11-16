@@ -7,7 +7,7 @@ import { AuthTokenRepository } from '../repository/AuthToekenRepository';
 import { User } from '../models/entity/User';
 import { EmailService } from '../services/EmailService';
 import {FirstLoginStudentDTO} from "../dto/FistLoginStudentDTO";
-import {UserDomain} from "./User";
+import {UserDomain} from "./users/UserDomain";
 import {InstituteDomain} from "./InstituteDomain";
 import {TwoFactorTokenRepository} from "../repository/TwoFactorTokenRepository";
 import {ulid} from "ulid";

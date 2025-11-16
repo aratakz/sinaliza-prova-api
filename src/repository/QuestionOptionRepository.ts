@@ -12,8 +12,8 @@ export class QuestionOptionRepository  implements RepositoryInterface<QuestionOp
       return new QuestionOption();
     }
 
-    async save(entity: QuestionOption): Promise<void> {
-        await databaseConfig.getRepository(QuestionOption).save(entity);
+    async save(entity: QuestionOption): Promise<QuestionOption> {
+        return await databaseConfig.getRepository(QuestionOption).save(entity);
     }
 
 

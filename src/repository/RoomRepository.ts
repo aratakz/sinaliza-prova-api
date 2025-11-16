@@ -18,8 +18,8 @@ export class RoomRepository implements RepositoryInterface<Room> {
     findAll(): Promise<Room[]> {
         return databaseConfig.getRepository(Room).find();
     }
-    async save(entity: Room): Promise<void> {
-        await databaseConfig.getRepository(Room).save(entity);
+    async save(entity: Room): Promise<Room> {
+        return await databaseConfig.getRepository(Room).save(entity);
     }
     async remove(room: Room): Promise<void> {
         await databaseConfig.getRepository(Room).remove(room);

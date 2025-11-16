@@ -10,8 +10,8 @@ export class TwoFactorTokenRepository implements RepositoryInterface<TwoFactorTo
     findAll(): Promise<TwoFactorToken[]> {
         throw new Error("Method not implemented.");
     }
-    async save(entity: TwoFactorToken):Promise<void> {
-       await databaseConfig.getRepository(TwoFactorToken).save(entity);
+    async save(entity: TwoFactorToken):Promise<TwoFactorToken> {
+      return await databaseConfig.getRepository(TwoFactorToken).save(entity);
     }
     async findByToken(token: string): Promise<TwoFactorToken[]> {
         return databaseConfig.getRepository(TwoFactorToken).find({

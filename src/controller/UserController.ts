@@ -1,7 +1,6 @@
-import { UserDomain } from '../domain/User';
-import { Student } from '../models/entity/Studant';
+import { UserDomain } from '../domain/users/UserDomain';
+import { Student } from '../models/entity';
 import { UserRepository } from '../repository/UserRepository';
-import { EmailService } from './../services/EmailService';
 import { Request, Response } from 'express';
 
 class UsersController {

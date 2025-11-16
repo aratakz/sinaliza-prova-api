@@ -1,15 +1,15 @@
-import {Discipline, Room, Student} from "../models/entity";
-import { User } from "../models/entity/";
-import { UserRepository } from "../repository/UserRepository";
-import { MetadataExecption } from "./exception/MetadataException";
-import {InstituteRepository} from "../repository/InstituteRepository";
-import {StudentDTO} from "../dto/StudentDTO";
-import {InstituteDomain} from "./InstituteDomain";
-import {DisciplineDomain} from "./Disclipline";
-import {RoomDomain} from "./Room";
+import {Discipline, Room, Student} from "../../models/entity";
+import { User } from "../../models/entity";
+import { UserRepository } from "../../repository/UserRepository";
+import { MetadataExecption } from "../exception/MetadataException";
+import {InstituteRepository} from "../../repository/InstituteRepository";
+import {StudentDTO} from "../../dto/StudentDTO";
+import {InstituteDomain} from "../InstituteDomain";
+import {DisciplineDomain} from "../Disclipline";
+import {RoomDomain} from "../Room";
 import moment from "moment";
-import {UpdateUserDTO} from "../dto/UpadateUserDTO";
-import {S3Service} from "../services/S3Sevice";
+import {UpdateUserDTO} from "../../dto/UpadateUserDTO";
+import {S3Service} from "../../services/S3Sevice";
 
 
 type Email = {
@@ -34,31 +34,9 @@ export class UserDomain {
     }
 
 
-    async createStudent(token: string, studentMetadata: StudentDTO) {
-        const instituteDomain: InstituteDomain = new InstituteDomain();
-        const institute= await instituteDomain.getByToken(token);
-        if (!institute) {
-            throw new MetadataExecption('Institute not found!');
-        }
-        const cpfOwner = await this.getUserByCPF(studentMetadata.cpf);
-
-        if (cpfOwner) {
-            throw new Error('CPF unavailable');
-        }
-
-        const student = new Student();
-        student.cpf = studentMetadata.cpf;
-        student.birthday = new Date(studentMetadata.birthday)
-        student.email = studentMetadata.email;
-        student.name = studentMetadata.name
-        student.institute = institute;
-
-        if (studentMetadata.disciplines) {
-            student.disciplines = await this.addDisciplines(studentMetadata);
-        }
-        await this.usersRepository.save(student);
+    async getUserByCPF(cpf:string) {
+        return await this.usersRepository.findStudentByCPF(cpf);
     }
-
     async updateUser(userId: string, updateUserDTO: UpdateUserDTO) {
         const user = await this.usersRepository.findById(userId);
 
@@ -86,11 +64,35 @@ export class UserDomain {
         }
         await this.usersRepository.save(user);
     }
-
     async getAvatar(avatarLink: string) {
         return this.S3Service.getImage(avatarLink);
     }
 
+
+    async createStudent(token: string, studentMetadata: StudentDTO) {
+        const instituteDomain: InstituteDomain = new InstituteDomain();
+        const institute= await instituteDomain.getByToken(token);
+        if (!institute) {
+            throw new MetadataExecption('Institute not found!');
+        }
+        const cpfOwner = await this.getUserByCPF(studentMetadata.cpf);
+
+        if (cpfOwner) {
+            throw new Error('CPF unavailable');
+        }
+
+        const student = new Student();
+        student.cpf = studentMetadata.cpf;
+        student.birthday = new Date(studentMetadata.birthday)
+        student.email = studentMetadata.email;
+        student.name = studentMetadata.name
+        student.institute = institute;
+
+        if (studentMetadata.disciplines) {
+            student.disciplines = await this.addDisciplines(studentMetadata);
+        }
+        await this.usersRepository.save(student);
+    }
     async updateStudent(studentId: string, studentDTO: StudentDTO) {
         const student = await this.usersRepository.findStudentById(studentId);
         if (!student) {
@@ -129,9 +131,18 @@ export class UserDomain {
         await this.usersRepository.save(student);
 
     }
-
     async getStudents(): Promise<Student[]> {
         return await this.usersRepository.findStudents();
+    }
+    async getStudent(userId: string): Promise<User|Student> {
+        const student = await this.usersRepository.findStudentById(userId);
+        if (!student) {
+            throw new Error('User not found!');
+        }
+        return student;
+    }
+    async getStudentByCPF(cpf:string) {
+        return await this.usersRepository.findStudentByCPF(cpf);
     }
 
     async remove (userId: string): Promise<void> {
@@ -144,22 +155,6 @@ export class UserDomain {
         } else {
             throw new Error('User not found!');
         }
-    }
-
-    async getStudent(userId: string): Promise<User|Student> {
-        const student = await this.usersRepository.findStudentById(userId);
-        if (!student) {
-            throw new Error('User not found!');
-        }
-        return student;
-    }
-
-    async getStudentByCPF(cpf:string) {
-        return await this.usersRepository.findStudentByCPF(cpf);
-    }
-
-    async getUserByCPF(cpf:string) {
-        return await this.usersRepository.findStudentByCPF(cpf);
     }
 
     private async addDisciplines(studentMetadata: StudentDTO): Promise<Discipline[]> {

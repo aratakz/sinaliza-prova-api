@@ -4,8 +4,8 @@ import databaseConfig from "../server/typeorm.conf";
 
 export class CourseRepository implements RepositoryInterface<CourseDetail|null> {
 
-    async save(entity: CourseDetail): Promise<void> {
-         await databaseConfig.getRepository(CourseDetail).save(entity);
+    async save(entity: CourseDetail): Promise<CourseDetail|null> {
+        return await databaseConfig.getRepository(CourseDetail).save(entity);
     }
 
     async findById(id: string): Promise<CourseDetail | null> {

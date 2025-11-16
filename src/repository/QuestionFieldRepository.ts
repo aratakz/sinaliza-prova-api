@@ -12,7 +12,7 @@ export class QuestionFieldRepository implements RepositoryInterface<QuestionFiel
         return Promise.resolve(undefined);
     }
 
-   async save(entity: QuestionField): Promise<void> {
-        await databaseConfig.getRepository(QuestionField).save(entity);
+   async save(entity: QuestionField): Promise<QuestionField> {
+        return await databaseConfig.getRepository(QuestionField).save(entity);
     }
 }

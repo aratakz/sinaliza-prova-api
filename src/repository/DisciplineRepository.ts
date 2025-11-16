@@ -17,8 +17,8 @@ export class DisciplineRepository implements RepositoryInterface<Discipline> {
        return results[0];
     }
 
-    async save(entity: Discipline): Promise<void> {
-        await  databaseConfig.getRepository(Discipline).save(entity);
+    async save(entity: Discipline): Promise<Discipline> {
+       return await  databaseConfig.getRepository(Discipline).save(entity);
     }
 
     async remove(discipline: Discipline): Promise<void> {

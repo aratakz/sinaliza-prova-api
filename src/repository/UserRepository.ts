@@ -4,8 +4,8 @@ import databaseConfig from "../server/typeorm.conf";
 import { Student } from "../models/entity/Studant";
 
 export class UserRepository implements RepositoryInterface<User|null|Student>{
-    async save(entity: User): Promise<void> {
-        await databaseConfig.getRepository(User).save(entity);
+    async save(entity: User): Promise<User|null|Student> {
+        return await databaseConfig.getRepository(User).save(entity);
     }
     async findById(id: string): Promise<User|Student|null> {
         const user = await databaseConfig.getRepository(User).find({

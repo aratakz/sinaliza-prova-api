@@ -1,5 +1,5 @@
 import {RepositoryInterface} from "./RepositoryInterface";
-import {QuestionImage} from "../models/entity";
+import {QuestionField, QuestionImage} from "../models/entity";
 import databaseConfig from "../server/typeorm.conf";
 
 export class QuestionImageRepository implements RepositoryInterface<QuestionImage>{
@@ -20,9 +20,8 @@ export class QuestionImageRepository implements RepositoryInterface<QuestionImag
         return result[0];
     }
 
-    async save(entity: QuestionImage): Promise<void> {
-        await databaseConfig.getRepository(QuestionImage).save(entity);
-
+    async save(entity: QuestionImage): Promise<QuestionImage> {
+        return await databaseConfig.getRepository(QuestionImage).save(entity);
     }
     async remove(entity: QuestionImage): Promise<void> {
         await databaseConfig.getRepository(QuestionImage).remove(entity);

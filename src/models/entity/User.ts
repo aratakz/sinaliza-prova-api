@@ -50,6 +50,10 @@ export abstract class User extends BaseEntity {
         this.password = (await bcrypt.hash(password, 12)).toString();
     }
 
+    async enctypePassword(password:string) {
+        return (await bcrypt.hash(password, 12)).toString();
+    }
+
     @ManyToMany(() => Discipline, {cascade: true})
     @JoinTable()
     disciplines: Discipline[];
