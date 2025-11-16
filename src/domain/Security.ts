@@ -239,7 +239,8 @@ export class Security {
         const token = jwt.sign({ userData: {
             name: user.name,
             id: user.id,
-            avatar: user.avatarLink
+            avatar: user.avatarLink,
+            access: user.accessLevel,
         }}, secret, {
             expiresIn: '2h'
         });

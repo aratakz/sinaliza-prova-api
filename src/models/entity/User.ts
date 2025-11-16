@@ -4,6 +4,7 @@ import { BaseEntity } from "./BaseEntity";
 import * as bcrypt from 'bcrypt';
 import {Institute} from "./Institute";
 import {Discipline} from "./Discipline";
+import {AccessLevel} from "../enums";
 
 @Entity()
 @TableInheritance({column: {type: 'varchar', name: 'type'}})
@@ -36,6 +37,14 @@ export abstract class User extends BaseEntity {
     institute: Institute;
 
     confirmPassword?:string;
+
+    @Column({
+        type:  'enum',
+        enum: AccessLevel,
+        default: AccessLevel.PROFESSIONAL
+    })
+    accessLevel: string;
+
 
     async setPassword(password:string) {
         this.password = (await bcrypt.hash(password, 12)).toString();
