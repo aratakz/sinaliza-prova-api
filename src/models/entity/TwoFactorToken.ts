@@ -10,5 +10,8 @@ export class TwoFactorToken  extends BaseEntity {
     @Column({type: 'datetime'})
     expiration: Date;
     @ManyToOne(() => User)
-    user: User|Professional;
+    user: User;
+
+    @ManyToOne(() => Professional)
+    professional: Professional;
 }

@@ -17,7 +17,7 @@ export class ProfessionalDomain extends UserDomain {
         const tempUlid = ulid();
 
         const twoFactorToken: TwoFactorToken = new TwoFactorToken();
-        twoFactorToken.user = professional;
+        twoFactorToken.professional = professional;
         twoFactorToken.expiration = moment().add(20, 'minutes').toDate();
         twoFactorToken.token = tempUlid;
         await this.twoFactorTokenRepository.save(twoFactorToken);
