@@ -1,8 +1,9 @@
-import {Column, Entity, OneToMany} from "typeorm";
+import {Column, Entity, JoinTable, ManyToMany, OneToMany} from "typeorm";
 import { BaseEntity } from "./BaseEntity";
 import {QuestionField} from "./QuestionField";
 import {QuestionImage} from "./QuestionImage";
 import {QuestionOption} from "./QuestionOption";
+import {QuestionTag} from "./QuestionTag";
 
 @Entity()
 export class Question extends BaseEntity {
@@ -18,4 +19,8 @@ export class Question extends BaseEntity {
 
     @OneToMany(() => QuestionOption, (option) => option.question, {onDelete: "CASCADE"})
     options: QuestionOption[]
+
+    @ManyToMany(() => QuestionTag)
+    @JoinTable()
+    tags: QuestionTag[]
 }
