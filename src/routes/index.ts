@@ -22,5 +22,6 @@ routes.use('/room', roomRoutes);
 routes.use('/questions', questionRoutes);
 routes.use('/questionOption', questionOptionRoutes);
 routes.use('/questionTags', questionTagsRoutes);
+routes.use('/exams', questionTagsRoutes);
 
 export default routes;

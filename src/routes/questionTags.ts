@@ -1,9 +1,9 @@
 import {Router} from 'express';
 import AuthMiddlware from "../middleware/AuthMiddlware";
-import QuestionTagsController from "../controller/QuestionTagsController";
+import ExamController from "../controller/ExamController";
 
 
 const questionTagsRoutes = Router();
 
-questionTagsRoutes.post('/register', [AuthMiddlware], QuestionTagsController.create);
+questionTagsRoutes.post('/create', [AuthMiddlware], ExamController.register);
 export default questionTagsRoutes;

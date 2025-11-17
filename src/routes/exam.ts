@@ -3,9 +3,9 @@ import AuthMiddlware from "../middleware/AuthMiddlware";
 import ExamController from "../controller/ExamController";
 
 
-const questionRoutes = Router();
+const examRoutes = Router();
 
-questionRoutes.post('/register', [AuthMiddlware], ExamController.register);
+examRoutes.post('/register', [AuthMiddlware], ExamController.register);
 
 
-export default questionRoutes;
+export default examRoutes;
