@@ -15,4 +15,12 @@ export class ProfessionalRepository implements RepositoryInterface<Professional>
     async save(entity: Professional): Promise<Professional> {
         return await databaseConfig.getRepository(Professional).save(entity);
     }
+    async findByUsername(username:string): Promise<Professional> {
+        const result = await databaseConfig.getRepository(Professional).find({
+            where: {
+                username: username
+            }
+        });
+        return result[0];
+    }
 }

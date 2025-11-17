@@ -17,6 +17,8 @@ import {RecoverEmailDTO} from "../dto/RecoverEmailDTO";
 import {readdirSync} from "node:fs";
 import {UpdatePassDto} from "../dto/UpadatePassDTO";
 import question from "../models/schemas/Question";
+import {ProfessionalRepository} from "../repository/ProfessionalRepository";
+import {Professional} from "../models/entity";
 
 type Email = {
     title: string,
@@ -29,6 +31,7 @@ type Email = {
 
 export class Security {
     private userRepository: UserRepository;
+    private professionalRepository: ProfessionalRepository;
     private authTokenRepository: AuthTokenRepository;
     private twoFactorTokenRepository: TwoFactorTokenRepository = new TwoFactorTokenRepository();
     constructor() {
@@ -38,32 +41,54 @@ export class Security {
         }
 
         this.userRepository = new UserRepository();
+        this.professionalRepository = new ProfessionalRepository();
         this.authTokenRepository = new AuthTokenRepository;
     }
 
     async getCredentials(userName: string, password: string) {
         if (process.env.TOKEN_SECRET) {
             const user: User|null = await this.userRepository.findByUserName(userName);
-            if (!user) {
+            const professional: Professional = await this.professionalRepository.findByUsername(userName);
+
+            if (!user && !professional) {
                 throw new AuthException();
             }
+
             if (!password) {
                 throw new AuthException();
             }
-            if (!user.active) {
+
+            if (user && !user.active) {
                 throw new AuthException();
             }
-            if (!await bcrypt.compare(password, user.password)) {
-                throw new AuthException();
+
+            if (user) {
+                if (!await bcrypt.compare(password, user.password)) {
+                    throw new AuthException();
+                }
+
+                const token = await this.authTokenRepository.findLastByUserId(user);
+
+                if (token) {
+                    await this.authTokenRepository.removeToken(token);
+                }
+
+                return this.generateNewToken(user, process.env.TOKEN_SECRET);
             }
 
-            const token = await this.authTokenRepository.findLastByUserId(user);
+            if (professional) {
+                if (!await bcrypt.compare(password, professional.password)) {
+                    throw new AuthException();
+                }
 
-            if (token) {
-                await this.authTokenRepository.removeToken(token);
+                const token = await this.authTokenRepository.findLastByProfessionalId(professional);
+                if (token) {
+                    await this.authTokenRepository.removeToken(token);
+                }
+
+                return this.generateNewToken(professional, process.env.TOKEN_SECRET);
             }
 
-            return this.generateNewToken(user, process.env.TOKEN_SECRET);
         }
         
         throw 'No secret is configured';
@@ -235,7 +260,7 @@ export class Security {
         await emailService.sendEmail();
     }
 
-    private async generateNewToken(user: User, secret: string) {
+    private async generateNewToken(user: User|Professional, secret: string) {
         const token = jwt.sign({ userData: {
             name: user.name,
             id: user.id,
@@ -245,11 +270,22 @@ export class Security {
             expiresIn: '2h'
         });
 
-        await this.authTokenRepository.save({
-            token: token,
-            user: user
-        });
+
+        if (user instanceof Professional) {
+            await this.authTokenRepository.save({
+                token: token,
+                user: user
+            });
+
+        } else {
+            await this.authTokenRepository.save({
+                token: token,
+                user: user,
+            });
+        }
         return token;
+
+
     }
 
 }

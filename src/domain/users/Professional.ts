@@ -13,7 +13,9 @@ export class ProfessionalDomain extends UserDomain {
     private twoFactorTokenRepository: TwoFactorTokenRepository = new TwoFactorTokenRepository();
 
     async create(professionalDTO: ProfessionalDTO) {
-       const professional = await this.professionalRepository.save(new Professional(professionalDTO));
+       let professional = new Professional(professionalDTO);
+       professional = await professional.prepareFirstLogin();
+       professional = await this.professionalRepository.save(professional);
         const tempUlid = ulid();
 
         const twoFactorToken: TwoFactorToken = new TwoFactorToken();
@@ -28,11 +30,13 @@ export class ProfessionalDomain extends UserDomain {
             to: professionalDTO.email,
             subject: "Seu cadastro no Sinaliza Prova foi criado!",
             title: "Acesso a plataforma Sinaliza prova",
-            text: "Olá, voce acaba de se cadastrar no Sinaliza prova. Para concluir o seu cadastro, basta acessar o link abaixo!"
+            text: "Olá, voce acaba de se cadastrar no Sinaliza prova. Para concluir o seu cadastro, basta acessar o link abaixo, realizar o login e com as credenciais abaixo"
         }
-        await new EmailService(email, 'activation', [{
-            studentName: professionalDTO.name,
-            activationLink: `http://localhost:4200/auth/activate/${tempUlid}`,
+        await new EmailService(email, 'professional_login', [{
+            professional: professionalDTO.name,
+            activationLink: `http://localhost:4200`,
+            login: professional.username,
+            password: professional.tempPassword,
         }]).sendEmail();
     }
 }

@@ -1,0 +1,32 @@
+<style>
+    .button-content {
+        display: flex;
+        width: 100%;
+        justify-content: center;
+        margin-top: 40%;
+    }
+    .button-content a {
+        height: 60px;
+        background: #FFFFFF;
+        color: #000000;
+        padding: 10px;
+        border-radius: 10px;
+        text-decoration: none;
+        display: flex;
+        width: 30%;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
+<div class="text">
+    Olá, {{professional}}.<br/>
+    Seja muito bem-vindo a plataforma Sinaliza Prova. <br/>
+    Para prosseguir com a ativação da sua conta em nosso sistema, basta clicar no botão abaixo, e realizar o primeiro logiin com as credenciais abaixo:
+    <br/>
+    <strong>Login:</strong> {{login}}
+    <br>
+    <strong>Senha:</strong> {{password}}
+</div>
+<div class="button-content">
+    <a href="{{activationLink}}" target="_blank">Realizar meu acesso</a>
+</div>

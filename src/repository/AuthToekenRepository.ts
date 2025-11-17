@@ -2,6 +2,7 @@ import { AuthToken } from '../models/entity/AuthToken';
 import { RepositoryInterface } from './RepositoryInterface';
 import databaseConfig from '../server/typeorm.conf';
 import { User } from '../models/entity/User';
+import {Professional} from "../models/entity";
 
 
 export class AuthTokenRepository implements RepositoryInterface<AuthToken>{
@@ -21,6 +22,19 @@ export class AuthTokenRepository implements RepositoryInterface<AuthToken>{
             where: {
                 user: {
                     id: user.id
+                },
+            },
+            order: {
+                generated: 'DESC'
+            }
+        });
+        return tokens[0];
+    }
+    async findLastByProfessionalId(professional: Professional) {
+        const tokens = await databaseConfig.getRepository(AuthToken).find({
+            where: {
+                user: {
+                    id: professional.id
                 },
             },
             order: {
