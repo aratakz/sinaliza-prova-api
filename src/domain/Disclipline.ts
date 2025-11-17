@@ -2,6 +2,7 @@ import {AuthTokenRepository} from "../repository/AuthToekenRepository";
 import {DisciplineRepository} from "../repository/DisciplineRepository";
 import {DisciplineDTO} from "../dto/DisciplineDTO";
 import {Curriculum, Discipline} from "../models/entity";
+import auth from "../routes/auth";
 
 export class DisciplineDomain {
 
@@ -23,7 +24,8 @@ export class DisciplineDomain {
         if (!authToken) {
             throw Error('Authorization token is no present!');
         }
-        if (!authToken.user || !authToken.user.institute) {
+
+        if (!authToken.user) {
             throw Error('Authorization token is invalid');
         }
 

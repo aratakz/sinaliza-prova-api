@@ -71,10 +71,6 @@ export class UserDomain {
 
     async createStudent(token: string, studentMetadata: StudentDTO) {
         const instituteDomain: InstituteDomain = new InstituteDomain();
-        const institute= await instituteDomain.getByToken(token);
-        if (!institute) {
-            throw new MetadataExecption('Institute not found!');
-        }
         const cpfOwner = await this.getUserByCPF(studentMetadata.cpf);
 
         if (cpfOwner) {
@@ -86,7 +82,6 @@ export class UserDomain {
         student.birthday = new Date(studentMetadata.birthday)
         student.email = studentMetadata.email;
         student.name = studentMetadata.name
-        student.institute = institute;
 
         if (studentMetadata.disciplines) {
             student.disciplines = await this.addDisciplines(studentMetadata);
@@ -98,9 +93,8 @@ export class UserDomain {
         if (!student) {
             throw new Error('Student not found!');
         }
-
         const cpfOwner = await this.getUserByCPF(studentDTO.cpf);
-        if (cpfOwner) {
+        if (cpfOwner && cpfOwner.cpf !== student.cpf) {
             throw new Error('CPF unavailable');
         }
 

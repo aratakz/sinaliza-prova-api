@@ -23,7 +23,7 @@ export class InstituteDomain  {
         if (!authToken.user || !authToken.user.id) {
             throw new Error(`Token not valid`);
         }
-        if (!authToken.user || !authToken.user.institute) {
+        if (!authToken.user) {
             throw new Error(`Institute not found`);
         }
         return authToken.user.institute;

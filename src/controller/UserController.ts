@@ -64,6 +64,7 @@ class UsersController {
             const domain: UserDomain = new UserDomain();
             response.json(await domain.updateStudent(request.params.id, request.body));
         } catch (error) {
+            console.debug(error)
             if (error instanceof Error) {
                 response.status(500).json({message: error.message});
             }
