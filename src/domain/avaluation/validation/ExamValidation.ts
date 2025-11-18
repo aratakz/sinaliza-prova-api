@@ -15,8 +15,8 @@ export class ExamValidation {
 
         if (!this.dto.title) throw Error('Exam title is required');
         if (!this.dto.date) throw Error('Exam date is required');
-        if (!this.dto.disciplineId) throw Error('Exam discipline is required');
-        if (!this.dto.roomId) throw Error('Exam room is required');
-        if (!this.dto.questions) throw Error('Exam questions is required');
+        if (!this.dto.discipline) throw Error('Exam discipline is required');
+        if (!this.dto.room) throw Error('Exam room is required');
+        // if (!this.dto.questions) throw Error('Exam questions is required');
     }
 }

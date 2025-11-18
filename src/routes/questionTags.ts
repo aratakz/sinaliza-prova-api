@@ -6,4 +6,5 @@ import ExamController from "../controller/ExamController";
 const questionTagsRoutes = Router();
 
 questionTagsRoutes.post('/create', [AuthMiddlware], ExamController.register);
+questionTagsRoutes.get('/list', [AuthMiddlware], ExamController.list);
 export default questionTagsRoutes;

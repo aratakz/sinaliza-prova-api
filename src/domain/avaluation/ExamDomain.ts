@@ -9,7 +9,7 @@ export class ExamDomain {
     private disciplineRepository : DisciplineRepository  = new DisciplineRepository();
 
     async create (examDTO: CreateExamDTO): Promise<Exam> {
-        const discipline = await this.disciplineRepository.findById(examDTO.disciplineId)
+        const discipline = await this.disciplineRepository.findById(examDTO.discipline)
         if (!discipline) {
             throw Error('Discipline not found.');
         }
@@ -17,10 +17,14 @@ export class ExamDomain {
             title: examDTO.title,
             discipline: discipline,
             date: examDTO.date,
-            room: examDTO.roomId
+            room: examDTO.room
         });
         discipline.exams = [exam];
 
         return await this.examRepository.save(exam);
+    }
+
+    async list () {
+        return await this.examRepository.findAll();
     }
 }

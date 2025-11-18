@@ -13,7 +13,19 @@ class ExamController {
             response.json({message: 'created!'});
         } catch (error) {
             if (error instanceof Error) {
-                response.status(500).send({message: error.stack});
+                response.status(500).send({message: error.message});
+            }
+        }
+    }
+
+
+    async list(request: Request, response: Response) {
+        try {
+            const domain = new ExamDomain();
+            response.json(await domain.list());
+        } catch (error) {
+            if (error instanceof Error) {
+                response.status(500).json({message: error.message});
             }
         }
     }
