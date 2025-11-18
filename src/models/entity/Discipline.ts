@@ -15,7 +15,6 @@ export class Discipline extends BaseEntity {
     @OneToMany(() => Curriculum, (curriculum) => curriculum.discipline)
     curriculums: Curriculum[];
 
-
-    @ManyToOne(() => Exam, exam => exam.discipline)
+    @OneToMany(() => Exam, exam => exam.discipline)
     exams: Exam[];
 }

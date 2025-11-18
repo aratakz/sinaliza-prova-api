@@ -4,9 +4,9 @@ import {ExamValidation} from "../validation/ExamValidation";
 export class CreateExamDTO extends ExamDTO {
 
     title: string;
-    disciplineId: number;
-    roomId: number;
-    date: string;
+    disciplineId: string;
+    roomId: string;
+    date: Date;
     questions: Array<number>
 
     constructor(entries: CreateExamDTO) {

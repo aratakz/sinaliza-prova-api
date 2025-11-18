@@ -9,10 +9,11 @@ class ExamController {
                 throw Error('No body is present');
             }
             const domain = new ExamDomain();
-            await domain.create(new CreateExamDTO(request.body))
+            await domain.create(new CreateExamDTO(request.body));
+            response.json({message: 'created!'});
         } catch (error) {
             if (error instanceof Error) {
-                response.status(500).send({message: error.message});
+                response.status(500).send({message: error.stack});
             }
         }
     }

@@ -1,3 +1,2 @@
-export class ExamDTO {
 
-}
+export class ExamDTO {}
