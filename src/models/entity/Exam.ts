@@ -2,6 +2,7 @@ import {Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany} from "typeo
 import { BaseEntity } from "./BaseEntity";
 import {Discipline} from "./Discipline";
 import {Room} from "./Room";
+import {Question} from "./Question";
 
 
 @Entity()
@@ -18,6 +19,12 @@ export class Exam extends BaseEntity{
 
     @ManyToOne(() => Room, (room: Room) => room.exams)
     room?: Room;
+
+    @ManyToMany(() => Question)
+    @JoinTable({
+        name: 'exam_question',
+    })
+    questions?: Question[];
 
     constructor(exam: Exam) {
         super();

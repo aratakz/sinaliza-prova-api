@@ -35,7 +35,7 @@ export class  DisciplineController {
             response.json({message: "created"});
         } catch (error) {
             if (error instanceof Error) {
-                response.status(500).json({ message: error.stack});
+                response.status(500).json({ message: error.message});
             }
         }
     }

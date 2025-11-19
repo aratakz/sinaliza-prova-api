@@ -7,7 +7,7 @@ export class CreateExamDTO extends ExamDTO {
     discipline: string;
     room: string;
     date: Date;
-    questions: Array<number>
+    questions: Array<string>
 
     constructor(entries: CreateExamDTO) {
         super();
