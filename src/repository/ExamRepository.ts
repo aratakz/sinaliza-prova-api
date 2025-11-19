@@ -16,7 +16,9 @@ export class ExamRepository implements RepositoryInterface<Exam> {
             relations: {
                 discipline: true,
                 room: true,
-                questions: true
+                questions: {
+                    fields: true
+                }
             }
         });
         return results[0];
