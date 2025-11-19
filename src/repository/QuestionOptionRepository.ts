@@ -7,13 +7,20 @@ export class QuestionOptionRepository  implements RepositoryInterface<QuestionOp
     async findAll(): Promise<Array<QuestionOption>> {
         return [];
     }
-
     async findById(id: string): Promise<QuestionOption> {
       return new QuestionOption();
     }
-
     async save(entity: QuestionOption): Promise<QuestionOption> {
         return await databaseConfig.getRepository(QuestionOption).save(entity);
+    }
+    async findOneByQuestionId(questionId: string): Promise<Array<QuestionOption>> {
+        return await databaseConfig.getRepository(QuestionOption).find({
+            where: {
+                question: {
+                    id: questionId
+                }
+            }
+        });
     }
 
 
