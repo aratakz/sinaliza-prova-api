@@ -8,8 +8,13 @@ export class QuestionFieldRepository implements RepositoryInterface<QuestionFiel
         return Promise.resolve(undefined);
     }
 
-    findById(id: string): Promise<QuestionField> {
-        return Promise.resolve(undefined);
+    async findById(id: string): Promise<QuestionField> {
+        const results = await databaseConfig.getRepository(QuestionField).find({
+            where: {
+                id: id
+            }
+        });
+        return results[0];
     }
 
    async save(entity: QuestionField): Promise<QuestionField> {

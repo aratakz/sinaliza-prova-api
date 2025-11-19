@@ -6,6 +6,7 @@ import {QuestionFieldType} from "../models/enums";
 import {QuestionOptionRepository} from "../repository/QuestionOptionRepository";
 import {S3Service} from "../services/S3Sevice";
 import {QuestionImageRepository} from "../repository/QuestionImageRepository";
+import * as fs from "node:fs";
 
 export class QuestionDomain {
 
@@ -200,5 +201,16 @@ export class QuestionDomain {
 
     async findByTitle(title: string) {
         return await this.questionRepository.findByTitle(title);
+    }
+
+    async saveFieldVideo(contens: any) {
+       const field =  await this.fieldRepository.findById(contens.fieldId);
+       field.fieldVideo = `${__dirname}/../uploads/${field.id}.txt`;
+        this.saveBase64ToFile(contens.base64, contens.fieldId);
+        await this.fieldRepository.save(field);
+    }
+
+    private saveBase64ToFile(base64String: string, fieldId: string) {
+        fs.writeFileSync(`${__dirname}/../uploads/${fieldId}.txt`, base64String);
     }
 }

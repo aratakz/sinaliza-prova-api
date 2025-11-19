@@ -88,6 +88,22 @@ class QuestionController {
         }
     }
 
+    async saveFieldVideo (request: Request, response: Response) {
+        try {
+            if (!request.body) {
+                throw Error('no body');
+            }
+            const domain = new QuestionDomain();
+            await domain.saveFieldVideo(request.body);
+            response.json({message: "saved"})
+
+        } catch (error) {
+            if (error instanceof Error) {
+                response.status(500).json({message: error.message})
+            }
+        }
+    }
+
 }
 
 
