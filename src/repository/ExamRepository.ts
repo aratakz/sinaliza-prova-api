@@ -1,6 +1,5 @@
 import {RepositoryInterface} from "./RepositoryInterface";
 import {Exam} from "../models/entity";
-import {Promise} from "mongoose";
 import databaseConfig from "../server/typeorm.conf";
 
 export class ExamRepository implements RepositoryInterface<Exam> {
