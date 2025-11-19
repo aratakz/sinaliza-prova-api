@@ -10,6 +10,7 @@ import {RoomDomain} from "../Room";
 import moment from "moment";
 import {UpdateUserDTO} from "../../dto/UpadateUserDTO";
 import {S3Service} from "../../services/S3Sevice";
+import {AccessLevel} from "../../models/enums";
 
 
 type Email = {
@@ -82,7 +83,7 @@ export class UserDomain {
         student.birthday = new Date(studentMetadata.birthday)
         student.email = studentMetadata.email;
         student.name = studentMetadata.name
-
+        student.accessLevel = AccessLevel.STUDENT.toString();
         if (studentMetadata.disciplines) {
             student.disciplines = await this.addDisciplines(studentMetadata);
         }

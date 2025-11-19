@@ -160,7 +160,7 @@ export class AuthController {
             response.json({message: "success"})
         } catch (error) {
             if (error instanceof Error) {
-                response.status(500).json({ message: error.message});
+                response.status(500).json({ message: error.stack});
             }
         }
     }
