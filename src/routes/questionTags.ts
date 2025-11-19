@@ -3,8 +3,9 @@ import AuthMiddlware from "../middleware/AuthMiddlware";
 import ExamController from "../controller/ExamController";
 
 
-const questionTagsRoutes = Router();
+const examsRoutes = Router();
 
-questionTagsRoutes.post('/create', [AuthMiddlware], ExamController.register);
-questionTagsRoutes.get('/list', [AuthMiddlware], ExamController.list);
-export default questionTagsRoutes;
+examsRoutes.post('/create', [AuthMiddlware], ExamController.register);
+examsRoutes.get('/list', [AuthMiddlware], ExamController.list);
+examsRoutes.get('/find/:id', [AuthMiddlware], ExamController.findOne);
+export default examsRoutes;

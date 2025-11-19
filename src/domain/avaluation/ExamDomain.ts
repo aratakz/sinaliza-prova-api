@@ -55,4 +55,8 @@ export class ExamDomain {
     async list () {
         return await this.examRepository.findAll();
     }
+
+    async findOne(id: string) {
+        return await this.examRepository.findById(id);
+    }
 }

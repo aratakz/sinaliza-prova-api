@@ -17,12 +17,23 @@ class ExamController {
             }
         }
     }
-
-
     async list(request: Request, response: Response) {
         try {
             const domain = new ExamDomain();
             response.json(await domain.list());
+        } catch (error) {
+            if (error instanceof Error) {
+                response.status(500).json({message: error.message});
+            }
+        }
+    }
+    async findOne(request: Request, response: Response){
+        try {
+            if (!request.params.id) {
+                throw Error('No id is present');
+            }
+            const domain = new ExamDomain();
+            response.json(await domain.findOne(request.params.id));
         } catch (error) {
             if (error instanceof Error) {
                 response.status(500).json({message: error.message});
