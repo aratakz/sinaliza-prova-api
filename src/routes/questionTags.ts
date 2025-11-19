@@ -8,4 +8,5 @@ const examsRoutes = Router();
 examsRoutes.post('/create', [AuthMiddlware], ExamController.register);
 examsRoutes.get('/list', [AuthMiddlware], ExamController.list);
 examsRoutes.get('/find/:id', [AuthMiddlware], ExamController.findOne);
+examsRoutes.delete('/remove/:id', [AuthMiddlware], ExamController.remove);
 export default examsRoutes;

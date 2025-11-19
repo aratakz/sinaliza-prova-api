@@ -51,12 +51,19 @@ export class ExamDomain {
         }
         return await this.examRepository.save(exam);
     }
-
     async list () {
         return await this.examRepository.findAll();
     }
-
     async findOne(id: string) {
         return await this.examRepository.findById(id);
+    }
+    async remove(id: any) {
+        const exam = await this.examRepository.findById(id);
+        if (!exam) {
+            throw Error('Exam not found.');
+        }
+
+        return await this.examRepository.remove(exam);
+
     }
 }

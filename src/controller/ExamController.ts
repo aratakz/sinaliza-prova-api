@@ -40,6 +40,18 @@ class ExamController {
             }
         }
     }
+    async remove(request: Request, response: Response) {
+        try {
+            if (!request.params.id) {
+                throw Error('No id is present');
+            }
+            response.json(await new ExamDomain().remove(request.params.id));
+        } catch (error) {
+            if (error instanceof Error) {
+                response.status(500).json({message: error.message});
+            }
+        }
+    }
 }
 
 export default new ExamController();
