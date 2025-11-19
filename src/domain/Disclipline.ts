@@ -3,14 +3,17 @@ import {DisciplineRepository} from "../repository/DisciplineRepository";
 import {DisciplineDTO} from "../dto/DisciplineDTO";
 import {Curriculum, Discipline} from "../models/entity";
 import auth from "../routes/auth";
+import {CurriculumRepository} from "../repository/CurriculumRepository";
 
 export class DisciplineDomain {
 
     private readonly authTokenRepository: AuthTokenRepository;
     private readonly disciplineRepository: DisciplineRepository;
+    private readonly curriculumRepository: CurriculumRepository;
     constructor() {
         this.disciplineRepository = new DisciplineRepository();
         this.authTokenRepository = new AuthTokenRepository();
+        this.curriculumRepository = new CurriculumRepository();
     }
 
     async create (disciplineDTO: DisciplineDTO) {
@@ -32,7 +35,7 @@ export class DisciplineDomain {
         let discipline: Discipline = new Discipline();
         discipline.name = disciplineDTO.name;
         discipline.institute = authToken.user.institute;
-        discipline.curriculums = this.addCurriculum(disciplineDTO, discipline);
+        discipline.curriculums = await  this.addCurriculum(disciplineDTO, discipline);
         await this.disciplineRepository.save(discipline);
     }
 
@@ -66,19 +69,21 @@ export class DisciplineDomain {
             throw Error('Discipline not found!');
         }
         discipline.name = disciplineDTO.name;
-        discipline.curriculums = this.addCurriculum(disciplineDTO, discipline);
+        discipline.curriculums = await this.addCurriculum(disciplineDTO, discipline);
         await this.disciplineRepository.save(discipline);
     }
 
-    private addCurriculum(disciplineDTO: DisciplineDTO, discipline: Discipline) {
+    private async addCurriculum(disciplineDTO: DisciplineDTO, discipline: Discipline) {
         const curriculumList: Curriculum[] = []
         if (disciplineDTO.curriculum) {
             for (const curriculum  of disciplineDTO.curriculum) {
-                curriculumList.push({
-                    name: curriculum.name,
-                    discipline: discipline,
-                    weight: curriculum.weight,
-                });
+               let  curriculumInstance:any = {
+                   name: curriculum.name,
+                   discipline: discipline,
+                   weight: curriculum.weight,
+               };
+               await this.curriculumRepository.save(curriculumInstance);
+               curriculumList.push(curriculumInstance);
             }
         }
 

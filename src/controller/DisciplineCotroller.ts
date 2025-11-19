@@ -14,7 +14,6 @@ export class  DisciplineController {
             }
         }
     }
-
     async register (request: Request, response: Response) {
         try {
             if (!request.body) {
@@ -39,7 +38,6 @@ export class  DisciplineController {
             }
         }
     }
-
     async remove (request: Request, response: Response) {
         try {
             if (!request.params.id) {
@@ -54,7 +52,6 @@ export class  DisciplineController {
             }
         }
     }
-
     async findOne(request: Request, response: Response) {
        try {
            if (!request.params.id) {
@@ -69,7 +66,6 @@ export class  DisciplineController {
            }
        }
     }
-
     async update (request: Request, response: Response) {
         try {
             if (!request.params.id) {
