@@ -210,6 +210,13 @@ export class QuestionDomain {
         await this.fieldRepository.save(field);
     }
 
+    async getFieldVideo(fieldId: any) {
+        const field =  await this.fieldRepository.findById(fieldId);
+        console.debug(fieldId);
+        console.debug(`${field.fieldVideo}`);
+        return fs.readFileSync(`${field.fieldVideo}`, 'utf-8');
+    }
+
     private saveBase64ToFile(base64String: string, fieldId: string) {
         fs.writeFileSync(`${__dirname}/../uploads/${fieldId}.txt`, base64String);
     }

@@ -104,6 +104,21 @@ class QuestionController {
         }
     }
 
+    async loadFieldVideo (request: Request, response: Response) {
+        try {
+            if (!request.params.id) {
+                throw Error('no id is present');
+            }
+            const domain = new QuestionDomain();
+            response.json({video: await domain.getFieldVideo(request.params.id)});
+
+        } catch (error) {
+            if (error instanceof Error) {
+                response.status(500).json({message: error.message})
+            }
+        }
+    }
+
 }
 
 
