@@ -9,9 +9,6 @@ export class RoomRepository implements RepositoryInterface<Room> {
             where: {
                 id: id
             },
-            relations: {
-                students: true
-            }
         });
         return results[0];
     }

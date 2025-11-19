@@ -1,6 +1,5 @@
 import {BaseEntity} from "./BaseEntity";
-import {Column, Entity, ManyToOne, OneToMany} from "typeorm";
-import {Student} from "./Studant";
+import {Column, Entity, OneToMany, Relation} from "typeorm";
 import {Exam} from "./Exam";
 
 
@@ -9,6 +8,6 @@ export class Room extends BaseEntity {
     @Column()
     name: string;
 
-    @OneToMany(()=> Student, student => student.room)
-    students?: Student[];
+    @OneToMany(()=> Exam, exam => exam.room)
+    exams?: Relation<Exam[]>;
 }

@@ -1,4 +1,4 @@
-import {BaseEntity, ChildEntity, Column, Entity, JoinColumn, ManyToOne} from "typeorm";
+import {ChildEntity, Column, Entity, JoinColumn, ManyToOne} from "typeorm";
 import { User } from "./User";
 import {Room} from "./Room";
 
@@ -8,7 +8,7 @@ export class Student extends  User {
     @Column({type: "date"})
     birthday: Date;
 
-    @ManyToOne(() => Room, (room) => room.students, {
+    @ManyToOne(() => Room, {
         onDelete: 'CASCADE',
     })
     @JoinColumn({name: 'room_id'})
