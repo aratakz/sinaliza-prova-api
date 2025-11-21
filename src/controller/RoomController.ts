@@ -81,4 +81,4 @@ export class RoomController {
     }
 }
 
-export default new RoomController();
+export const controller =  new RoomController();

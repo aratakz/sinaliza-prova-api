@@ -102,4 +102,4 @@ export class InstituteController {
     }
 }
 
-export default new InstituteController();
+export const controller = new InstituteController();

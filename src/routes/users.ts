@@ -1,26 +1,21 @@
 import {Router} from 'express';
-import UsersController  from '../controller/UserController';
+import {controller}  from '../controller/users/UserController';
 import authMiddleware from '../middleware/AuthMiddlware';
-import ProfessionalController from "../controller/ProfessionalController";
+import {router as students} from './users/students';
+import {router as professionals} from './users/professionals';
 
 
-const usersRoutes = Router();
+export const router = Router();
 
-usersRoutes.get('/', UsersController.index);
-usersRoutes.post('/avatarLink/', [authMiddleware], UsersController.getAvatar);
+    router.get('/', controller.getAll);
+    router.get('/userdata/:userId', [authMiddleware], controller.getInfo);
+    router.get('/checkUsername/:username', controller.checkUsername);
 
-usersRoutes.get('/userdata/:userId', [authMiddleware], UsersController.getUserInfo);
-usersRoutes.get('/checkUsername/:username', UsersController.checkUsername);
+    router.post('/avatarLink/', [authMiddleware], controller.getAvatar);
+    router.post('/create',  [authMiddleware], controller.create);
 
-usersRoutes.post('/create',  [authMiddleware], UsersController.register);
-usersRoutes.patch('/update/:id', [authMiddleware], UsersController.updateUser);
+    router.patch('/update/:id', [authMiddleware], controller.update);
 
-usersRoutes.get('/students', UsersController.getAllStudents);
-usersRoutes.get('/students/:id', UsersController.findById);
-usersRoutes.delete('/students/remove/:id', UsersController.remove);
-usersRoutes.patch('/students/update/:id', UsersController.update);
+    router.use(students);
+    router.use(professionals);
 
-
-usersRoutes.post('/professionals/create', [authMiddleware], ProfessionalController.create);
-
-export default usersRoutes;

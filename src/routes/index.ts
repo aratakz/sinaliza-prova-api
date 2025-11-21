@@ -1,27 +1,18 @@
 import { Router } from "express";
-import usersRoutes from "./users";
-import authRoutes from "./auth";
-import instituteRoutes from "./institute";
-import courseRoutes from "./course";
-import disciplineRoutes from "./discipline";
-import curriculumRoutes from "./curriculum";
-import roomRoutes from "./room";
-import questionRoutes from "./question";
-import questionOptionRoutes from "./questionOption";
-import questionTagsRoutes from "./questionTags";
-import examsRoutes from "./questionTags";
+import {router as security} from "./security";
+import {router as users} from "./users";
+import {router as system} from "./system";
+import {router as management} from "./management";
+
+import {router as evaluation} from "./evaluation";
 
 const routes = Router();
 
-routes.use('/users', usersRoutes);
-routes.use('/auth', authRoutes);
-routes.use('/course', courseRoutes);
-routes.use('/institutes', instituteRoutes);
-routes.use('/disciplines', disciplineRoutes);
-routes.use('/curriculum', curriculumRoutes);
-routes.use('/room', roomRoutes);
-routes.use('/questions', questionRoutes);
-routes.use('/questionOption', questionOptionRoutes);
-routes.use('/exams', examsRoutes);
+routes.use('/users', users);
+routes.use('/security', security);
+routes.use('/evaluation', evaluation);
+routes.use('/system', system);
+routes.use('/management', management);
+
 
 export default routes;

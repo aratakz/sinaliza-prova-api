@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
-import {ProfessionalDomain} from "../domain/users/Professional";
-import {ProfessionalDTO} from "../dto";
+import {ProfessionalDomain} from "../../domain/users/Professional";
+import {ProfessionalDTO} from "../../dto";
 
 export class ProfessionalController {
 

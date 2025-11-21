@@ -1,7 +1,6 @@
 import {RepositoryInterface} from "./RepositoryInterface";
 import {Room} from "../models/entity";
 import databaseConfig from "../server/typeorm.conf";
-import room from "../routes/room";
 
 export class RoomRepository implements RepositoryInterface<Room> {
     async findById(id: string): Promise<Room> {

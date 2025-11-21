@@ -4,4 +4,4 @@ class QuestionTagsController {
     async create(request: Request, response: Response) {}
 }
 
-export default new QuestionTagsController();
+export const controller =  new QuestionTagsController();

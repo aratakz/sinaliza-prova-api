@@ -2,7 +2,6 @@ import {AuthTokenRepository} from "../repository/AuthToekenRepository";
 import {DisciplineRepository} from "../repository/DisciplineRepository";
 import {DisciplineDTO} from "../dto/DisciplineDTO";
 import {Curriculum, Discipline} from "../models/entity";
-import auth from "../routes/auth";
 import {CurriculumRepository} from "../repository/CurriculumRepository";
 
 export class DisciplineDomain {

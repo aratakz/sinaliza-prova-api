@@ -4,10 +4,6 @@ import { Request, Response } from 'express';
 
 class CourseDetailController{
 
-    async index(request: Request, response: Response): Promise<any> {
-        response.json('course routes');
-    }
-
     async getCourseInfo(request: Request, response: Response){
         if (!request.params || !request.params.courseId) {
             response.status(422).json({ message: 'No course id is provided!' })
@@ -40,7 +36,7 @@ class CourseDetailController{
         const course = await new CourseRepository().findById(request.params.courseId);
 
         if (course != null) {
-            new CourseDomain().update(course, request.body)
+            await new CourseDomain().update(course, request.body)
 
         } else {
             response.status(404).json({ message: 'Course not found!'})
@@ -48,4 +44,5 @@ class CourseDetailController{
         
     }
 
-} export default new CourseDetailController();
+}
+export const controller = new CourseDetailController();

@@ -1,5 +1,5 @@
 import {Request, Response} from "express";
-import {QuestionDomain} from "../domain/Question";
+import {QuestionDomain} from "../../domain/Question";
 
 class QuestionController {
 
@@ -17,8 +17,7 @@ class QuestionController {
             }
         }
     }
-
-    async list(request: Request, response: Response) {
+    async getAll(request: Request, response: Response) {
         try {
             const domain = new QuestionDomain();
             response.json(await domain.getAll());
@@ -28,7 +27,6 @@ class QuestionController {
             }
         }
     }
-
     async remove(request: Request, response: Response) {
         try {
             if (!request.params.id) {
@@ -43,7 +41,6 @@ class QuestionController {
             }
         }
     }
-
     async update(request: Request, response: Response) {
         try {
             if (!request.params.id) {
@@ -63,7 +60,6 @@ class QuestionController {
             }
         }
     }
-
     async findOne(request: Request, response: Response) {
         if (!request.params.id) {
             throw new Error("Id is not provided");
@@ -72,7 +68,6 @@ class QuestionController {
         const domain = new QuestionDomain();
         response.json(await domain.findOne(request.params.id));
     }
-
     async search(request: Request, response: Response) {
         try {
             if (request.query.search && typeof request.query.search == 'string') {
@@ -87,7 +82,6 @@ class QuestionController {
             }
         }
     }
-
     async saveFieldVideo (request: Request, response: Response) {
         try {
             if (!request.body) {
@@ -103,7 +97,6 @@ class QuestionController {
             }
         }
     }
-
     async loadFieldVideo (request: Request, response: Response) {
         try {
             if (!request.params.id) {
@@ -121,5 +114,4 @@ class QuestionController {
 
 }
 
-
-export default new QuestionController();
+export const controller = new QuestionController();

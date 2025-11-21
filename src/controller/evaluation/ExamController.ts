@@ -1,9 +1,9 @@
 import {Request, Response} from "express";
-import {CreateExamDTO} from "../domain/avaluation/dto/CreateExamDTO";
-import {ExamDomain} from "../domain/avaluation/ExamDomain";
+import {CreateExamDTO} from "../../domain/avaluation/dto/CreateExamDTO";
+import {ExamDomain} from "../../domain/avaluation/ExamDomain";
 
 class ExamController {
-    async register(request: Request, response: Response)  {
+    async create(request: Request, response: Response)  {
         try {
             if (!request.body) {
                 throw Error('No body is present');
@@ -17,7 +17,7 @@ class ExamController {
             }
         }
     }
-    async list(request: Request, response: Response) {
+    async getAll(request: Request, response: Response) {
         try {
             const domain = new ExamDomain();
             response.json(await domain.list());
@@ -27,7 +27,7 @@ class ExamController {
             }
         }
     }
-    async findOne(request: Request, response: Response){
+    async getById(request: Request, response: Response){
         try {
             if (!request.params.id) {
                 throw Error('No id is present');
@@ -54,4 +54,4 @@ class ExamController {
     }
 }
 
-export default new ExamController();
+export const controller = new ExamController();

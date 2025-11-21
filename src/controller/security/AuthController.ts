@@ -1,14 +1,11 @@
 import { Request, Response } from 'express';
 import 'dotenv/config'
-import { Security } from '../domain/Security';
-import { AuthException } from '../domain/exception/AuthExceptoion';
-import { UserDomain } from '../domain/users/UserDomain';
-import { ExitentRecordException } from '../domain/exception/ExistentRecordException';
-import { UserRepository } from '../repository/UserRepository';
-import {TwoFactorTokenRepository} from "../repository/TwoFactorTokenRepository";
+import { Security } from '../../domain/Security';
+import { AuthException } from '../../domain/exception/AuthExceptoion';
+import { UserRepository } from '../../repository/UserRepository';
+import {TwoFactorTokenRepository} from "../../repository/TwoFactorTokenRepository";
 import moment from "moment";
-import {AuthTokenRepository} from "../repository/AuthToekenRepository";
-import auth from "../routes/auth";
+import {AuthTokenRepository} from "../../repository/AuthToekenRepository";
 export class AuthController {
 
 

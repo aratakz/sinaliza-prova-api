@@ -1,10 +1,8 @@
 import {Request, Response} from "express";
-import {QuestionOptionDomain} from "../domain/QuestionOption";
+import {QuestionOptionDomain} from "../../domain/QuestionOption";
 
 class QuestionOptionController {
-
-
-    create(request: Request, response: Response) {
+    async create(request: Request, response: Response) {
         try {
 
         } catch (error) {
@@ -13,8 +11,7 @@ class QuestionOptionController {
             }
         }
     }
-
-    async findByQuestionId(request: Request, response: Response) {
+    async getByQuestionId(request: Request, response: Response) {
         try {
             const domain = new QuestionOptionDomain();
             response.json(await domain.findByQuestionId(request.params.id));
@@ -25,7 +22,6 @@ class QuestionOptionController {
         }
     }
 }
-
-export default new  QuestionOptionController();
+export const controller = new QuestionOptionController();
 
 

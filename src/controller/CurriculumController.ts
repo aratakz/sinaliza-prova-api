@@ -25,4 +25,4 @@ class CurriculumController {
     }
 }
 
-export default new CurriculumController();
+export const controller = new CurriculumController();

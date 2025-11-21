@@ -85,4 +85,4 @@ export class  DisciplineController {
     }
 }
 
-export default new DisciplineController();
+export const controller = new DisciplineController();
