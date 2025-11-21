@@ -1,0 +1,616 @@
+openapi: 3.0.0
+info:
+  title: Sinaliza Prova API
+  version: 1.0.0
+  description: Documentação da API do projeto Sinaliza Prova.
+
+# Definição das tags para agrupamento
+tags:
+  - name: Evaluation - Exams
+    description: Operações relacionadas a exames.
+  - name: Evaluation - Questions
+    description: Operações relacionadas a questões.
+  - name: Evaluation - Question Options
+    description: Operações com as opções das questões.
+  - name: Evaluation - Question Tags
+    description: Operações com as tags das questões.
+  - name: Management - Rooms
+    description: Gerenciamento de salas.
+  - name: Management - Courses
+    description: Gerenciamento de cursos.
+  - name: Management - Institutes
+    description: Gerenciamento de institutos.
+  - name: Management - Disciplines
+    description: Gerenciamento de disciplinas.
+  - name: Management - Curriculums
+    description: Gerenciamento de currículos.
+  - name: Security - Auth
+    description: Autenticação e autorização.
+  - name: System - Media
+    description: Operações de mídia do sistema.
+  - name: Users - General
+    description: Operações gerais de usuários.
+  - name: Users - Students
+    description: Gerenciamento de estudantes.
+  - name: Users - Professionals
+    description: Gerenciamento de profissionais.
+
+paths:
+  # ---------------------------------------------------
+  # Evaluation
+  # ---------------------------------------------------
+  /evaluation/exams/create:
+    post:
+      tags: [Evaluation - Exams]
+      summary: Cria um novo exame
+      responses:
+        '200':
+          description: Operação bem-sucedida
+  /evaluation/exams/list:
+    get:
+      tags: [Evaluation - Exams]
+      summary: Lista todos os exames
+      responses:
+        '200':
+          description: Operação bem-sucedida
+  /evaluation/exams/find/{id}:
+    get:
+      tags: [Evaluation - Exams]
+      summary: Busca um exame pelo ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Operação bem-sucedida
+  /evaluation/exams/remove/{id}:
+    delete:
+      tags: [Evaluation - Exams]
+      summary: Remove um exame pelo ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Operação bem-sucedida
+
+  /evaluation/questions/register:
+    post:
+      tags: [Evaluation - Questions]
+      summary: Registra uma nova questão
+      responses:
+        '200':
+          description: Operação bem-sucedida
+  /evaluation/questions/list:
+    get:
+      tags: [Evaluation - Questions]
+      summary: Lista todas as questões
+      responses:
+        '200':
+          description: Operação bem-sucedida
+  /evaluation/questions/find/{id}:
+    get:
+      tags: [Evaluation - Questions]
+      summary: Busca uma questão pelo ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Operação bem-sucedida
+  /evaluation/questions/search:
+    get:
+      tags: [Evaluation - Questions]
+      summary: Procura por questões
+      responses:
+        '200':
+          description: Operação bem-sucedida
+  /evaluation/questions/fieldVideo:
+    post:
+      tags: [Evaluation - Questions]
+      summary: Salva o vídeo de um campo da questão
+      responses:
+        '200':
+          description: Operação bem-sucedida
+  /evaluation/questions/update/{id}:
+    patch:
+      tags: [Evaluation - Questions]
+      summary: Atualiza uma questão
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Operação bem-sucedida
+  /evaluation/questions/{id}:
+    delete:
+      tags: [Evaluation - Questions]
+      summary: Remove uma questão
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Operação bem-sucedida
+
+  /evaluation/questionOption/register:
+    post:
+      tags: [Evaluation - Question Options]
+      summary: Cria uma opção para uma questão
+      responses:
+        '200':
+          description: Operação bem-sucedida
+  /evaluation/questionOption/find/question/{id}:
+    get:
+      tags: [Evaluation - Question Options]
+      summary: Busca opções de uma questão pelo ID da questão
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Operação bem-sucedida
+
+  /evaluation/questionTags/create:
+    post:
+      tags: [Evaluation - Question Tags]
+      summary: Cria uma tag para uma questão
+      responses:
+        '200':
+          description: Operação bem-sucedida
+
+  # ---------------------------------------------------
+  # Management
+  # ---------------------------------------------------
+  /management/room:
+    get:
+      tags: [Management - Rooms]
+      summary: Lista todas as salas
+      responses:
+        '200':
+          description: Operação bem-sucedida
+  /management/room/{id}:
+    get:
+      tags: [Management - Rooms]
+      summary: Busca uma sala pelo ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Operação bem-sucedida
+    delete:
+      tags: [Management - Rooms]
+      summary: Remove uma sala pelo ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Operação bem-sucedida
+  /management/room/register:
+    post:
+      tags: [Management - Rooms]
+      summary: Registra uma nova sala
+      responses:
+        '200':
+          description: Operação bem-sucedida
+  /management/room/update/{id}:
+    patch:
+      tags: [Management - Rooms]
+      summary: Atualiza uma sala
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Operação bem-sucedida
+
+  /management/course/data{id}:
+    get:
+      tags: [Management - Courses]
+      summary: Obtém informações de um curso
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Operação bem-sucedida
+  /management/course/update{id}:
+    patch:
+      tags: [Management - Courses]
+      summary: Atualiza um curso
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Operação bem-sucedida
+
+  /management/institute:
+    get:
+      tags: [Management - Institutes]
+      summary: Lista todos os institutos
+      responses:
+        '200':
+          description: Operação bem-sucedida
+  /management/institute/find/{id}:
+    get:
+      tags: [Management - Institutes]
+      summary: Busca um instituto pelo ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Operação bem-sucedida
+  /management/institute/search/{text}:
+    get:
+      tags: [Management - Institutes]
+      summary: Procura um instituto por texto
+      parameters:
+        - name: text
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Operação bem-sucedida
+  /management/institute/create:
+    post:
+      tags: [Management - Institutes]
+      summary: Cria um novo instituto
+      responses:
+        '200':
+          description: Operação bem-sucedida
+  /management/institute/update/{id}:
+    put:
+      tags: [Management - Institutes]
+      summary: Atualiza um instituto
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Operação bem-sucedida
+  /management/institute/remove/{id}:
+    delete:
+      tags: [Management - Institutes]
+      summary: Remove um instituto
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Operação bem-sucedida
+
+  /management/discipline:
+    get:
+      tags: [Management - Disciplines]
+      summary: Lista todas as disciplinas
+      responses:
+        '200':
+          description: Operação bem-sucedida
+  /management/discipline/{id}:
+    get:
+      tags: [Management - Disciplines]
+      summary: Busca uma disciplina pelo ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Operação bem-sucedida
+  /management/discipline/update/{id}:
+    patch:
+      tags: [Management - Disciplines]
+      summary: Atualiza uma disciplina
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Operação bem-sucedida
+  /management/discipline/create:
+    post:
+      tags: [Management - Disciplines]
+      summary: Cria uma nova disciplina
+      responses:
+        '200':
+          description: Operação bem-sucedida
+  /management/discipline/remove/{id}:
+    delete:
+      tags: [Management - Disciplines]
+      summary: Remove uma disciplina
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Operação bem-sucedida
+
+  /management/curriculum/{id}:
+    get:
+      tags: [Management - Curriculums]
+      summary: Busca um currículo pelo ID da disciplina
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Operação bem-sucedida
+
+  # ---------------------------------------------------
+  # Security
+  # ---------------------------------------------------
+  /security/auth/checkTwoFactorToken/{token}:
+    get:
+      tags: [Security - Auth]
+      summary: Verifica um token de dois fatores
+      parameters:
+        - name: token
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Operação bem-sucedida
+  /security/auth/checkAuthToken/{token}:
+    get:
+      tags: [Security - Auth]
+      summary: Verifica um token de autenticação
+      parameters:
+        - name: token
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Operação bem-sucedida
+  /security/auth/activate/{token}:
+    patch:
+      tags: [Security - Auth]
+      summary: Ativa um usuário com um token
+      parameters:
+        - name: token
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Operação bem-sucedida
+  /security/auth/updatePass/{token}:
+    patch:
+      tags: [Security - Auth]
+      summary: Atualiza a senha com um token
+      parameters:
+        - name: token
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Operação bem-sucedida
+  /security/auth/signin:
+    post:
+      tags: [Security - Auth]
+      summary: Realiza o login
+      responses:
+        '200':
+          description: Operação bem-sucedida
+  /security/auth/student/firstLogin:
+    post:
+      tags: [Security - Auth]
+      summary: Realiza o primeiro login de um estudante
+      responses:
+        '200':
+          description: Operação bem-sucedida
+  /security/auth/requestPassChange:
+    post:
+      tags: [Security - Auth]
+      summary: Solicita a mudança de senha
+      responses:
+        '200':
+          description: Operação bem-sucedida
+  /security/auth/logout:
+    delete:
+      tags: [Security - Auth]
+      summary: Realiza o logout
+      responses:
+        '200':
+          description: Operação bem-sucedida
+
+  # ---------------------------------------------------
+  # System
+  # ---------------------------------------------------
+  /system/media/field/video/{id}:
+    get:
+      tags: [System - Media]
+      summary: Carrega o vídeo de um campo
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Operação bem-sucedida
+
+  # ---------------------------------------------------
+  # Users
+  # ---------------------------------------------------
+  /users:
+    get:
+      tags: [Users - General]
+      summary: Lista todos os usuários
+      responses:
+        '200':
+          description: Operação bem-sucedida
+  /users/userdata/{userId}:
+    get:
+      tags: [Users - General]
+      summary: Obtém informações de um usuário
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Operação bem-sucedida
+  /users/checkUsername/{username}:
+    get:
+      tags: [Users - General]
+      summary: Verifica se um nome de usuário existe
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Operação bem-sucedida
+  /users/avatarLink:
+    post:
+      tags: [Users - General]
+      summary: Obtém o link do avatar
+      responses:
+        '200':
+          description: Operação bem-sucedida
+  /users/create:
+    post:
+      tags: [Users - General]
+      summary: Cria um novo usuário
+      responses:
+        '200':
+          description: Operação bem-sucedida
+  /users/update/{id}:
+    patch:
+      tags: [Users - General]
+      summary: Atualiza um usuário
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Operação bem-sucedida
+  
+  /users/students:
+    get:
+      tags: [Users - Students]
+      summary: Lista todos os estudantes
+      responses:
+        '200':
+          description: Operação bem-sucedida
+  /users/students/{id}:
+    get:
+      tags: [Users - Students]
+      summary: Busca um estudante pelo ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Operação bem-sucedida
+  /users/students/remove/{id}:
+    delete:
+      tags: [Users - Students]
+      summary: Remove um estudante
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Operação bem-sucedida
+  /users/students/update/{id}:
+    patch:
+      tags: [Users - Students]
+      summary: Atualiza um estudante
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Operação bem-sucedida
+
+  /users/professionals/create:
+    post:
+      tags: [Users - Professionals]
+      summary: Cria um novo profissional
+      responses:
+        '200':
+          description: Operação bem-sucedida
