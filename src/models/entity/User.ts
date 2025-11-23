@@ -61,7 +61,6 @@ export abstract class User extends BaseEntity {
     }
 
     async validateCredentials(credentials: any) {
-        console.debug(this.password);
         if (!await bcrypt.compare(credentials.password, this.password)) {
             throw new AuthException();
         }

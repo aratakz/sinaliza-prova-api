@@ -22,7 +22,6 @@ export class AuthController {
                 password: request.body.password,
                 username: request.body.username,
             });
-            console.debug(token);
             response.json({ token: token, register: new Date()});
         } catch (exception) {
             const errorCode = (<AuthException>exception).error;
