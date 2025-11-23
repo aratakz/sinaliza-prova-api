@@ -1,6 +1,7 @@
 import {AuthTokenRepository} from "../../repository/AuthToekenRepository";
 import {InstituteRepository} from "../../repository/InstituteRepository";
 import {UserRepository} from "../../repository/UserRepository";
+import {Institute} from "../../models/entity";
 
 export class InstituteDomain  {
 
@@ -37,5 +38,11 @@ export class InstituteDomain  {
              throw new Error('Institute not found');
         }
         return institute;
+    }
+
+
+    async remove(id: any) {
+        const institute = await this.findById(id);
+        await this.instituteRepository.remove(institute);
     }
 }

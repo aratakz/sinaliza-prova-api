@@ -83,12 +83,8 @@ export class InstituteController {
             if (!id) {
                 throw new Error('institute id not informed!');
             }
-            const repository = new InstituteRepository();
-            const institute: Institute|null = await repository.findById(id);
-            if (!institute) {
-                throw new Error('institute not found');
-            }
-            await repository.remove(institute);
+            const domain = new InstituteDomain();
+            await domain.remove(id);
             response.json({message : 'deleted register'});
         } catch (error) {
             if (error instanceof Error) {
