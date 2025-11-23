@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
-import {DisciplineDomain} from "../domain/Disclipline";
-import {CurriculumDomain} from "../domain/Curriculum";
+import {DisciplineDomain} from "../../domain/Disclipline";
+import {CurriculumDomain} from "../../domain/Curriculum";
 
 class CurriculumController {
 

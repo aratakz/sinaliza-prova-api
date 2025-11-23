@@ -19,6 +19,7 @@ import {UpdatePassDto} from "../dto/UpadatePassDTO";
 import question from "../models/schemas/Question";
 import {ProfessionalRepository} from "../repository/ProfessionalRepository";
 import {Professional} from "../models/entity";
+import {SigninDTO} from "../dto/security/signinDTO";
 
 type Email = {
     title: string,
@@ -45,16 +46,12 @@ export class Security {
         this.authTokenRepository = new AuthTokenRepository;
     }
 
-    async getCredentials(userName: string, password: string) {
+    async getCredentials(credentials: SigninDTO) {
         if (process.env.TOKEN_SECRET) {
-            const user: User|null = await this.userRepository.findByUserName(userName);
-            const professional: Professional = await this.professionalRepository.findByUsername(userName);
+            const user: User|null = await this.userRepository.findByUserName(credentials.username);
+            const professional: Professional = await this.professionalRepository.findByUsername(credentials.username);
 
             if (!user && !professional) {
-                throw new AuthException();
-            }
-
-            if (!password) {
                 throw new AuthException();
             }
 
@@ -63,7 +60,7 @@ export class Security {
             }
 
             if (user) {
-                if (!await bcrypt.compare(password, user.password)) {
+                if (!await bcrypt.compare(credentials.password, user.password)) {
                     throw new AuthException();
                 }
 
@@ -77,7 +74,7 @@ export class Security {
             }
 
             if (professional) {
-                if (!await bcrypt.compare(password, professional.password)) {
+                if (!await bcrypt.compare(credentials.password, professional.password)) {
                     throw new AuthException();
                 }
 

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import {DisciplineDomain} from "../domain/Disclipline";
+import {DisciplineDomain} from "../../domain/Disclipline";
 
 
 export class  DisciplineController {

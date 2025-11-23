@@ -1,5 +1,5 @@
 import {Request, Response} from "express";
-import {RoomDomain} from "../domain/Room";
+import {RoomDomain} from "../../domain/Room";
 import {create} from "node:domain";
 
 export class RoomController {

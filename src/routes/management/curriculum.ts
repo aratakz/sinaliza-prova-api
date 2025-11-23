@@ -1,6 +1,6 @@
 import {Router} from "express";
 import AuthMiddlware from "../../middleware/AuthMiddlware";
-import {controller} from "../../controller/CurriculumController";
+import {controller} from "../../controller/management/CurriculumController";
 
 
 export const router = Router();

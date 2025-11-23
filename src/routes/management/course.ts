@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import {controller} from '../../controller/CourseDetailController';
+import {controller} from '../../controller/management/CourseDetailController';
 import authMiddleware from '../../middleware/AuthMiddlware';
 
 export const router = Router();

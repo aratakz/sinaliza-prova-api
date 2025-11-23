@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import {InstituteRepository} from "../repository/InstituteRepository";
-import {Institute} from "../models/entity";
+import {InstituteRepository} from "../../repository/InstituteRepository";
+import {Institute} from "../../models/entity";
 
 
 export class InstituteController {

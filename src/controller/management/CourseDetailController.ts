@@ -1,5 +1,5 @@
-import { CourseDomain } from '../domain/Course';
-import { CourseRepository } from '../repository/CourseDetailRepository';
+import { CourseDomain } from '../../domain/Course';
+import { CourseRepository } from '../../repository/CourseDetailRepository';
 import { Request, Response } from 'express';
 
 class CourseDetailController{

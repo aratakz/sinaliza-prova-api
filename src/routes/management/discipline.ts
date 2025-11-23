@@ -1,5 +1,5 @@
 import {Router} from "express";
-import {controller} from "../../controller/DisciplineCotroller";
+import {controller} from "../../controller/management/DisciplineCotroller";
 import AuthMiddlware from "../../middleware/AuthMiddlware";
 
 
