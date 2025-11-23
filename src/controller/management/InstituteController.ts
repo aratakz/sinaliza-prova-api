@@ -1,14 +1,20 @@
 import { Request, Response } from 'express';
 import {InstituteRepository} from "../../repository/InstituteRepository";
 import {Institute} from "../../models/entity";
+import {InstituteDomain} from "../../domain/management/InstituteDomain";
 
 
 export class InstituteController {
-    async index(request: Request, response: Response) {
-        const instituteRepository = await  new InstituteRepository().findAll();
-        response.json(instituteRepository);
+    async list(request: Request, response: Response) {
+        try {
+            const domain = new InstituteDomain();
+            response.json(await domain.getAll());
+        } catch (error) {
+            if (error instanceof Error) {
+                response.json({message: error.message});
+            }
+        }
     }
-
     async register(request: Request, response: Response) {
         try {
             if (!request.body) {
@@ -24,9 +30,6 @@ export class InstituteController {
             response.status(500).json({ message: e})
         }
     }
-
-    async find() {}
-
     async findOneByText(request: Request, response: Response) {
         const repository = new InstituteRepository();
         const institutes: Institute[] =  await repository.findByText(request.params.text);
@@ -39,23 +42,16 @@ export class InstituteController {
         }
         response.json(responseArray);
     }
-
     async findById(request: Request, response: Response) {
         try {
-            const repository = new InstituteRepository();
-            const id = request.params.id;
-            const institute: Institute|null = await repository.findById(id);
-            if (!institute) {
-                throw new Error('institute not found');
-            }
-            response.json(institute);
+            const domain = new InstituteDomain();
+            response.json(await domain.findById(request.params.id));
         } catch (error) {
             if (error instanceof Error) {
                 response.status(500).json({ message: error.message })
             }
         }
     }
-
     async update(request: Request, response: Response) {
         try {
             const id = request.params.id;

@@ -5,7 +5,7 @@ import authMiddleware from '../../middleware/AuthMiddlware';
 
 export const router = Router();
 
-router.get('/', controller.index);
+router.get('/', controller.list);
 router.get('/find/:id', [authMiddleware], controller.findById);
 router.get('/search/:text', controller.findOneByText);
 router.post('/create', [authMiddleware], controller.register);

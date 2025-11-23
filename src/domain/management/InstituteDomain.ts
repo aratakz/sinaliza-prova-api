@@ -1,6 +1,6 @@
-import {AuthTokenRepository} from "../repository/AuthToekenRepository";
-import {InstituteRepository} from "../repository/InstituteRepository";
-import {UserRepository} from "../repository/UserRepository";
+import {AuthTokenRepository} from "../../repository/AuthToekenRepository";
+import {InstituteRepository} from "../../repository/InstituteRepository";
+import {UserRepository} from "../../repository/UserRepository";
 
 export class InstituteDomain  {
 
@@ -12,7 +12,9 @@ export class InstituteDomain  {
         this.authTokenRepository = new AuthTokenRepository();
         this.instituteRepository = new InstituteRepository();
     }
-
+    async getAll() {
+        return await this.instituteRepository.findAll();
+    }
     async getByToken(token: string) {
         const authToken = await this.authTokenRepository.findToken(token);
 
@@ -30,6 +32,10 @@ export class InstituteDomain  {
     }
 
     async findById(id: string) {
-        return await this.instituteRepository.findById(id);
+        const institute = await this.instituteRepository.findById(id);
+        if (!institute) {
+             throw new Error('Institute not found');
+        }
+        return institute;
     }
 }

@@ -4,7 +4,7 @@ import { UserRepository } from "../../repository/UserRepository";
 import { MetadataExecption } from "../exception/MetadataException";
 import {InstituteRepository} from "../../repository/InstituteRepository";
 import {StudentDTO} from "../../dto/StudentDTO";
-import {InstituteDomain} from "../InstituteDomain";
+import {InstituteDomain} from "../management/InstituteDomain";
 import {DisciplineDomain} from "../Disclipline";
 import {RoomDomain} from "../Room";
 import moment from "moment";
