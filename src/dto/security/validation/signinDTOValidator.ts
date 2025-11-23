@@ -8,7 +8,7 @@ export class SigninDTOValidator {
         this.dto =  dto;
     }
 
-    get isValid(): boolean {
+    isValid(): boolean {
         if (!this.dto.username || !this.dto.password) {
             throw Error('Invalid login or password!');
         }

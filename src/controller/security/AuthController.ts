@@ -17,14 +17,12 @@ export class AuthController {
             if (!request.body) {
                 response.status(500).json({ message: 'No body provided' })
             }
-            if (!request.body.username || !request.body.password) {
-                response.status(401).json({ message: 'Login or password do not match!' })
-            }
             const securityDomain: Security = new Security();
             const token = await securityDomain.getCredentials({
-                password: request.body.login,
+                password: request.body.password,
                 username: request.body.username,
             });
+            console.debug(token);
             response.json({ token: token, register: new Date()});
         } catch (exception) {
             const errorCode = (<AuthException>exception).error;

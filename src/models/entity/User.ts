@@ -5,6 +5,8 @@ import * as bcrypt from 'bcrypt';
 import {Institute} from "./Institute";
 import {Discipline} from "./Discipline";
 import {AccessLevel} from "../enums";
+import {AuthException} from "../../domain/exception/AuthExceptoion";
+import {AuthTokenRepository} from "../../repository/AuthToekenRepository";
 
 @Entity()
 @TableInheritance({column: {type: 'varchar', name: 'type'}})
@@ -45,6 +47,10 @@ export abstract class User extends BaseEntity {
     })
     accessLevel: string;
 
+    @ManyToMany(() => Discipline, {cascade: true})
+    @JoinTable()
+    disciplines: Discipline[];
+
 
     async setPassword(password:string) {
         this.password = (await bcrypt.hash(password, 12)).toString();
@@ -54,7 +60,26 @@ export abstract class User extends BaseEntity {
         return (await bcrypt.hash(password, 12)).toString();
     }
 
-    @ManyToMany(() => Discipline, {cascade: true})
-    @JoinTable()
-    disciplines: Discipline[];
+    async validateCredentials(credentials: any) {
+        console.debug(this.password);
+        if (!await bcrypt.compare(credentials.password, this.password)) {
+            throw new AuthException();
+        }
+        return true;
+    }
+
+    async isActive() {
+        if (!this.active) {
+            throw new AuthException();
+        }
+        return true;
+    }
+
+   async getToken(repository: AuthTokenRepository) {
+        const token = await repository.findLastByUserId(this);
+        if (token) {
+            await repository.removeToken(token);
+        }
+        return new AuthToken().generate(repository, this, process.env.TOKEN_SECRET);
+    }
 }

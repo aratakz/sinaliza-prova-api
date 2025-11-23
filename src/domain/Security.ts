@@ -55,35 +55,16 @@ export class Security {
                 throw new AuthException();
             }
 
-            if (user && !user.active) {
-                throw new AuthException();
-            }
-
             if (user) {
-                if (!await bcrypt.compare(credentials.password, user.password)) {
-                    throw new AuthException();
-                }
+                await user.validateCredentials(credentials);
+                await user.isActive();
+                return await user.getToken(this.authTokenRepository);
 
-                const token = await this.authTokenRepository.findLastByUserId(user);
-
-                if (token) {
-                    await this.authTokenRepository.removeToken(token);
-                }
-
-                return this.generateNewToken(user, process.env.TOKEN_SECRET);
             }
-
             if (professional) {
-                if (!await bcrypt.compare(credentials.password, professional.password)) {
-                    throw new AuthException();
-                }
-
-                const token = await this.authTokenRepository.findLastByProfessionalId(professional);
-                if (token) {
-                    await this.authTokenRepository.removeToken(token);
-                }
-
-                return this.generateNewToken(professional, process.env.TOKEN_SECRET);
+                await professional.validateCredentials(credentials);
+                await professional.isActive();
+                return await professional.getToken(this.authTokenRepository);
             }
 
         }
@@ -258,30 +239,6 @@ export class Security {
     }
 
     private async generateNewToken(user: User|Professional, secret: string) {
-        const token = jwt.sign({ userData: {
-            name: user.name,
-            id: user.id,
-            avatar: user.avatarLink,
-            access: user.accessLevel,
-        }}, secret, {
-            expiresIn: '2h'
-        });
-
-
-        if (user instanceof Professional) {
-            await this.authTokenRepository.save({
-                token: token,
-                user: user
-            });
-
-        } else {
-            await this.authTokenRepository.save({
-                token: token,
-                user: user,
-            });
-        }
-        return token;
-
 
     }
 
