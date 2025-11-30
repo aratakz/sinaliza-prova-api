@@ -1,5 +1,4 @@
 export  * from './Address';
-export  * from './Admin';
 export  * from './AuthToken';
 export  * from './Answer';
 export  * from './BaseEntity';

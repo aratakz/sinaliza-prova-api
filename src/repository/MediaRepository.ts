@@ -10,7 +10,13 @@ export class MediaRepository implements RepositoryInterface<Media>{
     }
 
    async findById(id: string): Promise<Media> {
-        return Promise.resolve(undefined);
+      const result =
+          await databaseConfig.getRepository(Media).find({
+              where: {
+                  id: id
+              }
+          });
+      return result[0];
     }
 
     async save(entity: Media): Promise<Media> {

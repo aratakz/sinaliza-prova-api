@@ -29,23 +29,29 @@ export class QuestionDomain {
         const question = new Question();
         question.name = questionDTO.name;
 
-        const title = new QuestionField();
         const support_data = new QuestionField();
+        const title = await  new QuestionField().createAsTitle(questionDTO, question);
+        if (questionDTO.videos) {
+            const mediaRepository  = new MediaRepository();
+            const media = await mediaRepository.findById(questionDTO.videos.questionTitile);
+            media.field = title;
+            await mediaRepository.save(media);
+        }
+        console.debug('jju')
+        await this.fieldRepository.save(title);
 
-        title.fieldType = QuestionFieldType.title;
-        title. fieldValue = questionDTO.title;
-        title.question = question;
+
         if (questionDTO.support_data) {
             support_data.fieldType = QuestionFieldType.support_data;
             support_data.fieldValue = questionDTO.support_data;
             await this.fieldRepository.save(support_data);
         }
-        await this.fieldRepository.save(title);
 
         const fields: QuestionField[] = [title];
         if (questionDTO.support_data) {
             fields.push(support_data);
         }
+        console.debug('hello')
         question.fields = fields;
         const questionImages = [];
 
