@@ -31,12 +31,17 @@ export class S3Service {
             }));
         return `https://${this.bucket}.s3.us-east-1.amazonaws.com/${filename}`;
     }
-    async removeObject(objectKey: string) {
+    async removeObject(objectLink: string) {
         await this.client.send(
             new DeleteObjectCommand({
                 Bucket: this.bucket,
-                Key: objectKey,
+                Key: await this.extractObjectKey(objectLink),
             }));
+    }
+
+    async extractObjectKey(link: string): Promise<string> {
+        const split = link.split('/');
+        return split[split.length - 1];
     }
 
     async getImage(url:string): Promise<string> {

@@ -7,6 +7,10 @@ import {Discipline} from "./Discipline";
 import {AccessLevel} from "../enums";
 import {AuthException} from "../../domain/exception/AuthExceptoion";
 import {AuthTokenRepository} from "../../repository/AuthToekenRepository";
+import {Student} from "./Studant";
+import {UpdateUserDTO} from "../../dto";
+import {MetadataExecption} from "../../domain/exception/MetadataException";
+import {S3Service} from "../../services/S3Sevice";
 
 @Entity()
 @TableInheritance({column: {type: 'varchar', name: 'type'}})
@@ -38,8 +42,6 @@ export abstract class User extends BaseEntity {
     @ManyToOne(() => Institute, (institute) => institute.id)
     institute: Institute;
 
-    confirmPassword?:string;
-
     @Column({
         type:  'enum',
         enum: AccessLevel,
@@ -51,34 +53,59 @@ export abstract class User extends BaseEntity {
     @JoinTable()
     disciplines: Discipline[];
 
+    confirmPassword?:string;
+
+
 
     async setPassword(password:string) {
         this.password = (await bcrypt.hash(password, 12)).toString();
     }
-
     async enctypePassword(password:string) {
         return (await bcrypt.hash(password, 12)).toString();
     }
-
     async validateCredentials(credentials: any) {
         if (!await bcrypt.compare(credentials.password, this.password)) {
             throw new AuthException();
         }
         return true;
     }
-
     async isActive() {
         if (!this.active) {
             throw new AuthException();
         }
         return true;
     }
-
-   async getToken(repository: AuthTokenRepository) {
+    async getToken(repository: AuthTokenRepository) {
         const token = await repository.findLastByUserId(this);
         if (token) {
             await repository.removeToken(token);
         }
         return new AuthToken().generate(repository, this, process.env.TOKEN_SECRET);
     }
+
+    async addRegisterData(input: UpdateUserDTO) {
+        this.name = input.name;
+        this.email = input.email;
+
+        if (input.password && input.passwordConfirm) {
+            if (input.passwordConfirm != input.passwordConfirm) {
+                throw new MetadataExecption('Passwords do not match!');
+            }
+            this.password = await this.enctypePassword(input.password);
+        }
+    }
+
+    async updateAvatar(image: any) {
+        const s3Service = new S3Service();
+
+        if (this.avatarLink) {
+            await s3Service.removeObject(this.avatarLink);
+        }
+
+        const imageLink = await s3Service.sendImage(image);
+        if (imageLink) {
+            this.avatarLink = imageLink;
+        }
+    }
+
 }

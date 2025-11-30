@@ -25,12 +25,10 @@ type Email = {
 export class UserDomain {
 
     private usersRepository: UserRepository;
-    private instituteRepository: InstituteRepository;
     private S3Service: S3Service;
 
     constructor() {
         this.usersRepository = new UserRepository();
-        this.instituteRepository = new InstituteRepository();
         this.S3Service = new S3Service();
     }
 
@@ -44,25 +42,12 @@ export class UserDomain {
         if (!user) {
             throw new MetadataExecption('User not found!');
         }
+        await user.addRegisterData(updateUserDTO);
 
-
-        user.name = updateUserDTO.name;
-        user.email = updateUserDTO.email;
-        if (user instanceof Student) {
-            user.birthday = updateUserDTO.birthday;
-        }
-        if (updateUserDTO.password && updateUserDTO.passwordConfirm) {
-            if (updateUserDTO.passwordConfirm != updateUserDTO.passwordConfirm) {
-                throw new MetadataExecption('Passwords do not match!');
-            }
-            await user.setPassword(updateUserDTO.password);
-        }
         if (updateUserDTO.image) {
-            const imageLink = await this.S3Service.sendImage(updateUserDTO.image);
-            if (imageLink) {
-                user.avatarLink = imageLink;
-            }
+            await user.updateAvatar(updateUserDTO.image);
         }
+
         await this.usersRepository.save(user);
     }
     async getAvatar(avatarLink: string) {
