@@ -7,6 +7,7 @@ import {QuestionOptionRepository} from "../repository/QuestionOptionRepository";
 import {S3Service} from "../services/S3Sevice";
 import {QuestionImageRepository} from "../repository/QuestionImageRepository";
 import * as fs from "node:fs";
+import {MediaRepository} from "../repository/MediaRepository";
 
 export class QuestionDomain {
 
@@ -205,11 +206,10 @@ export class QuestionDomain {
 
     async saveFieldVideo(contens: any) {
 
-        await new S3Service().sendVideo(contens)
-        // const field =  await this.fieldRepository.findById(contens.fieldId);
-       // field.fieldVideo = `${__dirname}/../uploads/${field.id}.txt`;
-       //  this.saveBase64ToFile(contens.base64, contens.fieldId);
-       //  await this.fieldRepository.save(field);
+        const videoLink = await new S3Service().sendVideo(contens);
+        return await new MediaRepository().save({
+            link: videoLink
+        })
     }
 
     async getFieldVideo(fieldId: any) {

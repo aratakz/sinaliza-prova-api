@@ -88,8 +88,10 @@ class QuestionController {
                 throw Error('no body');
             }
             const domain = new QuestionDomain();
-            await domain.saveFieldVideo(request.body);
-            response.json({message: "saved"})
+            const media = await domain.saveFieldVideo(request.body);
+            response.json({
+                message: "saved",
+                media: media.id})
 
         } catch (error) {
             if (error instanceof Error) {

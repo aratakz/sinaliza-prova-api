@@ -7,4 +7,5 @@ export type QuestionRegisterDTO = {
     answers?: Array<AnswerDTO>;
     removedImages?: Array<string>;
     file?: Array<string>
+    videos: any;
 }
