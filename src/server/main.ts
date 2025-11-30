@@ -11,6 +11,7 @@ Promise.all([
 ]).then(() => {
     console.debug('🔗 Database connections realized');
     server.use(express.json({limit: '50mb'}));
+    server.use(express.raw({ type: 'application/octet-stream', limit: '1024mb'}));
     server.use(cors());
     server.use(routes);
     server.get('/', (req: Request, res: Response): any => res.json({

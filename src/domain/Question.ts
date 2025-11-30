@@ -204,10 +204,12 @@ export class QuestionDomain {
     }
 
     async saveFieldVideo(contens: any) {
-       const field =  await this.fieldRepository.findById(contens.fieldId);
-       field.fieldVideo = `${__dirname}/../uploads/${field.id}.txt`;
-        this.saveBase64ToFile(contens.base64, contens.fieldId);
-        await this.fieldRepository.save(field);
+
+        await new S3Service().sendVideo(contens)
+        // const field =  await this.fieldRepository.findById(contens.fieldId);
+       // field.fieldVideo = `${__dirname}/../uploads/${field.id}.txt`;
+       //  this.saveBase64ToFile(contens.base64, contens.fieldId);
+       //  await this.fieldRepository.save(field);
     }
 
     async getFieldVideo(fieldId: any) {

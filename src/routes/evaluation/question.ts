@@ -10,7 +10,5 @@ router.get('/find/:id', [AuthMiddlware], controller.findOne);
 router.get('/search/', [AuthMiddlware], controller.search);
 
 router.post('/register', [AuthMiddlware], controller.register);
-router.post('/fieldVideo', [AuthMiddlware], controller.saveFieldVideo);
-
 router.patch('/update/:id', [AuthMiddlware], controller.update);
 router.delete('/:id', [AuthMiddlware], controller.remove);

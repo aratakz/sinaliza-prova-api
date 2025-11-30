@@ -6,3 +6,4 @@ import {controller as question} from "../../controller/evaluation/QuestionContro
 export const router  = Router();
 
 router.get('/field/video/:id', [AuthMiddlware], question.loadFieldVideo);
+router.post('/field/video', [AuthMiddlware], question.saveFieldVideo);

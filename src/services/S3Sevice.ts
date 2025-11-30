@@ -31,6 +31,18 @@ export class S3Service {
             }));
         return `https://${this.bucket}.s3.us-east-1.amazonaws.com/${filename}`;
     }
+
+    async sendVideo(base64Image: Blob) {
+        const filename = randomUUID();
+        await this.client.send(
+            new PutObjectCommand({
+                Bucket: this.bucket,
+                Key: filename,
+                Body: base64Image,
+                ACL: 'public-read',
+            }));
+        return `https://${this.bucket}.s3.us-east-1.amazonaws.com/${filename}`;
+    }
     async removeObject(objectLink: string) {
         await this.client.send(
             new DeleteObjectCommand({
