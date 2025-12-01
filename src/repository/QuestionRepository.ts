@@ -19,7 +19,9 @@ export class QuestionRepository implements RepositoryInterface<Question>{
                 id: id
             },
             relations: {
-                fields: true,
+                fields: {
+                    media: true
+                },
                 options: true,
                 images: true
             }

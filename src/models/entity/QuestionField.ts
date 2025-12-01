@@ -1,8 +1,9 @@
 import {BaseEntity} from "./BaseEntity";
 import {QuestionFieldType} from "../enums";
-import {Column, Entity, ManyToOne} from "typeorm";
+import {Column, Entity, JoinColumn, ManyToOne, OneToOne} from "typeorm";
 import {Question} from "./Question";
 import {MediaRepository} from "../../repository/MediaRepository";
+import {Media} from "./Media";
 
 @Entity({ name: "question_field" })
 export class QuestionField extends BaseEntity{
@@ -23,6 +24,10 @@ export class QuestionField extends BaseEntity{
 
     @Column({type: "varchar", length: 1000, default: null})
     fieldVideo: string|null;
+
+    @OneToOne(() =>Media)
+    @JoinColumn()
+    media: Media;
 
 
     async createAsTitle(questionDTO: any, question: Question) {

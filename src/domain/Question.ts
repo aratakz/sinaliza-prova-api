@@ -31,15 +31,14 @@ export class QuestionDomain {
 
         const support_data = new QuestionField();
         const title = await  new QuestionField().createAsTitle(questionDTO, question);
-        if (questionDTO.videos) {
+        if (questionDTO.videos.questionTitle) {
             const mediaRepository  = new MediaRepository();
-            const media = await mediaRepository.findById(questionDTO.videos.questionTitile);
+            const media = await mediaRepository.findById(questionDTO.videos.questionTitle);
             media.field = title;
+            title.media = media
             await mediaRepository.save(media);
         }
-        console.debug('jju')
         await this.fieldRepository.save(title);
-
 
         if (questionDTO.support_data) {
             support_data.fieldType = QuestionFieldType.support_data;
@@ -51,7 +50,6 @@ export class QuestionDomain {
         if (questionDTO.support_data) {
             fields.push(support_data);
         }
-        console.debug('hello')
         question.fields = fields;
         const questionImages = [];
 
