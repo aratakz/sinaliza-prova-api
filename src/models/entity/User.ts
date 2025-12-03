@@ -87,6 +87,10 @@ export abstract class User extends BaseEntity {
         this.name = input.name;
         this.email = input.email;
 
+        if (input.login) {
+            this.username = input.login
+        }
+
         if (input.password && input.passwordConfirm) {
             if (input.passwordConfirm != input.passwordConfirm) {
                 throw new MetadataExecption('Passwords do not match!');
