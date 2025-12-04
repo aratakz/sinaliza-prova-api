@@ -57,9 +57,9 @@ export class S3Service {
         return split[split.length - 1];
     }
 
-    async getImage(url:string): Promise<string> {
+    async getImage(url:string): Promise<any> {
         const result = await fetch(url);
-        const blob = await result.blob();
-        return await blob.text();
+        const blob = await result.blob();console.debug(blob);
+        return blob;
     }
 }
