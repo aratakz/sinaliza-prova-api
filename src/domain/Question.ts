@@ -43,6 +43,13 @@ export class QuestionDomain {
         if (questionDTO.support_data) {
             support_data.fieldType = QuestionFieldType.support_data;
             support_data.fieldValue = questionDTO.support_data;
+            if (questionDTO.videos.questionSupport) {
+                const mediaRepository  = new MediaRepository();
+                const media = await mediaRepository.findById(questionDTO.videos.questionSupport);
+                media.field = title;
+                support_data.media = media
+                await mediaRepository.save(media);
+            }
             await this.fieldRepository.save(support_data);
         }
 
