@@ -100,6 +100,24 @@ class UsersController {
             }
         }
     }
+    async updateAvatar(request: Request, response: Response) {
+        try {
+            console.debug('hera')
+            if (!request.body) {
+                throw Error('No body present!');
+            }
+            if (!request.params.userId) {
+                throw Error('No user id provided!');
+            }
+            const domain = new UserDomain();
+            await domain.updateAvatar(request.params.userId, request.body);
+            response.json({message: 'updated'})
+        } catch (error) {
+            if (error instanceof Error) {
+                response.status(500).json({message: error.message});
+            }
+        }
+    }
     async getAvatar(request: Request, response: Response) {
         try {
             if (!request.body) {

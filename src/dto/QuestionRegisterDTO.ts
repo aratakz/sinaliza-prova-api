@@ -6,6 +6,6 @@ export type QuestionRegisterDTO = {
     support_data?: string;
     answers?: Array<AnswerDTO>;
     removedImages?: Array<string>;
-    file?: Array<string>
+    file?: any;
     videos: any;
 }

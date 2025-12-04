@@ -12,6 +12,7 @@ export const router = Router();
     router.get('/checkUsername/:username', controller.checkUsername);
 
     router.post('/avatarLink/', [authMiddleware], controller.getAvatar);
+    router.post('/updateAvatar/:userId', [authMiddleware], controller.updateAvatar);
     router.post('/create',  [authMiddleware], controller.create);
 
     router.patch('/update/:id', [authMiddleware], controller.update);

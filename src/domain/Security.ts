@@ -50,7 +50,6 @@ export class Security {
         if (process.env.TOKEN_SECRET) {
             const user: User|null = await this.userRepository.findByUserName(credentials.username);
             const professional: Professional = await this.professionalRepository.findByUsername(credentials.username);
-            console.debug(credentials.username);
             if (!user && !professional) {
                 throw new AuthException();
             }

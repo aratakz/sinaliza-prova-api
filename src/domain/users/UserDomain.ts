@@ -42,19 +42,23 @@ export class UserDomain {
         if (!user) {
             throw new MetadataExecption('User not found!');
         }
+
         await user.addRegisterData(updateUserDTO);
-
-        if (updateUserDTO.image) {
-            await user.updateAvatar(updateUserDTO.image);
-        }
-
         await this.usersRepository.save(user);
     }
     async getAvatar(avatarLink: string) {
         return this.S3Service.getImage(avatarLink);
     }
+    async updateAvatar(userid: any, image: any) {
+        const user = await this.usersRepository.findById(userid);
 
+        if (!user) {
+            throw new Error('User not found!');
+        }
 
+        await user.updateAvatar(image);
+        await this.usersRepository.save(user);
+    }
     async createStudent(token: string, studentMetadata: StudentDTO) {
         const instituteDomain: InstituteDomain = new InstituteDomain();
         const cpfOwner = await this.getUserByCPF(studentMetadata.cpf);
