@@ -22,7 +22,6 @@ export class S3Service {
 
     async sendImage(base64Image: any) {
         const filename = randomUUID();
-        console.debug(base64Image);
         await this.client.send(
             new PutObjectCommand({
                 Bucket: this.bucket,
@@ -59,7 +58,6 @@ export class S3Service {
 
     async getImage(url:string): Promise<any> {
         const result = await fetch(url);
-        const blob = await result.blob();console.debug(blob);
-        return blob;
+        return await result.blob();
     }
 }

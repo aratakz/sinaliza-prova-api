@@ -101,7 +101,6 @@ export abstract class User extends BaseEntity {
 
     async updateAvatar(image: any) {
         const s3Service = new S3Service();
-        console.debug(image);
         if (this.avatarLink) {
             await s3Service.removeObject(this.avatarLink);
         }

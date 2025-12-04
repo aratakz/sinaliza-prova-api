@@ -102,7 +102,6 @@ class UsersController {
     }
     async updateAvatar(request: Request, response: Response) {
         try {
-            console.debug('hera')
             if (!request.body) {
                 throw Error('No body present!');
             }
