@@ -227,9 +227,6 @@ export class QuestionDomain {
     }
     async getFieldVideo(fieldId: any) {
         const field =  await this.fieldRepository.findById(fieldId);
-        return fs.readFileSync(`${field.fieldVideo}`, 'utf-8');
-    }
-    private saveBase64ToFile(base64String: string, fieldId: string) {
-        fs.writeFileSync(`${__dirname}/../uploads/${fieldId}.txt`, base64String);
+        return field.media?.link
     }
 }

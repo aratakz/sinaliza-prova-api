@@ -12,6 +12,9 @@ export class QuestionFieldRepository implements RepositoryInterface<QuestionFiel
         const results = await databaseConfig.getRepository(QuestionField).find({
             where: {
                 id: id
+            },
+            relations: {
+                media: true
             }
         });
         return results[0];
