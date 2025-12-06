@@ -94,11 +94,9 @@ export class QuestionDomain {
 
         await this.questionRepository.save(question);
     }
-
     async getAll(): Promise<Question[]> {
         return this.questionRepository.findAll();
     }
-
     async remove(questionId: string): Promise<void> {
         const question = await this.questionRepository.findById(questionId);
 
@@ -115,7 +113,6 @@ export class QuestionDomain {
         }
         return this.questionRepository.remove(question);
     }
-
     async findOne(questionId: string): Promise<Question> {
         const question =  await this.questionRepository.findById(questionId);
 
@@ -137,7 +134,6 @@ export class QuestionDomain {
         }
         return question;
     }
-
     async update(questionId: string, questionDTO: QuestionRegisterDTO) {
         const question: Question = await this.questionRepository.findById(questionId);
         if (!question) {
@@ -210,11 +206,9 @@ export class QuestionDomain {
 
         await this.questionRepository.save(question);
     }
-
     async findByTitle(title: string) {
         return await this.questionRepository.findByTitle(title);
     }
-
     async saveFieldVideo(contens: any) {
 
         const videoLink = await new S3Service().sendVideo(contens);
@@ -222,12 +216,19 @@ export class QuestionDomain {
             link: videoLink
         })
     }
-
+    async removeFieldVideo(mediaLink: any) {
+        const repository = new MediaRepository();
+        const media = await repository.findByLink(mediaLink);
+        if (!media) {
+            throw new Error('media not found');
+        }
+        await new S3Service().removeObject(mediaLink);
+        await repository.remove(media);
+    }
     async getFieldVideo(fieldId: any) {
         const field =  await this.fieldRepository.findById(fieldId);
         return fs.readFileSync(`${field.fieldVideo}`, 'utf-8');
     }
-
     private saveBase64ToFile(base64String: string, fieldId: string) {
         fs.writeFileSync(`${__dirname}/../uploads/${fieldId}.txt`, base64String);
     }

@@ -7,3 +7,4 @@ export const router  = Router();
 
 router.get('/field/video/:id', [AuthMiddlware], question.loadFieldVideo);
 router.post('/field/video', [AuthMiddlware], question.saveFieldVideo);
+router.delete('/video/remove', [AuthMiddlware], question.removeVideo);

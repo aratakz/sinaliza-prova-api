@@ -99,6 +99,25 @@ class QuestionController {
             }
         }
     }
+    async removeVideo(request: Request, response: Response) {
+        try {
+            if (!request.body) {
+                throw new Error('No body is present');
+            }
+            if (!request.body.link) {
+                throw new Error('no media link is provided');
+            }
+            const domain = new QuestionDomain();
+            await domain.removeFieldVideo(request.body.link);
+            response.json({message: 'deleted'})
+        } catch (e) {
+            if (e instanceof Error) {
+                response
+                    .status(500)
+                    .json({message: e.message});
+            }
+        }
+    }
     async loadFieldVideo (request: Request, response: Response) {
         try {
             if (!request.params.id) {
