@@ -95,6 +95,15 @@ export class QuestionDomain {
         if (!question) {
             throw new Error(`Question not found`);
         }
+        if (question.media) {
+            const mediaRepository = new MediaRepository();
+            for (const media of question.media) {
+                media.question = undefined;
+                await mediaRepository.save(media);
+                await mediaRepository.remove(media);
+            }
+            question.media = [];
+        }
         return this.questionRepository.remove(question);
     }
     async findOne(questionId: string): Promise<Question> {
