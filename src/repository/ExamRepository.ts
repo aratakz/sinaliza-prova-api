@@ -15,7 +15,8 @@ export class ExamRepository implements RepositoryInterface<Exam> {
                 discipline: true,
                 room: true,
                 questions: {
-                    fields: true
+                    fields: true,
+                    media: true
                 }
             }
         });
