@@ -121,10 +121,15 @@ export class QuestionDomain {
 
             if (question.images) {
                 for (const image of question.images) {
-                    const imageContent = await this.s3Service.getImage(image.url);
+                    const response = await fetch(image.url);
+                    const decoderStream = new TextDecoderStream();
+                    const base64: any =  await response.body?.
+                    pipeThrough(decoderStream).
+                    getReader().read();
+
                     images.push({
                         id: image.id,
-                        url: imageContent,
+                        url: base64.value,
                         question: image.question,
                     });
                 }
