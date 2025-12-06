@@ -24,6 +24,7 @@ export class AuthToken  extends BaseEntity {
             expiresIn: '2h'
         });
         this.token = token;
+        this.user = user;
         await repository.save(this);
         return token;
     }

@@ -28,7 +28,6 @@ export class  DisciplineController {
 
             const requestToken = request.headers.authorization.replace('Bearer ', '');
             const disciplineDomain = new DisciplineDomain();
-
             await disciplineDomain.create({...request.body,...{requestToken: requestToken}});
 
             response.json({message: "created"});
