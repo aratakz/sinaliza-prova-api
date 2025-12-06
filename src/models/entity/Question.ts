@@ -1,9 +1,9 @@
-import {Column, Entity, JoinTable, ManyToMany, OneToMany} from "typeorm";
+import {Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany} from "typeorm";
 import { BaseEntity } from "./BaseEntity";
 import {QuestionField} from "./QuestionField";
-import {QuestionImage} from "./QuestionImage";
 import {QuestionOption} from "./QuestionOption";
 import {QuestionTag} from "./QuestionTag";
+import {Media} from "./Media";
 
 @Entity()
 export class Question extends BaseEntity {
@@ -14,13 +14,13 @@ export class Question extends BaseEntity {
     @OneToMany(() => QuestionField, (questionField) => questionField.question,  {onDelete: "CASCADE"})
     fields: QuestionField[];
 
-    @OneToMany(() => QuestionImage, (questionImage) => questionImage.question,  {onDelete: "CASCADE"})
-    images: QuestionImage[]
-
     @OneToMany(() => QuestionOption, (option) => option.question, {onDelete: "CASCADE"})
     options: QuestionOption[]
 
     @ManyToMany(() => QuestionTag)
     @JoinTable()
     tags: QuestionTag[]
+
+    @OneToMany(() => Media, (media) => media.question, {onDelete: "CASCADE"})
+    media: Media[];
 }

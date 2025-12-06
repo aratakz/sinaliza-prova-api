@@ -1,19 +1,16 @@
 import {QuestionRegisterDTO} from "../dto/QuestionRegisterDTO";
 import {QuestionRepository} from "../repository/QuestionRepository";
-import {Question, QuestionField, QuestionImage, QuestionOption} from "../models/entity";
+import {Media, Question, QuestionField, QuestionOption} from "../models/entity";
 import {QuestionFieldRepository} from "../repository/QuestionFieldRepository";
 import {QuestionFieldType} from "../models/enums";
 import {QuestionOptionRepository} from "../repository/QuestionOptionRepository";
 import {S3Service} from "../services/S3Sevice";
-import {QuestionImageRepository} from "../repository/QuestionImageRepository";
-import * as fs from "node:fs";
 import {MediaRepository} from "../repository/MediaRepository";
 
 export class QuestionDomain {
 
     readonly questionRepository: QuestionRepository;
     readonly fieldRepository: QuestionFieldRepository;
-    readonly questionImageRepository: QuestionImageRepository;
     readonly questionOptionRepository: QuestionOptionRepository;
     readonly s3Service: S3Service;
 
@@ -21,7 +18,6 @@ export class QuestionDomain {
         this.questionRepository = new QuestionRepository();
         this.fieldRepository = new QuestionFieldRepository();
         this.questionOptionRepository = new QuestionOptionRepository();
-        this.questionImageRepository = new QuestionImageRepository();
         this.s3Service = new S3Service();
     }
 
@@ -61,18 +57,15 @@ export class QuestionDomain {
         const questionImages = [];
 
         if (questionDTO.file) {
-            for (const file of questionDTO.file)    {
-                const imageLink = await this.s3Service.sendImage(file);
-                if (imageLink) {
-                    const questionImage = new QuestionImage();
-                    questionImage.question = question;
-                    questionImage.url = imageLink;
-                    questionImages.push(questionImage);
-                    await this.questionImageRepository.save(questionImage);
-
+            for (const file of questionDTO.file) {
+                const mediaRepository = new MediaRepository();
+                const media = await mediaRepository.findById(file);
+                media.question = question;
+                await mediaRepository.save(media);
+                if (!question.media || !question.media.length) {
+                    question.media = [media];
                 }
             }
-            question.images = questionImages;
         }
         if (questionDTO.answers) {
             let answers: Array<QuestionOption> = [];
@@ -99,45 +92,13 @@ export class QuestionDomain {
     }
     async remove(questionId: string): Promise<void> {
         const question = await this.questionRepository.findById(questionId);
-
         if (!question) {
             throw new Error(`Question not found`);
-        }
-
-        if (question.images && question.images.length) {
-            for (const image of question.images) {
-                const splitLink = image.url.split('/');
-                const  imageKey = splitLink[splitLink.length - 1];
-                await this.s3Service.removeObject(imageKey);
-            }
         }
         return this.questionRepository.remove(question);
     }
     async findOne(questionId: string): Promise<Question> {
-        const question =  await this.questionRepository.findById(questionId);
-
-        if (question) {
-            let images = [];
-
-            if (question.images) {
-                for (const image of question.images) {
-                    const response = await fetch(image.url);
-                    const decoderStream = new TextDecoderStream();
-                    const base64: any =  await response.body?.
-                    pipeThrough(decoderStream).
-                    getReader().read();
-
-                    images.push({
-                        id: image.id,
-                        url: base64.value,
-                        question: image.question,
-                    });
-                }
-
-                question.images = images;
-            }
-        }
-        return question;
+        return await this.questionRepository.findById(questionId);
     }
     async update(questionId: string, questionDTO: QuestionRegisterDTO) {
         const question: Question = await this.questionRepository.findById(questionId);
@@ -164,33 +125,6 @@ export class QuestionDomain {
             fields.push(support_data);
         }
         question.fields = fields;
-        let questionImages: Array<QuestionImage> = [];
-
-        if (questionDTO.file) {
-            if (question.images && question.images.length) {
-                if (questionDTO.removedImages && questionDTO.removedImages.length) {
-                    for (const removeImage of questionDTO.removedImages) {
-                        await this.questionImageRepository.removeById(removeImage)
-                    }
-                }
-            }
-            if (questionDTO.file && questionDTO.file.length) {
-                for (const file of questionDTO.file) {
-                    const imageLink = await this.s3Service.sendImage(file);
-                    if (imageLink) {
-                        const questionImage = new QuestionImage();
-                        questionImage.question = question;
-                        questionImage.url = imageLink;
-                        questionImages.push(questionImage);
-                        await this.questionImageRepository.save(questionImage);
-
-                    }
-                }
-            }
-            const preloadedImages:QuestionImage[] = await this.questionImageRepository.findAll();
-            questionImages = [...questionImages, ...preloadedImages];
-            question.images = questionImages;
-        }
         if (questionDTO.answers && questionDTO.answers.length) {
             let answers: Array<QuestionOption> = [];
             for (const option of questionDTO.answers) {
@@ -232,7 +166,13 @@ export class QuestionDomain {
     }
     async getFieldVideo(fieldId: any) {
         const field =  await this.fieldRepository.findById(fieldId);
-        console.debug(field);
         return field.media?.link
+    }
+    async addImages(image: any) {
+        const resourceLink = await this.s3Service.sendVideo(image);
+        const media = new Media();
+        media.link = resourceLink;
+        const storedMedia = await new MediaRepository().save(media);
+        return storedMedia.id;
     }
 }

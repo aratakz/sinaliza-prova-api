@@ -20,5 +20,4 @@ export  * from './Curriculum';
 export  * from './Room';
 export  * from './QuestionField';
 export  * from './QuestionTag';
-export  * from './QuestionImage';
 export  * from './Media';

@@ -1,6 +1,8 @@
-import {Column, Entity, JoinColumn, OneToOne} from "typeorm";
+import {Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToOne} from "typeorm";
 import {BaseEntity} from "./BaseEntity";
 import {QuestionField} from "./QuestionField";
+import {Question} from "./Question";
+import question from "../schemas/Question";
 
 @Entity()
 export class Media extends BaseEntity{
@@ -11,4 +13,8 @@ export class Media extends BaseEntity{
     @OneToOne(() => QuestionField)
     @JoinColumn()
     field?: QuestionField;
+
+    @ManyToOne(() => Question, (question: Question)=> question.media)
+    @JoinColumn()
+    question?: Question;
 }

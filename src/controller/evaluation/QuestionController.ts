@@ -2,7 +2,6 @@ import {Request, Response} from "express";
 import {QuestionDomain} from "../../domain/Question";
 
 class QuestionController {
-
     async register(request: Request, response: Response) {
         try {
             if (!request.body) {
@@ -129,6 +128,21 @@ class QuestionController {
         } catch (error) {
             if (error instanceof Error) {
                 response.status(500).json({message: error.message})
+            }
+        }
+    }
+    async saveQuestionImage(request: Request, response: Response){
+        try {
+            if (!request.body) {
+                throw new Error('no body is present');
+            }
+
+            const domain = new QuestionDomain();
+            const images = await domain.addImages(request.body);
+            response.json({'message': 'Created!', id: images})
+        } catch (e) {
+            if (e instanceof Error) {
+                response.status(500).json({message: e.message})
             }
         }
     }

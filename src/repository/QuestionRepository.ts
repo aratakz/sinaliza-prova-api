@@ -23,7 +23,7 @@ export class QuestionRepository implements RepositoryInterface<Question>{
                     media: true
                 },
                 options: true,
-                images: true
+                media: true
             }
         });
         return result[0];
