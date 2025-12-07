@@ -19,8 +19,23 @@ export class QuestionFieldRepository implements RepositoryInterface<QuestionFiel
         });
         return results[0];
     }
+    async findByQuestionId(id: string): Promise<QuestionField[]> {
+        return await databaseConfig.getRepository(QuestionField).find({
+            where: {
+                question: {
+                    id: id
+                }
+            },
+            relations: {
+                media: true
+            }
+        });
+    }
 
    async save(entity: QuestionField): Promise<QuestionField> {
         return await databaseConfig.getRepository(QuestionField).save(entity);
+    }
+    async remove (questionField: QuestionField) {
+        await databaseConfig.getRepository(QuestionField).remove(questionField);
     }
 }

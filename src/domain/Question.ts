@@ -114,17 +114,46 @@ export class QuestionDomain {
         if (!question) {
             throw new Error('Question not found!');
         }
+        const questionFieldRepository = new QuestionFieldRepository();
         question.name = questionDTO.name;
-
+        const oldFields = await questionFieldRepository.findByQuestionId(questionId);
+        if (oldFields) {
+            for (const oldField of oldFields) {
+                await questionFieldRepository.remove(oldField);
+            }
+        }
         const title = new QuestionField();
         const support_data = new QuestionField();
 
         title.fieldType = QuestionFieldType.title;
         title. fieldValue = questionDTO.title;
         title.question = question;
+        if (questionDTO.videos) {
+            const mediaRepository  = new MediaRepository();
+            if (questionDTO.videos.questionTitle) {
+                const media = await mediaRepository.findById(questionDTO.videos.questionTitle);
+                media.question = undefined;
+                title.media = undefined;
+                title.media = media;
+                media.field = title;
+                await mediaRepository.save(media);
+            }
+        }
         if (questionDTO.support_data) {
+
             support_data.fieldType = QuestionFieldType.support_data;
             support_data.fieldValue = questionDTO.support_data;
+            if (questionDTO.videos) {
+                console.debug('tia balao');
+                const mediaRepository  = new MediaRepository();
+                if (questionDTO.videos.questionSupport) {
+                    const media = await mediaRepository
+                        .findById(questionDTO.videos.questionSupport);
+                    support_data.media = media;
+                    media.field = support_data;
+                    await mediaRepository.save(media);
+                }
+            }
             await this.fieldRepository.save(support_data);
         }
         await this.fieldRepository.save(title);
