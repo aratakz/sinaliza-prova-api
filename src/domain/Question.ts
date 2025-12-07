@@ -54,18 +54,27 @@ export class QuestionDomain {
             fields.push(support_data);
         }
         question.fields = fields;
-        const questionImages = [];
-
+        if (questionDTO.removedImages) {
+            const mediaRepository = new MediaRepository();
+            for (const image of questionDTO.removedImages) {
+                const media = await mediaRepository.findById(image);
+                question.media = [];
+                media.question = undefined;
+                await this.questionRepository.save(question);
+                await mediaRepository.save(media);
+                await mediaRepository.remove(media);
+            }
+        }
         if (questionDTO.file) {
+            const medias = [];
             for (const file of questionDTO.file) {
                 const mediaRepository = new MediaRepository();
                 const media = await mediaRepository.findById(file);
                 media.question = question;
                 await mediaRepository.save(media);
-                if (!question.media || !question.media.length) {
-                    question.media = [media];
-                }
+                medias.push(media);
             }
+            question.media = medias;
         }
         if (questionDTO.answers) {
             let answers: Array<QuestionOption> = [];
@@ -139,12 +148,28 @@ export class QuestionDomain {
                 await mediaRepository.save(media);
             }
         }
+        if (questionDTO.file) {
+            const medias = [];
+            for (const file of questionDTO.file) {
+                const mediaRepository = new MediaRepository();
+                const media = await mediaRepository.findById(file);
+                media.question = question;
+                await mediaRepository.save(media);
+                medias.push(media);
+                if (!question.media || !question.media.length) {
+                    question.media = [media];
+                } else {
+                    for (const media of question.media) {
+                        medias.push(media);
+                    }
+                    question.media = medias;
+                }
+            }
+        }
         if (questionDTO.support_data) {
-
             support_data.fieldType = QuestionFieldType.support_data;
             support_data.fieldValue = questionDTO.support_data;
             if (questionDTO.videos) {
-                console.debug('tia balao');
                 const mediaRepository  = new MediaRepository();
                 if (questionDTO.videos.questionSupport) {
                     const media = await mediaRepository
