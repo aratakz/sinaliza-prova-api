@@ -17,6 +17,6 @@ export const router = Router();
 
     router.patch('/update/:id', [authMiddleware], controller.update);
 
-    router.use(students);
-    router.use(professionals);
+    router.use('/students', students);
+    router.use('/professionals', professionals);
 

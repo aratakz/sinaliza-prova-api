@@ -200,7 +200,7 @@ export class Security {
 
         const instituteDomain = new InstituteDomain();
         const institute = await instituteDomain.findById(firstLoginDTO.institute);
-
+        console.debug(student);
         if (student.institute.id != institute.id) {
             throw new Error(`institute not found`);
         }
