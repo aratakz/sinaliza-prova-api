@@ -83,6 +83,15 @@ export class QuestionDomain {
                 newOption.question = question;
                 newOption.title = option.title;
                 newOption.videoLink = undefined;
+                if (option.video) {
+                    const mediaRepository = new MediaRepository()
+                    const media:Media = await mediaRepository.findById(option.video);
+                    if (media) {
+                        media.questionOption = newOption;
+                        newOption.media = media;
+                        await mediaRepository.save(media);
+                    }
+                }
                 if (option.isAnswer) {
                     newOption.isAnswer = option.isAnswer;
                 } else {
@@ -246,6 +255,13 @@ export class QuestionDomain {
     }
     async getFieldVideo(fieldId: any) {
         const field =  await this.fieldRepository.findById(fieldId);
+        return field.media?.link
+    }
+
+    async getOptionVideo(optionId: any) {
+        console.debug(optionId);
+        const field =  await this.questionOptionRepository.findById(optionId);
+        console.debug(field);
         return field.media?.link
     }
     async addImages(image: any) {

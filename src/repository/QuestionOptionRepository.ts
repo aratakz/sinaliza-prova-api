@@ -8,7 +8,15 @@ export class QuestionOptionRepository  implements RepositoryInterface<QuestionOp
         return [];
     }
     async findById(id: string): Promise<QuestionOption> {
-      return new QuestionOption();
+      const results = await databaseConfig.getRepository(QuestionOption).find({
+              where: {
+                  id: id
+              },
+              relations: {
+                  media: true
+              }
+          });
+      return  results[0];
     }
     async save(entity: QuestionOption): Promise<QuestionOption> {
         return await databaseConfig.getRepository(QuestionOption).save(entity);
@@ -19,6 +27,9 @@ export class QuestionOptionRepository  implements RepositoryInterface<QuestionOp
                 question: {
                     id: questionId
                 }
+            },
+            relations: {
+                media: true
             }
         });
     }

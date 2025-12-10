@@ -131,6 +131,21 @@ class QuestionController {
             }
         }
     }
+
+    async loadOptionVideo (request: Request, response: Response) {
+        try {
+            if (!request.params.id) {
+                throw Error('no id is present');
+            }
+            const domain = new QuestionDomain();
+            response.json({video: await domain.getOptionVideo(request.params.id)});
+
+        } catch (error) {
+            if (error instanceof Error) {
+                response.status(500).json({message: error.message})
+            }
+        }
+    }
     async saveQuestionImage(request: Request, response: Response){
         try {
             if (!request.body) {
