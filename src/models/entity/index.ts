@@ -21,3 +21,5 @@ export  * from './Room';
 export  * from './QuestionField';
 export  * from './QuestionTag';
 export  * from './Media';
+export  * from './QuestionAnswer';
+

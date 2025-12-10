@@ -27,6 +27,7 @@ export class ExamDomain {
             title: examDTO.title,
             discipline: discipline,
             date: examDTO.date,
+            finished: false
         });
 
         discipline.exams = [exam];

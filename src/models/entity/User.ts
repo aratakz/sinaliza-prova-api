@@ -1,4 +1,14 @@
-import {Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, TableInheritance} from "typeorm";
+import {
+    Column,
+    Entity,
+    JoinColumn,
+    JoinTable,
+    ManyToMany,
+    ManyToOne,
+    OneToMany,
+    OneToOne,
+    TableInheritance
+} from "typeorm";
 import { AuthToken } from "./AuthToken";
 import { BaseEntity } from "./BaseEntity";
 import * as bcrypt from 'bcrypt';
@@ -11,6 +21,7 @@ import {Student} from "./Studant";
 import {UpdateUserDTO} from "../../dto";
 import {MetadataExecption} from "../../domain/exception/MetadataException";
 import {S3Service} from "../../services/S3Sevice";
+import {QuestionAnswer} from "./QuestionAnswer";
 
 @Entity()
 @TableInheritance({column: {type: 'varchar', name: 'type'}})
@@ -52,6 +63,10 @@ export abstract class User extends BaseEntity {
     @ManyToMany(() => Discipline, {cascade: true})
     @JoinTable()
     disciplines: Discipline[];
+
+    @OneToOne(() => QuestionAnswer)
+    @JoinColumn()
+    questionAnswer: QuestionAnswer
 
     confirmPassword?:string;
 

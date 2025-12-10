@@ -26,6 +26,10 @@ export class Exam extends BaseEntity{
     })
     questions?: Question[];
 
+
+    @Column({type: 'boolean'})
+    finished: boolean;
+
     constructor(exam: Exam) {
         super();
         if (exam) {
