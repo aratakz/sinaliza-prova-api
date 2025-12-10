@@ -16,7 +16,7 @@ routes.use('/security', security);
 routes.use('/evaluation', evaluation);
 routes.use('/system', system);
 routes.use('/management', management);
-router.patch('/media/option/video/:id', [AuthMiddlware], question.loadOptionVideo);
+router.patch('system/media/option/video/:id', [AuthMiddlware], question.loadOptionVideo);
 
 
 export default routes;
