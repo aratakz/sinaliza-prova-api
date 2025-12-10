@@ -126,17 +126,20 @@ export class QuestionDomain {
         const questionFieldRepository = new QuestionFieldRepository();
         question.name = questionDTO.name;
         const oldFields = await questionFieldRepository.findByQuestionId(questionId);
+
         if (oldFields) {
             for (const oldField of oldFields) {
                 await questionFieldRepository.remove(oldField);
             }
         }
+
         const title = new QuestionField();
         const support_data = new QuestionField();
 
         title.fieldType = QuestionFieldType.title;
         title. fieldValue = questionDTO.title;
         title.question = question;
+
         if (questionDTO.videos) {
             const mediaRepository  = new MediaRepository();
             if (questionDTO.videos.questionTitle) {
@@ -148,6 +151,7 @@ export class QuestionDomain {
                 await mediaRepository.save(media);
             }
         }
+
         if (questionDTO.file) {
             const medias = [];
             for (const file of questionDTO.file) {
@@ -166,6 +170,7 @@ export class QuestionDomain {
                 }
             }
         }
+
         if (questionDTO.support_data) {
             support_data.fieldType = QuestionFieldType.support_data;
             support_data.fieldValue = questionDTO.support_data;
@@ -181,13 +186,16 @@ export class QuestionDomain {
             }
             await this.fieldRepository.save(support_data);
         }
+
         await this.fieldRepository.save(title);
 
         const fields: QuestionField[] = [title];
         if (questionDTO.support_data) {
             fields.push(support_data);
         }
+
         question.fields = fields;
+
         if (questionDTO.answers && questionDTO.answers.length) {
             let answers: Array<QuestionOption> = [];
             for (const option of questionDTO.answers) {
@@ -195,6 +203,15 @@ export class QuestionDomain {
                 newOption.question = question;
                 newOption.title = option.title;
                 newOption.videoLink = undefined;
+                if (option.video) {
+                    const mediaRepository = new MediaRepository()
+                    const media:Media = await mediaRepository.findById(option.video);
+                    if (media) {
+                        media.questionOption = newOption;
+                        newOption.media = media;
+                        await mediaRepository.save(media);
+                    }
+                }
                 if (option.isAnswer) {
                     newOption.isAnswer = option.isAnswer;
                 } else {

@@ -3,6 +3,7 @@ import {BaseEntity} from "./BaseEntity";
 import {QuestionField} from "./QuestionField";
 import {Question} from "./Question";
 import question from "../schemas/Question";
+import {QuestionOption} from "./QuestionOption";
 
 @Entity()
 export class Media extends BaseEntity{
@@ -17,4 +18,8 @@ export class Media extends BaseEntity{
     @ManyToOne(() => Question, (question: Question)=> question.media)
     @JoinColumn()
     question?: Question;
+
+    @ManyToOne(() => QuestionOption)
+    @JoinColumn()
+    questionOption?: QuestionOption;
 }
